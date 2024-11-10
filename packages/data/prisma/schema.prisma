@@ -1,0 +1,203 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["omitApi"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserType {
+  Admin
+  User
+}
+
+model User {
+  id                Int                 @id @default(autoincrement())
+  fullName          String
+  email             String              @unique
+  password          String
+  phone             String?
+  userType          UserType
+  isActive          Boolean             @default(false)
+  emailVerified     Boolean
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  profile           Profile?
+  blogs             Blog[]
+  discussion        Discussion[]
+  subscription      EmailSubscription?
+  blogComment       BlogComment[]
+  discussionComment DiscussionComment[]
+}
+
+model Profile {
+  id     Int     @id @default(autoincrement())
+  avatar String?
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int     @unique
+}
+
+model Blog {
+  id             String        @id @unique
+  title          String
+  shortDesc      String
+  longDesc       String?
+  isPublished    Boolean       @default(false)
+  isFeatured     Boolean       @default(false)
+  views          Int           @default(0)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  blogCategory   BlogCategory? @relation(fields: [blogCategoryId], references: [id])
+  blogCategoryId String?
+  image          Media?        @relation(fields: [mediaId], references: [id])
+  mediaId        Int?
+  tags           Tag[]
+  seo            Seo?
+  author         User          @relation(fields: [userId], references: [id])
+  userId         Int
+  comment        BlogComment[]
+}
+
+model Seo {
+  id           Int         @id @default(autoincrement())
+  title        String?
+  keyword      String?
+  desc         String?
+  Blog         Blog?       @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  blogId       String?     @unique
+  discussion   Discussion? @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  discussionId String?     @unique
+}
+
+model BlogCategory {
+  id          String              @id @unique
+  name        String
+  desc        String?
+  blogs       Blog[]
+  subscribers EmailSubscription[]
+  icon        Media?              @relation(fields: [mediaId], references: [id])
+  mediaId     Int?
+}
+
+model Tag {
+  id          String              @id @unique
+  name        String
+  desc        String?
+  blogs       Blog[]
+  discussions Discussion[]
+  subscribers EmailSubscription[]
+  proejct     Project[]
+  icon        Media?              @relation(fields: [mediaId], references: [id])
+  mediaId     Int?
+}
+
+model BlogComment {
+  id         Int      @id @default(autoincrement())
+  message    String
+  isApproved Boolean
+  createdAt  DateTime @default(now())
+  blog       Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  blogId     String
+
+  // Self-referencing relation for replies
+  parentId Int? // Nullable parentId field (top-level comments will have null)
+  parent   BlogComment?  @relation("replies", fields: [parentId], references: [id])
+  replies  BlogComment[] @relation("replies")
+  user     User          @relation(fields: [userId], references: [id])
+  userId   Int
+}
+
+model Discussion {
+  id          String              @id
+  title       String
+  desc        String?
+  isPublished Boolean             @default(false)
+  views       Int                 @default(0)
+  createdAt   DateTime            @default(now())
+  user        User                @relation(fields: [userId], references: [id])
+  userId      Int
+  comment     DiscussionComment[]
+  seo         Seo?
+  tags        Tag[]
+}
+
+model DiscussionComment {
+  id           Int        @id @default(autoincrement())
+  message      String
+  isApproved   Boolean
+  createdAt    DateTime   @default(now())
+  discussion   Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  discussionId String
+
+  // Self-referencing relation for replies
+  parentId Int? // Nullable parentId field (top-level comments will have null)
+  parent   DiscussionComment?  @relation("replies", fields: [parentId], references: [id])
+  replies  DiscussionComment[] @relation("replies")
+  user     User                @relation(fields: [userId], references: [id])
+  userId   Int
+}
+
+model ContactMessage {
+  id        Int      @id @default(autoincrement())
+  email     String
+  phone     String?
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model EmailSubscription {
+  id         Int            @id @default(autoincrement())
+  email      String         @unique
+  categories BlogCategory[]
+  tags       Tag[]
+  user       User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int?           @unique
+}
+
+model Project {
+  id          Int     @id @default(autoincrement())
+  title       String
+  shortDesc   String
+  desc        String?
+  isPublished Boolean @default(false)
+  thumbnail   Media?  @relation("thumbnail", fields: [thumbnailId], references: [id])
+  thumbnailId Int?
+  images      Media[] @relation("images")
+  video       String?
+  tags        Tag[]
+}
+
+enum MediaType {
+  Image
+  Audio
+  Video
+  document
+}
+
+model Media {
+  id                 Int            @id @default(autoincrement())
+  name               String
+  type               MediaType
+  url                String
+  MediaCategory      MediaCategory? @relation(fields: [mediaCategoryId], references: [id])
+  mediaCategoryId    Int?
+  blog               Blog[]
+  projects           Project[]      @relation("images")
+  thumbnailOfProject Project[]      @relation("thumbnail")
+  blogCategories     BlogCategory[]
+  tags               Tag[]
+}
+
+model MediaCategory {
+  id     Int     @id @default(autoincrement())
+  name   String
+  medias Media[]
+}

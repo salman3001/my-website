@@ -1,0 +1,16 @@
+{
+  "name": "my-website",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "api": "pnpm -F my-website.api",
+    "frontend": "pnpm -F my-website.frontend",
+    "services": "pnpm -F my-website.services",
+    "data": "pnpm -F my-website.data",
+    "common": "pnpm -F my-website.common"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
