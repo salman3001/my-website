@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useTheme } from "vuetify";
 import AuthMenu from "~/components/auth-menu.vue";
 import { NavMenus } from "~/utils/constants/nav-menus";
 

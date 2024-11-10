@@ -1,3 +1,3 @@
 <template>
-  <v-container>Tutorials</v-container>
+  <v-container max-width="1280">Tutorials</v-container>
 </template>

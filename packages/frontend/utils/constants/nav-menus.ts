@@ -25,6 +25,7 @@ export const NavMenus: INavMenu[] = [
       { name: "Projects", href: routes.admin.projects.index() },
       { name: "Contact Messages", href: routes.admin.contactMessage.index() },
       { name: "Backup", href: routes.admin.backup.index() },
+      { name: "Portfolio", href: routes.web.portfolio.index() },
     ],
   },
   {

@@ -1,4 +1,4 @@
 <template>
   <br />
-  <v-container> Contact Me </v-container>
+  <v-container max-width="1280"> Contact Me </v-container>
 </template>

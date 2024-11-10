@@ -1,4 +1,4 @@
 <script setup lang="ts"></script>
 <template>
-  <v-container>Categories</v-container>
+  <v-container max-width="1280">Categories</v-container>
 </template>

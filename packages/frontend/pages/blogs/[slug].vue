@@ -32,7 +32,7 @@ const { data } = await useFetcherGet<IResType<Blog>>(
 
 <template>
   <br />
-  <v-container max-width="1000">
+  <v-container max-width="1280">
     <h1 class="text-h4 font-weight-bold">{{ data?.data?.title }}</h1>
     <br />
     <p class="text-subtitle-1">{{ data?.data?.shortDesc }}</p>

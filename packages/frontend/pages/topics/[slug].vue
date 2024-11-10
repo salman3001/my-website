@@ -2,5 +2,5 @@
 const { slug } = useRoute().params;
 </script>
 <template>
-  <v-container>Topics- {{ slug }}</v-container>
+  <v-container max-width="1280">Topics- {{ slug }}</v-container>
 </template>

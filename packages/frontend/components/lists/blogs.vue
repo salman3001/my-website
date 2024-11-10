@@ -34,7 +34,7 @@ const { data, status } = await useFetcherGet<
   IResType<{ count: number; data: Blog[] }>
 >(apiRoutes.blogs.index(), {
   query: {
-    select: ["title", "id", "image", "blogCategory"].concat(
+    select: ["title", "id", "image", "blogCategory", "shortDesc"].concat(
       props?.select ? props.select : [],
     ),
     take: props.perPage,

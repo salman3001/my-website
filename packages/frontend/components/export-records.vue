@@ -8,7 +8,7 @@ defineProps<{
   <VBtn
     variant="tonal"
     prepend-icon="mdi-download"
-    text="XLSX"
+    text="Download XLSX"
     :href="exportUrl"
     traget="_blank"
   />

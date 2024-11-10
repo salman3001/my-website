@@ -134,7 +134,7 @@ const createProject = async () => {
 
       <!-- Long Desc -->
       <VCol cols="12">
-        <MarkDownEditor v-model="form.desc" />
+        <TipTapEditor v-model="form.desc" />
       </VCol>
 
       <!-- create project -->

@@ -77,6 +77,18 @@ export const apiRoutes = {
     delete: (id: number) => `/contact-messages/${id}`,
   },
   backup: {
+    users: () => "/backup/users",
     blogs: () => "/backup/blogs",
+    blogCategories: () => "/backup/blog-categories",
+    blogComments: () => "/backup/blog-comments",
+    contactMessage: () => "/backup/contact-message",
+    discussions: () => "/backup/discussions",
+    discussionComments: () => "/backup/discussion-comments",
+    emailSubscriptions: () => "/backup/email-subscriptions",
+    media: () => "/backup/media",
+    mediaMategory: () => "/backup/media-category",
+    projects: () => "/backup/dprojects",
+    profiles: () => "/backup/profiles",
+    tags: () => "/backup/tags",
   },
 };

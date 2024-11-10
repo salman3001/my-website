@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <v-container class="my-5">
+  <v-container max-width="1280" class="my-5">
     <div class="d-flex align-center justify-space-between">
       <h2 class="text-h5 py-5">Featured Blogs</h2>
       <div>

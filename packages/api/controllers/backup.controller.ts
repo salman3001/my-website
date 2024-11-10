@@ -224,12 +224,12 @@ backupController
   .post("/seo", exportHandler("seo", "seo", "id", SeoImportSchema));
 
 // export user
-backupController.get("/user", importHandler("user", "user"));
+backupController.get("/users", importHandler("user", "users"));
 
 // import user
 backupController
   .use(MulterSingleFile("file"))
-  .post("/user", exportHandler("user", "user", "id", userImportSchema));
+  .post("/users", exportHandler("user", "user", "id", userImportSchema));
 
 // export profile
 backupController.get("/profile", importHandler("profile", "profile"));

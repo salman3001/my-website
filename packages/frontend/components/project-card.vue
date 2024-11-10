@@ -38,8 +38,7 @@ defineProps<{
                 v-for="tag in project.tags"
                 size="small"
                 rounded="md"
-                color="info"
-                variant="outlined"
+                variant="tonal"
               >
                 {{ tag.name }}
               </v-chip>

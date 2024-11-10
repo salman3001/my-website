@@ -1,5 +1,5 @@
 <template>
-  <v-container class="my-5">
+  <v-container max-width="1280" class="my-5">
     <div class="d-flex align-center justify-space-between">
       <h2 class="text-h5 py-5">Featured Tutorials</h2>
       <div>

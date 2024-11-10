@@ -30,7 +30,7 @@ const { data: categories } = await useFetcherGet<
 </script>
 <template>
   <br />
-  <v-container>
+  <v-container max-width="1280">
     <div class="d-flex justify-space-between align-center ga-4 flex-wrap">
       <h1>Blogs</h1>
 

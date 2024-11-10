@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <v-container>
+  <v-container max-width="1280">
     <div class="py-2">
       <Logo color="dark" />
     </div>

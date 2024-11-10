@@ -20,6 +20,7 @@ import { NodeMailService } from "./mails/nodeMailer.service.js";
 import { ResendMailService } from "./mails/resendMailer.Service.js";
 import { IMailService } from "./mails/interface/ImailService.js";
 import { AuthEvents } from "./events/auth.events.js";
+import { ProjectsService } from "./projects.service.js";
 
 const ServicesModule = createContainer();
 
@@ -55,6 +56,10 @@ ServicesModule.register(
   asClass(MediaCategoriesService).scoped(),
 );
 ServicesModule.register(ProfileService.name, asClass(ProfileService).scoped());
+ServicesModule.register(
+  ProjectsService.name,
+  asClass(ProjectsService).scoped(),
+);
 ServicesModule.register(TagsService.name, asClass(TagsService).scoped());
 ServicesModule.register(UserService.name, asClass(UserService).scoped());
 ServicesModule.register(MediaService.name, asClass(MediaService).scoped());

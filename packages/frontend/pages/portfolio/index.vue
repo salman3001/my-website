@@ -17,7 +17,7 @@ const { data: tags } = await useFetcherGet<
 </script>
 <template>
   <br />
-  <v-container>
+  <v-container max-width="1280">
     <v-card class="py-10">
       <v-card-item>
         <div
@@ -71,10 +71,10 @@ const { data: tags } = await useFetcherGet<
 
       <div class="d-flex ga-2 align-center flex-wrap">
         <v-select
-          style="min-inline-size: 150px"
+          style="min-inline-size: 200px"
           placeholder="Topics"
           v-model="tagId"
-          :items="(tags?.data?.data || []).concat([{ name: 'All', id: '' } as any])"
+          :items="(tags?.data?.data || []).concat([{ name: 'By Category', id: '' } as any])"
           item-value="id"
           item-title="name"
           hide-details

@@ -27,7 +27,7 @@ const { data } = await useFetcherGet<IResType<Blog>>(
 </script>
 
 <template>
-  <v-container>
+  <v-container max-width="1280">
     <div>
       <VBtn
         text="Back"

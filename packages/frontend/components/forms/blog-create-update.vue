@@ -145,8 +145,7 @@ const createBlog = async () => {
 
       <!-- Long Desc -->
       <VCol cols="12">
-        <!-- <MarkDownEditor v-model="form.longDesc" /> -->
-        <MyCkEditor v-model="form.longDesc" />
+        <TipTapEditor v-model="form.longDesc" />
       </VCol>
 
       <VCol cols="12" md="6">

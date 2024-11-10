@@ -16,7 +16,7 @@ const { data } = await useFetcherGet<IResType<{ count: number; data: Tag[] }>>(
 </script>
 
 <template>
-  <v-container class="my-5 bg-background">
+  <v-container max-width="1280" class="my-5 bg-background">
     <div class="d-flex align-center justify-space-between">
       <h2 class="text-h5 py-5">Topics</h2>
       <div>

@@ -1,9 +1,11 @@
 <script setup lang="ts"></script>
 
 <template>
-  <v-container fluid class="pa-0"> <ViewsHomeHero /> </v-container>
+  <v-container max-width="1280" fluid class="pa-0">
+    <ViewsHomeHero />
+  </v-container>
 
-  <v-container fluid>
+  <v-container max-width="1280" fluid>
     <ViewsHomeFeaturedTutorials />
     <ViewsHomeTopics />
     <ViewsHomeFeaturedBlogs />

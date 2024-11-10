@@ -9,7 +9,15 @@ const { data } = await useFetcherGet<IResType<Project>>(
   apiRoutes.projects.view(id as unknown as number),
   {
     query: {
-      select: ["id", "title", "shortDesc", "thumbnail", "images", "tags"],
+      select: [
+        "id",
+        "title",
+        "shortDesc",
+        "thumbnail",
+        "images",
+        "tags",
+        "desc",
+      ],
       take: 20,
       skip: 0,
     },
@@ -19,14 +27,11 @@ const { data } = await useFetcherGet<IResType<Project>>(
 
 <template>
   <br />
-  <v-container max-width="1000">
+  <v-container max-width="1280">
     <h1 class="text-h4 font-weight-bold">{{ data?.data?.title }}</h1>
     <br />
     <p class="text-subtitle-1">{{ data?.data?.shortDesc }}</p>
     <br />
-    put images here
-    <br />
-
-    <RenderMarkdown :content="data?.data?.desc || ''" />
+    <DisplayHtmlContent :content="data?.data?.desc || ''" />
   </v-container>
 </template>

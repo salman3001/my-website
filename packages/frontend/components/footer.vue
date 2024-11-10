@@ -3,8 +3,11 @@ const links = ["Home", "About Us", "Team", "Services", "Blog", "Contact Us"];
 </script>
 
 <template>
-  <v-footer class="bg-grey-400 pa-5 rounded-t-xl">
-    <v-row justify="center">
+  <v-footer class="border elevation-4 pa-5 rounded-t-xl">
+    <v-row justify="center" class="mx-auto" style="max-width: 1280px">
+      <v-col class="d-flex flex-column" cols="12">
+        <logo />
+      </v-col>
       <v-col class="d-flex flex-column" cols="6" sm="4" md="3">
         <h6 class="footer-title text-h6">Services</h6>
         <a>Branding</a>
@@ -37,18 +40,14 @@ const links = ["Home", "About Us", "Team", "Services", "Blog", "Contact Us"];
             <v-btn>Submit</v-btn>
           </template>
         </v-text-field>
-      </v-col>
-      <v-divider></v-divider>
-      <div class="pt-1 d-flex justify-space-between ga-2 flex-wrap w-100">
-        <div>
-          <strong>{{ $config.public.appName }}</strong>
-        </div>
-        <div>
-          © {{ new Date().getFullYear() }} {{ $config.public.appName }}. All
-          Rights Reserved.
-        </div>
         <div>Social Links</div>
-      </div>
+      </v-col>
     </v-row>
   </v-footer>
 </template>
+
+<style scoped>
+a {
+  color: rgba(var(--v-theme-on-surface));
+}
+</style>
