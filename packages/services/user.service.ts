@@ -5,6 +5,7 @@ import {
 } from "my-website.data/generates/index.js";
 import { UpdateUserDto } from "my-website.common/dtos/users/update-user.dto.js";
 import { CreateUserDto } from "my-website.common/dtos/users/create-user.dto.js";
+import { MathUtils } from "my-website.common/utils/MathUtils.js";
 
 export class UserService {
   private readonly prisma: PrismaClient;
@@ -16,6 +17,7 @@ export class UserService {
     const user = await this.prisma.user.create({
       data: {
         ...dto,
+        userName: dto.fullName + MathUtils.getRandom6number(),
         profile: { create: {} },
         subscription: { create: { email: dto.email } },
       },
@@ -79,5 +81,20 @@ export class UserService {
 
   remove(id: number) {
     return this.prisma.user.delete({ where: { id } });
+  }
+
+  async getPublicProfile(userName: string) {
+    const user = await this.prisma.user.findFirstOrThrow({
+      where: {
+        userName,
+        isActive: true,
+        emailVerified: true,
+      },
+      include: { profile: true },
+    });
+
+    const { emailVerified, password, isActive, updatedAt, ...restData } = user;
+
+    return restData;
   }
 }

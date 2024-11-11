@@ -20,6 +20,7 @@ import { ForgotPasswordOtpDto } from "my-website.common/dtos/auth/forgotPassword
 import { ConfirmEmailDto } from "my-website.common/dtos/auth/confirmEmail.dto.js";
 import { Config } from "../common/server/config/config.js";
 import { ResetPasswordDto } from "my-website.common/dtos/auth/resetPassword.dto.js";
+import { MathUtils } from "my-website.common/utils/MathUtils.js";
 
 export class AuthService {
   private readonly config: Config;
@@ -74,6 +75,7 @@ export class AuthService {
       data: {
         ...rest,
         password: hashSync(password, 10),
+        userName: rest.fullName + MathUtils.getRandom6number(),
         emailVerified: false,
         userType: UserType.User,
         isActive: true,

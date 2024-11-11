@@ -34,9 +34,15 @@ const { data, status } = await useFetcherGet<
   IResType<{ count: number; data: Blog[] }>
 >(apiRoutes.blogs.index(), {
   query: {
-    select: ["title", "id", "image", "blogCategory", "shortDesc"].concat(
-      props?.select ? props.select : [],
-    ),
+    select: [
+      "title",
+      "id",
+      "image",
+      "blogCategory",
+      "shortDesc",
+      "author",
+      "createdAt",
+    ].concat(props?.select ? props.select : []),
     take: props.perPage,
     skip: skip,
     search: debaouncedSearch,
@@ -58,7 +64,6 @@ const { data, status } = await useFetcherGet<
         cols="12"
         sm="6"
         md="4"
-        lg="3"
       >
         <BlogCard :blog="blog" :horzontal="false" />
       </v-col>

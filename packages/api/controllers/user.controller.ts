@@ -78,6 +78,21 @@ userController.get("/:id", async (req, res) => {
   });
 });
 
+userController.get("/public-profile/:userName", async (req, res) => {
+  await authorize(() => true);
+  const userName = req.params.userName;
+
+  const userService = req.scope.resolve<UserService>("UserService");
+
+  const user = await userService.getPublicProfile(userName);
+
+  return res.custom({
+    code: 200,
+    success: true,
+    data: user,
+  });
+});
+
 userController.patch("/:id", async (req, res) => {
   await authorize(() => req?.user?.userType === "Admin");
 

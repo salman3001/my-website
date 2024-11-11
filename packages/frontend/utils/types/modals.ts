@@ -11,6 +11,7 @@ export interface User extends BaseModel {
   id: number;
   fullName: string;
   email: string;
+  userName: string;
   password: string;
   phone: string | undefined;
   userType: UserType;

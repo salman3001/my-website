@@ -132,11 +132,12 @@ const { user } = useAuth();
       </v-list>
     </v-navigation-drawer>
 
-    <v-main max-height="100vh">
-      <div style="min-height: 70vh">
+    <v-main>
+      <div>
         <slot />
       </div>
       <Footer />
+      <Lightbox />
     </v-main>
   </v-layout>
 </template>

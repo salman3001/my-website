@@ -6,23 +6,30 @@ import { ProfileService } from "my-website.services/profile.service.js";
 const profileController = Router();
 
 profileController.patch("/:userId", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
-
+  const profileService = req.scope.resolve<ProfileService>("ProfileService");
   const userId = req.params.userId;
+
+  const profile = await profileService.findOneByUserId(+userId);
+
+  await authorize(
+    () => req?.user?.userType === "Admin" || req.user?.id === profile.userId,
+  );
 
   const dto = UpdateProfileSchema.parse(req.body);
 
   const file = req.file;
 
-  const profileService = req.scope.resolve<ProfileService>("ProfileService");
-
-  const profile = await profileService.updateByUserId(+userId, dto, file);
+  const updatedProfile = await profileService.updateByUserId(
+    +userId,
+    dto,
+    file,
+  );
 
   return res.custom({
     code: 200,
     success: true,
     message: "Profile Updated",
-    data: profile,
+    data: updatedProfile,
   });
 });
 

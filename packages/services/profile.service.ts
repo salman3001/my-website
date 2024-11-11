@@ -1,6 +1,5 @@
 import { updateProfileDto } from "my-website.common/dtos/profiles/updateProfile.dto.js";
 import { ImageUploadService } from "./media/imageUpload.service.js";
-import { Prisma as PrismaService } from "my-website.data/prisma.js";
 import { PrismaClient } from "my-website.data/generates/index.js";
 
 export class ProfileService {
@@ -15,8 +14,11 @@ export class ProfileService {
     this.imageUploadService = opt.ImageUploadService;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} profile`;
+  async findOneByUserId(userId: number) {
+    const profile = await this.prisma.profile.findFirstOrThrow({
+      where: { userId },
+    });
+    return profile;
   }
 
   async updateByUserId(

@@ -11,7 +11,8 @@ defineProps<{
 
 <template>
   <v-card
-    class="border-none bg-background pa-4"
+    density="compact"
+    class="bg-background pa-4"
     :to="routes.web.blogs.view(blog.id)"
   >
     <v-row no-gutters :class="{ 'flex-column': horzontal ? false : true }">
@@ -35,16 +36,36 @@ defineProps<{
             </v-chip>
           </v-card-item>
 
-          <v-card-title class="text-subtitle-1">
+          <v-card-text class="text-h6 line-clamp-3 py-0">
             {{ blog.title }}
-          </v-card-title>
+          </v-card-text>
 
-          <v-card-text
-            class="text-body-1 line-clamp-4 text-medium-emphasis"
-            style="max-height: 90px"
-          >
+          <v-card-text class="text-body-1 line-clamp-3 text-medium-emphasis">
             {{ blog.shortDesc }}
           </v-card-text>
+
+          <v-card-item>
+            <div class="d-flex ga-4">
+              <v-avatar size="48">
+                <v-img
+                  alt="John"
+                  src="https://cdn.vuetifyjs.com/images/john.jpg"
+                ></v-img>
+              </v-avatar>
+              <div class="d-flex flex-column text-on-background">
+                <NuxtLink
+                  variant="text"
+                  @click.stop=""
+                  :href="apiRoutes.users.publicProfile(blog.author?.userName)"
+                  >{{ blog.author.fullName }}</NuxtLink
+                >
+                <div class="text-caption">
+                  {{ new Date(blog.createdAt).toDateString() }}
+                </div>
+              </div>
+            </div>
+          </v-card-item>
+
           <br />
         </div>
       </v-col>

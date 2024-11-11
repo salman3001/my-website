@@ -16,11 +16,17 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^22.9.0",
     "prisma": "^5.22.0",
     "tsx": "^4.19.2"
   },
   "dependencies": {
-    "@prisma/client": "^5.22.0"
+    "@prisma/client": "^5.22.0",
+    "bcrypt": "^5.1.1",
+    "my-website.common": "workspace:*"
+  },
+  "prisma": {
+    "seed": "tsx ./prisma/seed.ts"
   }
 }

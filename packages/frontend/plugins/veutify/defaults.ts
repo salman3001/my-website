@@ -196,7 +196,7 @@ export default {
   VCard: {
     rounded: "xl",
     variant: "outlined",
-    class: "border-sm",
+    class: "border-sm bg-surface",
   },
   VContainer: {
     class: "rounded-xl",
