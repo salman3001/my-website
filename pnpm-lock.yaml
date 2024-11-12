@@ -90,6 +90,9 @@ importers:
       bcrypt:
         specifier: ^5.1.1
         version: 5.1.1
+      express:
+        specifier: ^5.0.1
+        version: 5.0.1
       my-website.common:
         specifier: workspace:*
         version: link:../common
