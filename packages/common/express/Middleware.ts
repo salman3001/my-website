@@ -1,6 +1,5 @@
-import { Handler, Response } from "express";
-import { promise } from "zod";
+import { Handler } from "express";
 
 export abstract class Middleware {
-  abstract handle(): Promise<void | Response["custom"]>;
+  abstract handle: Handler;
 }
