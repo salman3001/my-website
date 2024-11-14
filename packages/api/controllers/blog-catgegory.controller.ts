@@ -1,128 +1,111 @@
 import { CreateBlogCategorySchema } from "my-website.common/dtos/blog-categories/create-blog-category.dto.js";
 import { UpdateBlogCategorySchema } from "my-website.common/dtos/blog-categories/update-blog-category.dto.js";
-import { Router } from "express";
-import { authorize } from "my-website.common/utils/authorize.js";
 import {
   BlogCategoryFindOneShema,
   BlogCategoryQuerySchema,
 } from "my-website.common/dtos/blog-categories/blog-category-query.dto.js";
-import { BlogsService } from "my-website.services/blogs.service.js";
 import { PrismaUtils } from "my-website.common/utils/PrismaUtils.js";
 import { BlogCategoriesService } from "my-website.services/blog-categories.service.js";
+import { Controller } from "my-website.common/express/Controller.js";
+import { Request, Response } from "my-website.common/express/index.js";
 
-const blogCategoryController = Router();
+export class BlogCategoryController extends Controller {
+  constructor(
+    private readonly prismaUtils: PrismaUtils,
+    private readonly blogCategoriesService: BlogCategoriesService,
+  ) {
+    super();
+  }
 
-blogCategoryController.post("/", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
-  const dto = CreateBlogCategorySchema.parse(req.body);
+  async create(req: Request, res: Response) {
+    const dto = CreateBlogCategorySchema.parse(req.body);
 
-  const blogCategoriesService = req.scope.resolve<BlogCategoriesService>(
-    "BlogCategoriesService",
-  );
+    const blogCategory = await this.blogCategoriesService.create(dto);
 
-  const blogCategory = await blogCategoriesService.create(dto);
+    return res.custom({
+      code: 201,
+      success: true,
+      data: blogCategory,
+      message: "Blog Category Created",
+    });
+  }
 
-  return res.custom({
-    code: 201,
-    success: true,
-    data: blogCategory,
-    message: "Blog Category Created",
-  });
-});
+  async findAll(req: Request, res: Response) {
+    const queryDto = BlogCategoryQuerySchema.parse(req.query);
+    const { search, ...commonQueryDto } = queryDto;
 
-blogCategoryController.get("/", async (req, res) => {
-  await authorize(() => true);
+    const { selectQuery, orderByQuery, skip, take } =
+      this.prismaUtils.generateCommonPrismaQuery(commonQueryDto);
 
-  const queryDto = BlogCategoryQuerySchema.parse(req.query);
-  const { search, ...commonQueryDto } = queryDto;
+    const searchQuery = search
+      ? { name: { contains: search, mode: "insensitive" as any } }
+      : {};
 
-  const blogCategoriesService = req.scope.resolve<BlogCategoriesService>(
-    "BlogCategoriesService",
-  );
-  const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
+    const { blogCategories, count } = await this.blogCategoriesService.findAll({
+      skip,
+      take,
+      where: { AND: { ...searchQuery } },
+      orderBy: orderByQuery,
+      select: selectQuery,
+    });
 
-  const { selectQuery, orderByQuery, skip, take } =
-    prismaUtils.generateCommonPrismaQuery(commonQueryDto);
+    return res.custom({
+      code: 200,
+      success: true,
+      data: { data: blogCategories, count },
+    });
+  }
 
-  const searchQuery = search
-    ? { name: { contains: search, mode: "insensitive" as any } }
-    : {};
+  async findOne(req: Request, res: Response) {
+    const id = req.params.id;
 
-  const { blogCategories, count } = await blogCategoriesService.findAll({
-    skip,
-    take,
-    where: { AND: { ...searchQuery } },
-    orderBy: orderByQuery,
-    select: selectQuery,
-  });
+    const queryDto = BlogCategoryFindOneShema.parse(req.query);
+    const blogCategoriesService = req.scope.resolve<BlogCategoriesService>(
+      "BlogCategoriesService",
+    );
+    const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
 
-  return res.custom({
-    code: 200,
-    success: true,
-    data: { data: blogCategories, count },
-  });
-});
+    const { selectQuery } = prismaUtils.generateCommonPrismaQuery(queryDto);
 
-blogCategoryController.get("/:id", async (req, res) => {
-  await authorize(() => true);
+    const blogCategory = await blogCategoriesService.findOne({
+      where: { id },
+      select: selectQuery,
+    });
 
-  const id = req.params.id;
+    return res.custom({
+      code: 200,
+      success: true,
+      data: blogCategory,
+    });
+  }
 
-  const queryDto = BlogCategoryFindOneShema.parse(req.query);
-  const blogCategoriesService = req.scope.resolve<BlogCategoriesService>(
-    "BlogCategoriesService",
-  );
-  const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
+  async update(req: Request, res: Response) {
+    const id = req.params.id;
+    const dto = UpdateBlogCategorySchema.parse(req.body);
 
-  const { selectQuery } = prismaUtils.generateCommonPrismaQuery(queryDto);
+    const blogCategoriesService = req.scope.resolve<BlogCategoriesService>(
+      "BlogCategoriesService",
+    );
 
-  const blogCategory = await blogCategoriesService.findOne({
-    where: { id },
-    select: selectQuery,
-  });
+    const blogCategory = await blogCategoriesService.update(id, dto);
+    return res.custom({
+      success: true,
+      code: 200,
+      data: blogCategory,
+      message: "Blog Category Updated",
+    });
+  }
 
-  return res.custom({
-    code: 200,
-    success: true,
-    data: blogCategory,
-  });
-});
+  async remove(req: Request, res: Response) {
+    const id = req.params.id;
 
-blogCategoryController.patch("/:id", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
+    const blogCategory = await this.blogCategoriesService.remove(id);
 
-  const id = req.params.id;
-  const dto = UpdateBlogCategorySchema.parse(req.body);
-
-  const blogCategoriesService = req.scope.resolve<BlogCategoriesService>(
-    "BlogCategoriesService",
-  );
-
-  const blogCategory = await blogCategoriesService.update(id, dto);
-  return res.custom({
-    success: true,
-    code: 200,
-    data: blogCategory,
-    message: "Blog Category Updated",
-  });
-});
-
-blogCategoryController.delete("/:id", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
-  const id = req.params.id;
-
-  const blogCategoriesService = req.scope.resolve<BlogCategoriesService>(
-    "BlogCategoriesService",
-  );
-
-  const blogCategory = await blogCategoriesService.remove(id);
-
-  return res.custom({
-    success: true,
-    code: 200,
-    data: blogCategory,
-    message: "Blog Category deleted",
-  });
-});
-
-export { blogCategoryController };
+    return res.custom({
+      success: true,
+      code: 200,
+      data: blogCategory,
+      message: "Blog Category deleted",
+    });
+  }
+}

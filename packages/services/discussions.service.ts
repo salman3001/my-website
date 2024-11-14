@@ -1,16 +1,14 @@
 import { CreateDiscussionDto } from "my-website.common/dtos/discussions/create-discussion.dto.js";
-import { Prisma as PrismaService } from "my-website.data/prisma.js";
 import slugify from "slugify";
-import { ConflictException } from "my-website.common/server/exceptions/conflict-exception.js";
+import {
+  ConflictException,
+  NotFoundException,
+} from "my-website.common/express/exceptions/index.js";
 import { Prisma, PrismaClient } from "my-website.data/generates/index.js";
 import { UpdateDiscussionDto } from "my-website.common/dtos/discussions/update-discussion.dto.js";
-import { NotFoundException } from "my-website.common/server/exceptions/not-found-exception.js";
 
 export class DiscussionsService {
-  private readonly prisma: PrismaClient;
-  constructor(opt: { PrismaClient: PrismaClient }) {
-    this.prisma = opt.PrismaClient;
-  }
+  constructor(private readonly prisma: PrismaClient) {}
 
   async create(dto: CreateDiscussionDto, userId: number) {
     const { seo, tagIds, ...discussionDto } = dto;

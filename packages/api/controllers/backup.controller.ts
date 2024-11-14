@@ -1,9 +1,6 @@
-import { Handler, Router } from "express";
-import { MulterSingleFile } from "my-website.common/server/middlewares/multer-single-file.middleware.js";
-import { BadRequestException } from "my-website.common/server/exceptions/bad-request-exception.js";
 import { TagsImportSchema } from "my-website.common/dtos/backup/tags-import.dto.js";
-import { ZodSchema } from "zod";
 import { BlogCommentImportSchema } from "my-website.common/dtos/backup/blog-comment-import.dto.js";
+import { BlogsImportSchema } from "my-website.common/dtos/backup/blogsimport.dto.js";
 import { DiscussionImportSchema } from "my-website.common/dtos/backup/discussion-import.dto.js";
 import { DiscuusionCommentImportSchema } from "my-website.common/dtos/backup/discussion-comment-import.dto.js";
 import { EmailSubscriptionImportSchema } from "my-website.common/dtos/backup/emailSubscription-import.dto.js";
@@ -15,231 +12,355 @@ import { ProfileImportSchema } from "my-website.common/dtos/backup/profiles-impo
 import { BlogCategoryImportSchema } from "my-website.common/dtos/backup/blog-category-import.dto.js";
 import { ProjectImportSchema } from "my-website.common/dtos/backup/project-import.dto.js";
 import { BackupService } from "my-website.services/backup.service.js";
+import {
+  Controller,
+  Request,
+  Response,
+} from "my-website.common/express/index.js";
+import { BadRequestException } from "my-website.common/express/exceptions/index.js";
 
-const backupController = Router();
+export class BackupController extends Controller {
+  constructor(private backupService: BackupService) {
+    super();
+  }
 
-const importHandler =
-  (modelName: string, fileName: string): Handler =>
-  async (req, res) => {
-    const backupService = req.scope.resolve<BackupService>("BackupService");
-    const filePath = await backupService.export(modelName, fileName);
+  async exportTags(req: Request, res: Response) {
+    const filePath = await this.backupService.export("tag", "tags");
     return res.download(filePath);
-  };
+  }
 
-const exportHandler =
-  (
-    modelName: string,
-    uId: string,
-    fileName: string,
-    schema: ZodSchema,
-  ): Handler =>
-  async (req, res) => {
-    console.log("here");
-
+  async importTags(req: Request, res: Response) {
     if (req.file) {
       throw new BadRequestException("File is required");
     }
-    const backupService = req.scope.resolve<BackupService>("BackupService");
-    await backupService.import(modelName, uId, fileName, req.file!, schema);
+
+    await this.backupService.import(
+      "tag",
+      "id",
+      "tags",
+      req.file!,
+      TagsImportSchema,
+    );
 
     return res.custom({
       code: 200,
       success: true,
       message: "Data imported successfully",
     });
-  };
+  }
 
-// export tags
-backupController.get("/tags", importHandler("tag", "tags"));
-
-// import tags
-backupController
-  .use(MulterSingleFile("file"))
-  .post("/tags", exportHandler("tag", "tags", "id", TagsImportSchema));
-
-// export blog-categories
-backupController.get(
-  "/blog-categories",
-  importHandler("blogCategory", "blog-categories"),
-);
-
-// import blog-categories
-backupController
-  .use(MulterSingleFile("file"))
-  .post(
-    "/blog-categories",
-    exportHandler(
+  async exportBlogCategories(req: Request, res: Response) {
+    const filePath = await this.backupService.export(
       "blogCategory",
-      "blog-categories",
+      "blogCategories",
+    );
+    return res.download(filePath);
+  }
+
+  async importBlogCategories(req: Request, res: Response) {
+    if (req.file) {
+      throw new BadRequestException("File is required");
+    }
+
+    await this.backupService.import(
+      "blogCategory",
       "id",
+      "blogCategory",
+      req.file!,
       BlogCategoryImportSchema,
-    ),
-  );
+    );
 
-// export blog-comments
-backupController.get(
-  "/blog-comments",
-  importHandler("blogComment", "blog-comments"),
-);
+    return res.custom({
+      code: 200,
+      success: true,
+      message: "Data imported successfully",
+    });
+  }
 
-// import blog-comments
-backupController
-  .use(MulterSingleFile("file"))
-  .post(
-    "/blog-comments",
-    exportHandler(
+  async exportBlogComment(req: Request, res: Response) {
+    const filePath = await this.backupService.export(
       "blogComment",
-      "blog-comments",
-      "id",
-      BlogCommentImportSchema,
-    ),
-  );
-
-// export blogs
-backupController.get("/blogs", importHandler("blog", "blogs"));
-
-// import blogs
-backupController
-  .use(MulterSingleFile("file"))
-  .post(
-    "/blogs",
-    exportHandler("blog", "blogs", "id", BlogCommentImportSchema),
-  );
-
-// export blog-comments
-backupController.get(
-  "/blog-comments",
-  importHandler("blogComment", "blog-comments"),
-);
-
-// import blog-comments
-backupController
-  .use(MulterSingleFile("file"))
-  .post(
-    "/blog-comments",
-    exportHandler(
       "blogComment",
-      "blog-comments",
+    );
+    return res.download(filePath);
+  }
+
+  async importBlogComment(req: Request, res: Response) {
+    if (req.file) {
+      throw new BadRequestException("File is required");
+    }
+
+    await this.backupService.import(
+      "blogComment",
       "id",
+      "blogComment",
+      req.file!,
       BlogCommentImportSchema,
-    ),
-  );
+    );
 
-// export discussion-comments
-backupController.get(
-  "/discussion-comments",
-  importHandler("discussionComment", "discussion-comments"),
-);
+    return res.custom({
+      code: 200,
+      success: true,
+      message: "Data imported successfully",
+    });
+  }
 
-// import discussion-comments
-backupController
-  .use(MulterSingleFile("file"))
-  .post(
-    "/discussion-comments",
-    exportHandler(
+  async exportBlog(req: Request, res: Response) {
+    const filePath = await this.backupService.export("blog", "blog");
+    return res.download(filePath);
+  }
+
+  async importBlog(req: Request, res: Response) {
+    if (req.file) {
+      throw new BadRequestException("File is required");
+    }
+
+    await this.backupService.import(
+      "blog",
+      "id",
+      "blog",
+      req.file!,
+      BlogsImportSchema,
+    );
+
+    return res.custom({
+      code: 200,
+      success: true,
+      message: "Data imported successfully",
+    });
+  }
+
+  async exportDiscussionComments(req: Request, res: Response) {
+    const filePath = await this.backupService.export("blog", "blog");
+    return res.download(filePath);
+  }
+
+  async importDiscussionComments(req: Request, res: Response) {
+    if (req.file) {
+      throw new BadRequestException("File is required");
+    }
+
+    await this.backupService.import(
       "discussionComment",
-      "discussion-comments",
       "id",
+      "discussionComment",
+      req.file!,
       DiscuusionCommentImportSchema,
-    ),
-  );
+    );
 
-// export discussion
-backupController.get(
-  "/discussions",
-  importHandler("discussion", "discussions"),
-);
+    return res.custom({
+      code: 200,
+      success: true,
+      message: "Data imported successfully",
+    });
+  }
 
-// import discussion
-backupController
-  .use(MulterSingleFile("file"))
-  .post(
-    "/discussions",
-    exportHandler("discussion", "discussions", "id", DiscussionImportSchema),
-  );
+  async exportDiscussion(req: Request, res: Response) {
+    const filePath = await this.backupService.export(
+      "discussion",
+      "discussion",
+    );
+    return res.download(filePath);
+  }
 
-// export email-subscriptions
-backupController.get(
-  "/email-subscriptions",
-  importHandler("emailSubscription", "email-subscriptions"),
-);
+  async importDiscussion(req: Request, res: Response) {
+    if (req.file) {
+      throw new BadRequestException("File is required");
+    }
 
-// import email-subscriptions
-backupController
-  .use(MulterSingleFile("file"))
-  .post(
-    "/email-subscriptions",
-    exportHandler(
+    await this.backupService.import(
+      "discussion",
+      "id",
+      "discussion",
+      req.file!,
+      DiscussionImportSchema,
+    );
+
+    return res.custom({
+      code: 200,
+      success: true,
+      message: "Data imported successfully",
+    });
+  }
+
+  async exportEmailSubscription(req: Request, res: Response) {
+    const filePath = await this.backupService.export(
       "emailSubscription",
-      "email-subscriptions",
+      "emailSubscription",
+    );
+    return res.download(filePath);
+  }
+
+  async importEmailSubscription(req: Request, res: Response) {
+    if (req.file) {
+      throw new BadRequestException("File is required");
+    }
+
+    await this.backupService.import(
+      "emailSubscription",
       "id",
+      "emailSubscription",
+      req.file!,
       EmailSubscriptionImportSchema,
-    ),
-  );
+    );
 
-// export media
-backupController.get("/media", importHandler("media", "media"));
+    return res.custom({
+      code: 200,
+      success: true,
+      message: "Data imported successfully",
+    });
+  }
 
-// import media
-backupController
-  .use(MulterSingleFile("file"))
-  .post("/media", exportHandler("media", "media", "id", MediaImportSchema));
+  async exportMedia(req: Request, res: Response) {
+    const filePath = await this.backupService.export("media", "media");
+    return res.download(filePath);
+  }
 
-// export media-category
-backupController.get(
-  "/media-category",
-  importHandler("mediaCategory", "media-category"),
-);
+  async importMedia(req: Request, res: Response) {
+    if (req.file) {
+      throw new BadRequestException("File is required");
+    }
 
-// import media-category
-backupController
-  .use(MulterSingleFile("file"))
-  .post(
-    "/media-category",
-    exportHandler(
-      "mediaCategory",
-      "media-category",
+    await this.backupService.import(
+      "media",
       "id",
+      "media",
+      req.file!,
+      MediaImportSchema,
+    );
+
+    return res.custom({
+      code: 200,
+      success: true,
+      message: "Data imported successfully",
+    });
+  }
+
+  async exportMediaCategory(req: Request, res: Response) {
+    const filePath = await this.backupService.export(
+      "mediaCategory",
+      "mediaCategory",
+    );
+    return res.download(filePath);
+  }
+
+  async importMediaCategory(req: Request, res: Response) {
+    if (req.file) {
+      throw new BadRequestException("File is required");
+    }
+
+    await this.backupService.import(
+      "mediaCategory",
+      "id",
+      "mediaCategory",
+      req.file!,
       MediaCategoryImportSchema,
-    ),
-  );
+    );
 
-// export proejcts
-backupController.get("/proejcts", importHandler("project", "proejcts"));
+    return res.custom({
+      code: 200,
+      success: true,
+      message: "Data imported successfully",
+    });
+  }
 
-// import proejcts
-backupController
-  .use(MulterSingleFile("file"))
-  .post(
-    "/proejcts",
-    exportHandler("project", "proejcts", "id", ProjectImportSchema),
-  );
+  async exportProject(req: Request, res: Response) {
+    const filePath = await this.backupService.export("project", "project");
+    return res.download(filePath);
+  }
 
-// export seo
-backupController.get("/seo", importHandler("seo", "seo"));
+  async importProject(req: Request, res: Response) {
+    if (req.file) {
+      throw new BadRequestException("File is required");
+    }
 
-// import seo
-backupController
-  .use(MulterSingleFile("file"))
-  .post("/seo", exportHandler("seo", "seo", "id", SeoImportSchema));
+    await this.backupService.import(
+      "project",
+      "id",
+      "project",
+      req.file!,
+      ProjectImportSchema,
+    );
 
-// export user
-backupController.get("/users", importHandler("user", "users"));
+    return res.custom({
+      code: 200,
+      success: true,
+      message: "Data imported successfully",
+    });
+  }
 
-// import user
-backupController
-  .use(MulterSingleFile("file"))
-  .post("/users", exportHandler("user", "user", "id", userImportSchema));
+  async exportSeo(req: Request, res: Response) {
+    const filePath = await this.backupService.export("seo", "seo");
+    return res.download(filePath);
+  }
 
-// export profile
-backupController.get("/profile", importHandler("profile", "profile"));
+  async importSeo(req: Request, res: Response) {
+    if (req.file) {
+      throw new BadRequestException("File is required");
+    }
 
-// import profile
-backupController
-  .use(MulterSingleFile("file"))
-  .post(
-    "/profile",
-    exportHandler("profile", "profile", "id", ProfileImportSchema),
-  );
+    await this.backupService.import(
+      "seo",
+      "id",
+      "seo",
+      req.file!,
+      SeoImportSchema,
+    );
 
-export { backupController };
+    return res.custom({
+      code: 200,
+      success: true,
+      message: "Data imported successfully",
+    });
+  }
+
+  async exportUser(req: Request, res: Response) {
+    const filePath = await this.backupService.export("user", "user");
+    return res.download(filePath);
+  }
+
+  async importUser(req: Request, res: Response) {
+    if (req.file) {
+      throw new BadRequestException("File is required");
+    }
+
+    await this.backupService.import(
+      "user",
+      "id",
+      "user",
+      req.file!,
+      userImportSchema,
+    );
+
+    return res.custom({
+      code: 200,
+      success: true,
+      message: "Data imported successfully",
+    });
+  }
+
+  async exportProfile(req: Request, res: Response) {
+    const filePath = await this.backupService.export("profile", "profile");
+    return res.download(filePath);
+  }
+
+  async importProfile(req: Request, res: Response) {
+    if (req.file) {
+      throw new BadRequestException("File is required");
+    }
+
+    await this.backupService.import(
+      "profile",
+      "id",
+      "profile",
+      req.file!,
+      userImportSchema,
+    );
+
+    return res.custom({
+      code: 200,
+      success: true,
+      message: "Data imported successfully",
+    });
+  }
+}

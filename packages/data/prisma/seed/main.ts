@@ -1,6 +1,8 @@
 import { PrismaClient, UserType } from "@prisma/client";
-import { hashSync } from "bcrypt";
 import { MathUtils } from "my-website.common/utils/MathUtils.js";
+import { HashUtils } from "my-website.common/utils/HashUtils.js";
+
+const hashUtils = new HashUtils();
 
 export async function seedUser(prisma: PrismaClient) {
   console.log("seeding..");
@@ -12,7 +14,7 @@ export async function seedUser(prisma: PrismaClient) {
       fullName: "Admin",
       email: "admin@gmail.com",
       userName: "Admin",
-      password: hashSync("123456789", 10),
+      password: hashUtils.hash("123456789"),
       emailVerified: true,
       userType: UserType.Admin,
       isActive: true,
@@ -26,7 +28,7 @@ export async function seedUser(prisma: PrismaClient) {
       fullName: "User",
       email: "user@gmail.com",
       userName: "User" + MathUtils.getRandom6number(),
-      password: hashSync("123456789", 10),
+      password: hashUtils.hash("123456789"),
       emailVerified: true,
       userType: UserType.User,
       isActive: true,

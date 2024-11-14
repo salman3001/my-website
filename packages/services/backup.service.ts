@@ -1,15 +1,11 @@
 import { existsSync, mkdirSync } from "fs";
 import { join } from "path";
-import { Prisma } from "my-website.data/prisma.js";
 import * as XLSX from "xlsx";
-import { ZodSchema } from "zod";
-import multer from "multer";
+import { ZodSchema } from "my-website.common/utils/zod/index.js";
+import { PrismaClient } from "my-website.data/generates/index.js";
 
 export class BackupService {
-  private readonly prisma: Prisma;
-  constructor(opt: { PrismaClient: Prisma }) {
-    this.prisma = opt.PrismaClient;
-  }
+  constructor(private readonly prisma: PrismaClient) {}
 
   public async export(modelName: string, fileName: string) {
     // @ts-ignore

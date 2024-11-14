@@ -1,12 +1,9 @@
 import jwt from "jsonwebtoken";
-import { Config } from "../server/config/config.js";
-import { UnAuthorizedException } from "../server/exceptions/unauthorized-exception.js";
+import { Config } from "../config/config.js";
+import { UnAuthorizedException } from "../express/exceptions/unauthorized-exception.js";
 
 export class JwtUtils {
-  private readonly config: Config;
-  constructor(opt: { Config: Config }) {
-    this.config = opt.Config;
-  }
+  constructor(private config: Config) {}
 
   varifyToken(token: string, silent?: boolean): jwt.JwtPayload | string | null {
     try {
@@ -20,5 +17,9 @@ export class JwtUtils {
       }
       return null;
     }
+  }
+
+  sign(payload: any, opt?: jwt.SignOptions) {
+    return jwt.sign(payload, this.config.envs.appSecrete!, opt);
   }
 }

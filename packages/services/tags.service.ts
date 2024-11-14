@@ -1,16 +1,14 @@
 import { CreateTagDto } from "my-website.common/dtos/tags/create-tag.dto.js";
-import { Prisma as PrismaService } from "my-website.data/prisma.js";
 import slugify from "slugify";
-import { ConflictException } from "my-website.common/server/exceptions/conflict-exception.js";
+import {
+  ConflictException,
+  NotFoundException,
+} from "my-website.common/express/exceptions/index.js";
 import { Prisma, PrismaClient } from "my-website.data/generates/index.js";
 import { UpdateTagDto } from "my-website.common/dtos/tags/update-tag.dto.js";
-import { NotFoundException } from "my-website.common/server/exceptions/not-found-exception.js";
 
 export class TagsService {
-  private readonly prisma: PrismaClient;
-  constructor(opt: { PrismaClient: PrismaClient }) {
-    this.prisma = opt.PrismaClient;
-  }
+  constructor(private readonly prisma: PrismaClient) {}
 
   async create(dto: CreateTagDto) {
     const id = slugify.default(dto.name, { lower: true, strict: true });

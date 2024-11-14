@@ -3,10 +3,7 @@ import { Prisma, PrismaClient } from "my-website.data/generates/index.js";
 import { UpdateProjectDto } from "my-website.common/dtos/projects/update-project.dto.js";
 
 export class ProjectsService {
-  private readonly prisma: PrismaClient;
-  constructor(opt: { PrismaClient: PrismaClient }) {
-    this.prisma = opt.PrismaClient;
-  }
+  constructor(private readonly prisma: PrismaClient) {}
 
   async create(dto: CreateProjectDto) {
     const { imagesIds, thumbnailId, tagIds, ...restDto } = dto;

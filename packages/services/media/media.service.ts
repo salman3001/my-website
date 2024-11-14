@@ -1,29 +1,17 @@
 import { CreateMediaDto } from "my-website.common/dtos/media/create-media.dto.js";
 import { Prisma as PrismaService } from "my-website.data/prisma.js";
-import {
-  MediaType,
-  Prisma,
-  PrismaClient,
-} from "my-website.data/generates/index.js";
+import { MediaType, Prisma } from "my-website.data/generates/index.js";
 import { UpdateMediaDto } from "my-website.common/dtos/media/update-media.dto.js";
-import { BadRequestException } from "my-website.common/server/exceptions/bad-request-exception.js";
+import { BadRequestException } from "my-website.common/express/exceptions/index.js";
 import { ImageUploadService } from "./imageUpload.service.js";
 import { FilesUploadService } from "./fileUpload.service.js";
 
 export class MediaService {
-  private prisma: PrismaService;
-  private imageUpload: ImageUploadService;
-  private fileUpload: FilesUploadService;
-
-  constructor(opt: {
-    PrismaClient: PrismaClient;
-    ImageUploadService: ImageUploadService;
-    FilesUploadService: FilesUploadService;
-  }) {
-    this.prisma = opt.PrismaClient;
-    this.imageUpload = opt.ImageUploadService;
-    this.fileUpload = opt.FilesUploadService;
-  }
+  constructor(
+    private prisma: PrismaService,
+    private imageUploadService: ImageUploadService,
+    private filesUploadService: FilesUploadService,
+  ) {}
 
   async create(dto: CreateMediaDto, file: Express.Multer.File) {
     const { mediaCategoryId, ...restDto } = dto;
@@ -123,19 +111,19 @@ export class MediaService {
     }
 
     if (type === MediaType.Image) {
-      const { url } = await this.imageUpload.uploadImage(file, "images");
+      const { url } = await this.imageUploadService.uploadImage(file, "images");
       return url;
     }
 
-    const url = await this.fileUpload.uploadFile(file, "documents");
+    const url = await this.filesUploadService.uploadFile(file, "documents");
     return url;
   }
 
   private async removeMedia(url: string, type: MediaType) {
     if (type === MediaType.Image) {
-      await this.imageUpload.deleteImage(url);
+      await this.imageUploadService.deleteImage(url);
     }
 
-    await this.fileUpload.deleteFile(url);
+    await this.filesUploadService.deleteFile(url);
   }
 }

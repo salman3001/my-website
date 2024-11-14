@@ -1,4 +1,4 @@
-import { ForbiddenException } from "../server/exceptions/forbidden-exception.js";
+import { ForbiddenException } from "../express/exceptions/index.js";
 
 /**
  *

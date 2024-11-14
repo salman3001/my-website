@@ -3,129 +3,116 @@ import {
   UserFindOneQuerySchema,
   UserQuerySchema,
 } from "my-website.common/dtos/users/user-query.dto.js";
-import { Router } from "express";
 import { createUserDtoSchema } from "my-website.common/dtos/users/create-user.dto.js";
-import { authorize } from "my-website.common/utils/authorize.js";
 import { UserService } from "my-website.services/user.service.js";
 import { PrismaUtils } from "my-website.common/utils/PrismaUtils.js";
-const userController = Router();
+import { Controller } from "my-website.common/express/Controller.js";
+import { Request, Response } from "my-website.common/express/index.js";
 
-userController.post("/", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
-  const dto = createUserDtoSchema.parse(req.body);
+export class UserController extends Controller {
+  constructor(
+    private readonly prismaUtils: PrismaUtils,
+    private readonly userService: UserService,
+  ) {
+    super();
+  }
 
-  const userService = req.scope.resolve<UserService>("UserService");
+  async create(req: Request, res: Response) {
+    const dto = createUserDtoSchema.parse(req.body);
 
-  const user = await userService.create(dto);
-  res.custom({
-    code: 200,
-    success: true,
-    message: "User Created",
-    data: user,
-  });
-});
+    const user = await this.userService.create(dto);
+    res.custom({
+      code: 200,
+      success: true,
+      message: "User Created",
+      data: user,
+    });
+  }
 
-userController.get("/", async (req, res) => {
-  await authorize(() => true);
+  async findAll(req: Request, res: Response) {
+    const queryDto = UserQuerySchema.parse(req.query);
+    const { search, ...commonQueryDto } = queryDto;
 
-  const queryDto = UserQuerySchema.parse(req.query);
-  const { search, ...commonQueryDto } = queryDto;
+    const { selectQuery, orderByQuery, skip, take } =
+      this.prismaUtils.generateCommonPrismaQuery(commonQueryDto);
 
-  const userService = req.scope.resolve<UserService>("UserService");
-  const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
+    const searchQuery = search
+      ? { fullName: { contains: search, mode: "insensitive" as any } }
+      : {};
 
-  const { selectQuery, orderByQuery, skip, take } =
-    prismaUtils.generateCommonPrismaQuery(commonQueryDto);
+    const { count, users } = await this.userService.findAll({
+      skip,
+      take,
+      where: { AND: { ...searchQuery } },
+      orderBy: orderByQuery,
+      select: selectQuery,
+    });
 
-  const searchQuery = search
-    ? { fullName: { contains: search, mode: "insensitive" as any } }
-    : {};
+    res.custom({
+      code: 200,
+      success: true,
+      data: { count, users },
+    });
+  }
 
-  const { count, users } = await userService.findAll({
-    skip,
-    take,
-    where: { AND: { ...searchQuery } },
-    orderBy: orderByQuery,
-    select: selectQuery,
-  });
+  async findOne(req: Request, res: Response) {
+    const id = req.params.id;
 
-  res.custom({
-    code: 200,
-    success: true,
-    data: { count, users },
-  });
-});
+    const queryDto = UserFindOneQuerySchema.parse(req.query);
 
-userController.get("/:id", async (req, res) => {
-  await authorize(() => (req?.user ? true : false));
-  const id = req.params.id;
+    const { selectQuery } =
+      this.prismaUtils.generateCommonPrismaQuery(queryDto);
 
-  const queryDto = UserFindOneQuerySchema.parse(req.query);
+    const user = await this.userService.findOne({
+      where: { id: +id },
+      select: selectQuery,
+    });
+    return res.custom({
+      code: 200,
+      success: true,
+      data: user,
+    });
+  }
 
-  const userService = req.scope.resolve<UserService>("UserService");
-  const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
+  async findUserPublicProfile(req: Request, res: Response) {
+    const userName = req.params.userName;
 
-  const { selectQuery } = prismaUtils.generateCommonPrismaQuery(queryDto);
+    const userService = req.scope.resolve<UserService>("UserService");
 
-  const user = await userService.findOne({
-    where: { id: +id },
-    select: selectQuery,
-  });
-  return res.custom({
-    code: 200,
-    success: true,
-    data: user,
-  });
-});
+    const user = await userService.getPublicProfile(userName);
 
-userController.get("/public-profile/:userName", async (req, res) => {
-  await authorize(() => true);
-  const userName = req.params.userName;
+    return res.custom({
+      code: 200,
+      success: true,
+      data: user,
+    });
+  }
 
-  const userService = req.scope.resolve<UserService>("UserService");
+  async update(req: Request, res: Response) {
+    const id = req.params.id;
 
-  const user = await userService.getPublicProfile(userName);
+    const dto = updateUserDtoSchema.parse(req.body);
 
-  return res.custom({
-    code: 200,
-    success: true,
-    data: user,
-  });
-});
+    const user = await this.userService.update(+id, dto);
 
-userController.patch("/:id", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
+    return res.custom({
+      code: 200,
+      success: true,
+      message: "User Updated",
+      data: user,
+    });
+  }
 
-  const id = req.params.id;
+  async remove(req: Request, res: Response) {
+    const id = req.params.id;
 
-  const dto = updateUserDtoSchema.parse(req.body);
+    const user = await this.userService.remove(+id);
 
-  const userService = req.scope.resolve<UserService>("UserService");
-
-  const user = await userService.update(+id, dto);
-
-  return res.custom({
-    code: 200,
-    success: true,
-    message: "User Updated",
-    data: user,
-  });
-});
-
-userController.delete("/:id", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
-  const id = req.params.id;
-
-  const userService = req.scope.resolve<UserService>("UserService");
-
-  const user = await userService.remove(+id);
-
-  return res.custom({
-    code: 200,
-    success: true,
-    message: "User Deleted",
-    data: user,
-  });
-});
-
-export { userController };
+    return res.custom({
+      code: 200,
+      success: true,
+      message: "User Deleted",
+      data: user,
+    });
+  }
+}

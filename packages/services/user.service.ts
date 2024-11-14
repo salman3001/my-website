@@ -1,17 +1,10 @@
-import {
-  Prisma,
-  PrismaClient,
-  UserType,
-} from "my-website.data/generates/index.js";
+import { Prisma, PrismaClient } from "my-website.data/generates/index.js";
 import { UpdateUserDto } from "my-website.common/dtos/users/update-user.dto.js";
 import { CreateUserDto } from "my-website.common/dtos/users/create-user.dto.js";
 import { MathUtils } from "my-website.common/utils/MathUtils.js";
 
 export class UserService {
-  private readonly prisma: PrismaClient;
-  constructor(opt: { PrismaClient: PrismaClient }) {
-    this.prisma = opt.PrismaClient;
-  }
+  constructor(private readonly prisma: PrismaClient) {}
 
   async create(dto: CreateUserDto) {
     const user = await this.prisma.user.create({

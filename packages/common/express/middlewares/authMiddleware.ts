@@ -1,12 +1,11 @@
 import { Handler } from "express";
 import { JwtUtils } from "../../utils/JwtUtils.js";
 import { JwtUserPayload } from "../../types/index.js";
-import { CommonModule } from "../../common.module.js";
 
 export const AuthMiddleware: Handler = (req, res, next) => {
   const authHeader = req.headers?.authorization || "";
   const auth_token = authHeader.split(" ")[1];
-  const JwtUtils = CommonModule.resolve<JwtUtils>("JwtUtils");
+  const JwtUtils = req.scope.resolve<JwtUtils>("jwtUtils");
 
   if (!auth_token) {
     req["user"] = null;

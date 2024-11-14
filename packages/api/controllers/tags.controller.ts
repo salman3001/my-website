@@ -4,118 +4,102 @@ import {
   TagQuerySchema,
 } from "my-website.common/dtos/tags/tag-query.dto.js";
 import { UpdateTagSchema } from "my-website.common/dtos/tags/update-tag.dto.js";
-import { Router } from "express";
-import { authorize } from "my-website.common/utils/authorize.js";
 import { TagsService } from "my-website.services/tags.service.js";
 import { PrismaUtils } from "my-website.common/utils/PrismaUtils.js";
+import { Controller } from "my-website.common/express/Controller.js";
+import { Request, Response } from "my-website.common/express/index.js";
 
-const tagsController = Router();
+export class TagController extends Controller {
+  constructor(
+    private readonly prismaUtils: PrismaUtils,
+    private readonly tagsService: TagsService,
+  ) {
+    super();
+  }
 
-// create
-tagsController.post("/", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
-  const dto = CreateTagSchema.parse(req.body);
+  async create(req: Request, res: Response) {
+    const dto = CreateTagSchema.parse(req.body);
 
-  const tagService = req.scope.resolve<TagsService>("TagsService");
+    const tag = await this.tagsService.create(dto);
 
-  const tag = await tagService.create(dto);
+    return res.custom({
+      code: 201,
+      success: true,
+      data: tag,
+      message: "Tag Created",
+    });
+  }
 
-  return res.custom({
-    code: 201,
-    success: true,
-    data: tag,
-    message: "Tag Created",
-  });
-});
+  async findAll(req: Request, res: Response) {
+    const queryDto = TagQuerySchema.parse(req.query);
+    const { search, ...commonQueryDto } = queryDto;
 
-// findall
-tagsController.get("/", async (req, res) => {
-  await authorize(() => true);
+    const { selectQuery, orderByQuery, skip, take } =
+      this.prismaUtils.generateCommonPrismaQuery(commonQueryDto);
 
-  const queryDto = TagQuerySchema.parse(req.query);
-  const { search, ...commonQueryDto } = queryDto;
+    const searchQuery = search
+      ? { name: { contains: search, mode: "insensitive" as any } }
+      : {};
 
-  const tagService = req.scope.resolve<TagsService>("TagsService");
-  const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
+    const { tags, count } = await this.tagsService.findAll({
+      skip,
+      take,
+      where: { AND: { ...searchQuery } },
+      orderBy: orderByQuery,
+      select: selectQuery,
+    });
 
-  const { selectQuery, orderByQuery, skip, take } =
-    prismaUtils.generateCommonPrismaQuery(commonQueryDto);
+    return res.custom({
+      code: 200,
+      success: true,
+      data: { data: tags, count },
+    });
+  }
 
-  const searchQuery = search
-    ? { name: { contains: search, mode: "insensitive" as any } }
-    : {};
+  async findOne(req: Request, res: Response) {
+    const id = req.params.id;
 
-  const { tags, count } = await tagService.findAll({
-    skip,
-    take,
-    where: { AND: { ...searchQuery } },
-    orderBy: orderByQuery,
-    select: selectQuery,
-  });
+    const queryDto = TagFindOneQuerySchema.parse(req.query);
 
-  return res.custom({
-    code: 200,
-    success: true,
-    data: { data: tags, count },
-  });
-});
+    const { selectQuery } =
+      this.prismaUtils.generateCommonPrismaQuery(queryDto);
 
-tagsController.get("/:id", async (req, res) => {
-  await authorize(() => true);
+    const tag = await this.tagsService.findOne({
+      where: { id: id },
+      select: selectQuery,
+    });
 
-  const id = req.params.id;
+    return res.custom({
+      code: 200,
+      success: true,
+      data: tag,
+    });
+  }
 
-  const queryDto = TagFindOneQuerySchema.parse(req.query);
+  async update(req: Request, res: Response) {
+    const id = req.params.id;
+    const dto = UpdateTagSchema.parse(req.body);
 
-  const tagService = req.scope.resolve<TagsService>("TagsService");
-  const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
+    const tag = await this.tagsService.update(id, dto);
 
-  const { selectQuery } = prismaUtils.generateCommonPrismaQuery(queryDto);
+    return res.custom({
+      success: true,
+      code: 200,
+      data: tag,
+      message: "Tag Updated",
+    });
+  }
 
-  const tag = await tagService.findOne({
-    where: { id: id },
-    select: selectQuery,
-  });
+  async remove(req: Request, res: Response) {
+    const id = req.params.id;
 
-  return res.custom({
-    code: 200,
-    success: true,
-    data: tag,
-  });
-});
+    const tag = await this.tagsService.remove(id);
 
-tagsController.patch("/:id", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
-
-  const id = req.params.id;
-  const dto = UpdateTagSchema.parse(req.body);
-
-  const tagService = req.scope.resolve<TagsService>("TagsService");
-
-  const tag = await tagService.update(id, dto);
-
-  return res.custom({
-    success: true,
-    code: 200,
-    data: tag,
-    message: "Tag Updated",
-  });
-});
-
-tagsController.delete("/:id", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
-  const id = req.params.id;
-
-  const tagService = req.scope.resolve<TagsService>("TagsService");
-
-  const tag = await tagService.remove(id);
-
-  return res.custom({
-    success: true,
-    code: 200,
-    data: tag,
-    message: "Tag deleted",
-  });
-});
-
-export { tagsController };
+    return res.custom({
+      success: true,
+      code: 200,
+      data: tag,
+      message: "Tag deleted",
+    });
+  }
+}

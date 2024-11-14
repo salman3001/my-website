@@ -2,101 +2,88 @@ import { ConfirmEmailSchema } from "my-website.common/dtos/auth/confirmEmail.dto
 import { ForgotPasswordOtpSchema } from "my-website.common/dtos/auth/forgotPasswordOtp.dto.js";
 import { LoginSchema } from "my-website.common/dtos/auth/login.dto.js";
 import { RegisterSchema } from "my-website.common/dtos/auth/register.dto.js";
-import { Router } from "express";
+import { Controller, Request, Response } from "my-website.common/express";
 import { ResetPasswordSchema } from "my-website.common/dtos/auth/resetPassword.dto.js";
 import { AuthService } from "my-website.services/auth.service.js";
 
-const authController = Router();
+export class AuthController extends Controller {
+  constructor(private readonly authService: AuthService) {
+    super();
+  }
+  async login(req: Request, res: Response) {
+    const dto = LoginSchema.parse(req.body);
 
-authController.post("/login", async (req, res) => {
-  const dto = LoginSchema.parse(req.body);
-  const authService = req.scope.resolve<AuthService>("AuthService");
-  const user = await authService.login(dto);
+    const { user, token } = await this.authService.login(dto);
 
-  const token = authService.getToken({
-    tokenType: "auth",
-    id: user.id,
-    userType: user.userType,
-    email: user.email,
-  });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...userPayload } = user;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { password, ...userPayload } = user;
+    return res.custom({
+      data: { user: userPayload, token },
+      code: 200,
+      message: "Login Successfully",
+      success: true,
+    });
+  }
 
-  return res.custom({
-    data: { user: userPayload, token },
-    code: 200,
-    message: "Login Successfully",
-    success: true,
-  });
-});
+  async logout(req: Request, res: Response) {
+    return res.custom({
+      code: 200,
+      data: null,
+      message: "Logout Successfully",
+      success: true,
+    });
+  }
 
-authController.post("/logout", async (req, res) => {
-  return res.custom({
-    code: 200,
-    data: null,
-    message: "Logout Successfully",
-    success: true,
-  });
-});
+  async register(req: Request, res: Response) {
+    const dto = RegisterSchema.parse(req.body);
 
-authController.post("/register", async (req, res) => {
-  const dto = RegisterSchema.parse(req.body);
-  const authService = req.scope.resolve<AuthService>("AuthService");
-  const user = await authService.register(dto);
-  return res.custom({
-    code: 200,
-    message: "Account created. Please verify email",
-    data: null,
-    success: true,
-  });
-});
+    const user = await this.authService.register(dto);
+    return res.custom({
+      code: 200,
+      message: "Account created. Please verify email",
+      data: null,
+      success: true,
+    });
+  }
 
-authController.post("/confirm-email", async (req, res) => {
-  const dto = ConfirmEmailSchema.parse(req.body);
-  const authService = req.scope.resolve<AuthService>("AuthService");
-  const user = await authService.confirmEmail(dto);
+  async confirmEmail(req: Request, res: Response) {
+    const dto = ConfirmEmailSchema.parse(req.body);
 
-  const token = authService.getToken({
-    tokenType: "auth",
-    id: user.id,
-    userType: user.userType,
-    email: user.email,
-  });
+    const { user, token } = await this.authService.confirmEmail(dto);
 
-  const { password, ...userPayload } = user;
+    const { password, ...userPayload } = user;
 
-  return res.custom({
-    code: 200,
-    message: "Account activated",
-    data: { user: userPayload, token },
-    success: true,
-  });
-});
+    return res.custom({
+      code: 200,
+      message: "Account activated",
+      data: { user: userPayload, token },
+      success: true,
+    });
+  }
 
-authController.post("/forgot-password", async (req, res) => {
-  const dto = ForgotPasswordOtpSchema.parse(req.body);
-  const authService = req.scope.resolve<AuthService>("AuthService");
-  await authService.forgotPasswordOtp(dto);
+  async forgotPassword(req: Request, res: Response) {
+    const dto = ForgotPasswordOtpSchema.parse(req.body);
 
-  return res.custom({
-    code: 200,
-    message: "OTP Sent",
-    success: true,
-  });
-});
+    await this.authService.forgotPasswordOtp(dto);
 
-authController.post("/reset-password", async (req, res) => {
-  const dto = ResetPasswordSchema.parse(req.body);
-  const authService = req.scope.resolve<AuthService>("AuthService");
-  const user = await authService.resetPassword(dto);
+    return res.custom({
+      code: 200,
+      message: "OTP Sent",
+      success: true,
+    });
+  }
 
-  return res.custom({
-    code: 200,
-    message: "Password reset successfully",
-    data: user,
-    success: true,
-  });
-});
+  async resetPassword(req: Request, res: Response) {
+    const dto = ResetPasswordSchema.parse(req.body);
 
-export { authController };
+    const user = await this.authService.resetPassword(dto);
+
+    return res.custom({
+      code: 200,
+      message: "Password reset successfully",
+      data: user,
+      success: true,
+    });
+  }
+}

@@ -1,131 +1,106 @@
 import { CreateMediaCategorySchema } from "my-website.common/dtos/media-category/create-media-category.dto.js";
-import { Router } from "express";
 import { UpdateMediaCategorySchema } from "my-website.common/dtos/media-category/update-media-category.dto.js";
 import {
   MediaCategoryFindOneQuerySchema,
   MediaCategoryQuerySchema,
 } from "my-website.common/dtos/media-category/media-category-query.dto.js";
-import { authorize } from "my-website.common/utils/authorize.js";
 import { MediaCategoriesService } from "my-website.services/media-categories.service.js";
 import { PrismaUtils } from "my-website.common/utils/PrismaUtils.js";
+import { Controller } from "my-website.common/express/Controller.js";
+import { Request, Response } from "my-website.common/express/index.js";
 
-const mediaCategoryController = Router();
+export class MediaCategoryController extends Controller {
+  constructor(
+    private readonly prismaUtils: PrismaUtils,
+    private readonly mediaCategoriesService: MediaCategoriesService,
+  ) {
+    super();
+  }
 
-mediaCategoryController.post("/", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
+  async create(req: Request, res: Response) {
+    const dto = CreateMediaCategorySchema.parse(req.body);
 
-  const dto = CreateMediaCategorySchema.parse(req.body);
+    const mediaCategory = await this.mediaCategoriesService.create(dto);
 
-  const mediaCategoriesService = req.scope.resolve<MediaCategoriesService>(
-    "MediaCategoriesService",
-  );
+    return res.custom({
+      code: 201,
+      success: true,
+      data: mediaCategory,
+      message: "Media Category Created",
+    });
+  }
 
-  const mediaCategory = await mediaCategoriesService.create(dto);
+  async findAll(req: Request, res: Response) {
+    const queryDto = MediaCategoryQuerySchema.parse(req.query);
+    const { search, ...commonQueryDto } = queryDto;
 
-  return res.custom({
-    code: 201,
-    success: true,
-    data: mediaCategory,
-    message: "Media Category Created",
-  });
-});
+    const { orderByQuery, skip, take, selectQuery } =
+      this.prismaUtils.generateCommonPrismaQuery(commonQueryDto);
 
-mediaCategoryController.get("/", async (req, res) => {
-  await authorize(() => req.user?.userType === "Admin");
+    const searchQuery = search
+      ? { name: { contains: search, mode: "insensitive" as any } }
+      : {};
 
-  const queryDto = MediaCategoryQuerySchema.parse(req.query);
-  const { search, ...commonQueryDto } = queryDto;
+    const { mediaCategories, count } =
+      await this.mediaCategoriesService.findAll({
+        where: { ...searchQuery },
+        select: selectQuery,
+        orderBy: orderByQuery,
+        skip,
+        take,
+      });
 
-  const mediaCategoriesService = req.scope.resolve<MediaCategoriesService>(
-    "MediaCategoriesService",
-  );
-  const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
+    return res.custom({
+      code: 200,
+      success: true,
+      data: { mediaCategories, count },
+    });
+  }
 
-  const { orderByQuery, skip, take, selectQuery } =
-    prismaUtils.generateCommonPrismaQuery(commonQueryDto);
+  async findOne(req: Request, res: Response) {
+    const id = req.params.id;
 
-  const searchQuery = search
-    ? { name: { contains: search, mode: "insensitive" as any } }
-    : {};
+    const queryDto = MediaCategoryFindOneQuerySchema.parse(req.query);
 
-  const { mediaCategories, count } = await mediaCategoriesService.findAll({
-    where: { ...searchQuery },
-    select: selectQuery,
-    orderBy: orderByQuery,
-    skip,
-    take,
-  });
+    const { selectQuery } =
+      this.prismaUtils.generateCommonPrismaQuery(queryDto);
 
-  return res.custom({
-    code: 200,
-    success: true,
-    data: { mediaCategories, count },
-  });
-});
+    const mediaCategory = await this.mediaCategoriesService.findOne({
+      where: { id: +id },
+      select: selectQuery,
+    });
 
-mediaCategoryController.get("/:id", async (req, res) => {
-  await authorize(() => req.user?.userType === "Admin");
+    return res.custom({
+      code: 200,
+      success: true,
+      data: mediaCategory,
+    });
+  }
 
-  const id = req.params.id;
+  async update(req: Request, res: Response) {
+    const id = req.params.id;
+    const dto = UpdateMediaCategorySchema.parse(req.body);
 
-  const queryDto = MediaCategoryFindOneQuerySchema.parse(req.query);
+    const mediaCategory = await this.mediaCategoriesService.update(+id, dto);
 
-  const mediaCategoriesService = req.scope.resolve<MediaCategoriesService>(
-    "MediaCategoriesService",
-  );
-  const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
+    return res.custom({
+      success: true,
+      code: 201,
+      data: mediaCategory,
+      message: "Media Category Updated",
+    });
+  }
 
-  const { selectQuery } = prismaUtils.generateCommonPrismaQuery(queryDto);
+  async remove(req: Request, res: Response) {
+    const id = req.params.id;
 
-  const mediaCategory = await mediaCategoriesService.findOne({
-    where: { id: +id },
-    select: selectQuery,
-  });
+    const mediaCategory = await this.mediaCategoriesService.remove(+id);
 
-  return res.custom({
-    code: 200,
-    success: true,
-    data: mediaCategory,
-  });
-});
-
-mediaCategoryController.patch("/:id", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
-
-  const id = req.params.id;
-  const dto = UpdateMediaCategorySchema.parse(req.body);
-
-  const mediaCategoriesService = req.scope.resolve<MediaCategoriesService>(
-    "MediaCategoriesService",
-  );
-  const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
-
-  const mediaCategory = await mediaCategoriesService.update(+id, dto);
-
-  return res.custom({
-    success: true,
-    code: 201,
-    data: mediaCategory,
-    message: "Media Category Updated",
-  });
-});
-
-mediaCategoryController.delete("/:id", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
-  const id = req.params.id;
-
-  const mediaCategoriesService = req.scope.resolve<MediaCategoriesService>(
-    "MediaCategoriesService",
-  );
-
-  const mediaCategory = await mediaCategoriesService.remove(+id);
-
-  return res.custom({
-    success: true,
-    code: 200,
-    data: mediaCategory,
-    message: "Media Category deleted",
-  });
-});
-
-export { mediaCategoryController };
+    return res.custom({
+      success: true,
+      code: 200,
+      data: mediaCategory,
+      message: "Media Category deleted",
+    });
+  }
+}

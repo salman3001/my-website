@@ -2,10 +2,7 @@ import { CreateContactMessageDto } from "my-website.common/dtos/contact-messages
 import { Prisma, PrismaClient } from "my-website.data/generates/index.js";
 
 export class ContactMessagesService {
-  private readonly prisma: PrismaClient;
-  constructor(opt: { PrismaClient: PrismaClient }) {
-    this.prisma = opt.PrismaClient;
-  }
+  constructor(private readonly prisma: PrismaClient) {}
 
   async create(dto: CreateContactMessageDto) {
     const message = await this.prisma.contactMessage.create({

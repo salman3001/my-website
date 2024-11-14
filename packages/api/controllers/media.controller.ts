@@ -4,88 +4,78 @@ import {
   MediaQuerySchema,
 } from "my-website.common/dtos/media/media-query.dto.js";
 import { UpdateMediaSchema } from "my-website.common/dtos/media/update-media.dto.js";
-import { BadRequestException } from "my-website.common/server/exceptions/bad-request-exception.js";
-import { Router } from "express";
-import { MulterSingleFile } from "my-website.common/server/middlewares/multer-single-file.middleware.js";
-import { authorize } from "my-website.common/utils/authorize.js";
 import { MediaService } from "my-website.services/media/media.service.js";
 import { PrismaUtils } from "my-website.common/utils/PrismaUtils.js";
+import { Controller } from "my-website.common/express/Controller.js";
+import { Request, Response } from "my-website.common/express/index.js";
+import { BadRequestException } from "my-website.common/express/exceptions/index.js";
 
-const mediaController = Router();
+export class MediaController extends Controller {
+  constructor(
+    private readonly prismaUtils: PrismaUtils,
+    private readonly mediaService: MediaService,
+  ) {
+    super();
+  }
 
-mediaController.use(MulterSingleFile("file")).post("/", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
+  async create(req: Request, res: Response) {
+    console.log("dto here", req.body);
+    const dto = CreateMediaSchema.parse(req.body);
 
-  const dto = CreateMediaSchema.parse(req.body);
+    const file = req.file;
 
-  const file = req.file;
+    if (!file) throw new BadRequestException("File is required");
 
-  if (!file) throw new BadRequestException("File is required");
+    const media = await this.mediaService.create(dto, file);
+    return res.custom({ code: 201, success: true, data: media });
+  }
 
-  const mediaService = req.scope.resolve<MediaService>("MediaService");
+  async findAll(req: Request, res: Response) {
+    const queryDto = MediaQuerySchema.parse(req.query);
+    const { mediaCategoryId, search, ...commonQueryDto } = queryDto;
 
-  const media = await mediaService.create(dto, file);
-  return res.custom({ code: 201, success: true, data: media });
-});
+    const { selectQuery, orderByQuery, skip, take } =
+      this.prismaUtils.generateCommonPrismaQuery(commonQueryDto);
 
-mediaController.get("/", async (req, res) => {
-  await authorize(() => true);
+    const searchQuery = search
+      ? { name: { contains: search, mode: "insensitive" as any } }
+      : {};
 
-  const queryDto = MediaQuerySchema.parse(req.query);
-  const { mediaCategoryId, search, ...commonQueryDto } = queryDto;
+    const categoryQuery = mediaCategoryId
+      ? { mediaCategoryId: { equals: mediaCategoryId } }
+      : {};
 
-  const mediaService = req.scope.resolve<MediaService>("MediaService");
-  const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
+    const { count, media } = await this.mediaService.findAll({
+      skip,
+      take,
+      where: { AND: { ...searchQuery, ...categoryQuery } },
+      orderBy: orderByQuery,
+      select: selectQuery,
+    });
 
-  const { selectQuery, orderByQuery, skip, take } =
-    prismaUtils.generateCommonPrismaQuery(commonQueryDto);
+    res.custom({
+      code: 200,
+      success: true,
+      data: { data: media, count },
+    });
+  }
 
-  const searchQuery = search
-    ? { name: { contains: search, mode: "insensitive" as any } }
-    : {};
+  async findOne(req: Request, res: Response) {
+    const id = req.params.id;
 
-  const categoryQuery = mediaCategoryId
-    ? { mediaCategoryId: { equals: mediaCategoryId } }
-    : {};
+    const queryDto = MediaFindOneQueryShema.parse(req.query);
+    const { selectQuery } =
+      this.prismaUtils.generateCommonPrismaQuery(queryDto);
 
-  const { count, media } = await mediaService.findAll({
-    skip,
-    take,
-    where: { AND: { ...searchQuery, ...categoryQuery } },
-    orderBy: orderByQuery,
-    select: selectQuery,
-  });
+    const media = await this.mediaService.findOne({
+      where: { id: +id },
+      select: selectQuery,
+    });
 
-  res.custom({
-    code: 200,
-    success: true,
-    data: { data: media, count },
-  });
-});
+    return res.custom({ code: 200, success: true, data: media });
+  }
 
-mediaController.get("/:id", async (req, res) => {
-  await authorize(() => (req?.user ? true : false));
-  const id = req.params.id;
-
-  const mediaService = req.scope.resolve<MediaService>("MediaService");
-  const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
-
-  const queryDto = MediaFindOneQueryShema.parse(req.query);
-  const { selectQuery } = prismaUtils.generateCommonPrismaQuery(queryDto);
-
-  const media = await mediaService.findOne({
-    where: { id: +id },
-    select: selectQuery,
-  });
-
-  return res.custom({ code: 200, success: true, data: media });
-});
-
-mediaController
-  .use(MulterSingleFile("file"))
-  .patch("/:id", async (req, res) => {
-    await authorize(() => req?.user?.userType === "Admin");
-
+  async update(req: Request, res: Response) {
     const id = req.params.id;
 
     const dto = UpdateMediaSchema.parse(req.body);
@@ -94,9 +84,7 @@ mediaController
 
     if (!file) throw new BadRequestException("File is required");
 
-    const mediaService = req.scope.resolve<MediaService>("MediaService");
-
-    const media = await mediaService.update(+id, dto, file);
+    const media = await this.mediaService.update(+id, dto, file);
 
     return res.custom({
       code: 200,
@@ -104,22 +92,18 @@ mediaController
       message: "Media Updated",
       data: media,
     });
-  });
+  }
 
-mediaController.delete("/:id", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
-  const id = req.params.id;
+  async remove(req: Request, res: Response) {
+    const id = req.params.id;
 
-  const mediaService = req.scope.resolve<MediaService>("MediaService");
+    const media = await this.mediaService.remove(+id);
 
-  const media = await mediaService.remove(+id);
-
-  return res.custom({
-    code: 200,
-    success: true,
-    message: "Media Deleted",
-    data: media,
-  });
-});
-
-export { mediaController };
+    return res.custom({
+      code: 200,
+      success: true,
+      message: "Media Deleted",
+      data: media,
+    });
+  }
+}

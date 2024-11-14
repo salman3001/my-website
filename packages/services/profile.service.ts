@@ -3,16 +3,10 @@ import { ImageUploadService } from "./media/imageUpload.service.js";
 import { PrismaClient } from "my-website.data/generates/index.js";
 
 export class ProfileService {
-  private readonly prisma: PrismaClient;
-  private imageUploadService: ImageUploadService;
-
-  constructor(opt: {
-    PrismaClient: PrismaClient;
-    ImageUploadService: ImageUploadService;
-  }) {
-    this.prisma = opt.PrismaClient;
-    this.imageUploadService = opt.ImageUploadService;
-  }
+  constructor(
+    private readonly prisma: PrismaClient,
+    private imageUploadService: ImageUploadService,
+  ) {}
 
   async findOneByUserId(userId: number) {
     const profile = await this.prisma.profile.findFirstOrThrow({

@@ -1,6 +1,4 @@
 import { CreateBlogCommentSchema } from "my-website.common/dtos/blog-comments/create-blog-comment.dto.js";
-import { Router } from "express";
-import { authorize } from "my-website.common/utils/authorize.js";
 
 import { UpdateBlogCommentSchema } from "my-website.common/dtos/blog-comments/update-blog-comment.dto.js";
 import {
@@ -9,125 +7,103 @@ import {
 } from "my-website.common/dtos/blog-comments/blog-comment-query.dto.js";
 import { BlogCommentsService } from "my-website.services/blog-comments.service.js";
 import { PrismaUtils } from "my-website.common/utils/PrismaUtils.js";
+import { Controller } from "my-website.common/express/Controller.js";
+import { Request, Response } from "my-website.common/express/index.js";
 
-const blogCommentController = Router();
+export class BlogCommentsController extends Controller {
+  constructor(
+    private readonly prismaUtils: PrismaUtils,
+    private readonly blogCommentService: BlogCommentsService,
+  ) {
+    super();
+  }
 
-blogCommentController.post("/", async (req, res) => {
-  await authorize(() => (req?.user ? true : false));
+  async create(req: Request, res: Response) {
+    const dto = CreateBlogCommentSchema.parse(req.body);
 
-  const dto = CreateBlogCommentSchema.parse(req.body);
+    const comment = await this.blogCommentService.create(dto, req.user);
 
-  const blogCommentService = req.scope.resolve<BlogCommentsService>(
-    "BlogCommentsService",
-  );
+    return res.custom({
+      code: 201,
+      success: true,
+      data: comment,
+      message: "Comment Created",
+    });
+  }
 
-  const comment = await blogCommentService.create(dto, req.user);
+  async findAll(req: Request, res: Response) {
+    const queryDto = BlogCommentQueryShema.parse(req.query);
+    const { blogId, parentId, search, ...commonQueryDto } = queryDto;
 
-  return res.custom({
-    code: 201,
-    success: true,
-    data: comment,
-    message: "Comment Created",
-  });
-});
+    const { selectQuery, orderByQuery, skip, take } =
+      this.prismaUtils.generateCommonPrismaQuery(commonQueryDto);
 
-blogCommentController.get("/", async (req, res) => {
-  await authorize(() => true);
-  const queryDto = BlogCommentQueryShema.parse(req.query);
-  const { blogId, parentId, search, ...commonQueryDto } = queryDto;
+    const searchQuery = search
+      ? { name: { contains: search, mode: "insensitive" as any } }
+      : {};
 
-  const blogCommentService = req.scope.resolve<BlogCommentsService>(
-    "BlogCommentsService",
-  );
-  const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
+    const commentsByBlogIdQuery = blogId ? { blogId: { equals: blogId } } : {};
 
-  const { selectQuery, orderByQuery, skip, take } =
-    prismaUtils.generateCommonPrismaQuery(commonQueryDto);
+    const queryByParentId = parentId
+      ? { parentId: { equals: parentId } }
+      : { parentId: { equals: null } };
 
-  const searchQuery = search
-    ? { name: { contains: search, mode: "insensitive" as any } }
-    : {};
+    const { comments, count } = await this.blogCommentService.findAll({
+      skip,
+      take,
+      where: {
+        AND: { ...searchQuery, ...commentsByBlogIdQuery, ...queryByParentId },
+      },
+      orderBy: orderByQuery,
+      select: selectQuery,
+    });
 
-  const commentsByBlogIdQuery = blogId ? { blogId: { equals: blogId } } : {};
+    return res.custom({
+      code: 200,
+      success: true,
+      data: { data: comments, count },
+    });
+  }
 
-  const queryByParentId = parentId
-    ? { parentId: { equals: parentId } }
-    : { parentId: { equals: null } };
+  async findOne(req: Request, res: Response) {
+    const id = req.params.id;
+    const queryDto = BlogCommentFindOneQuerySchema.parse(req.query);
 
-  const { comments, count } = await blogCommentService.findAll({
-    skip,
-    take,
-    where: {
-      AND: { ...searchQuery, ...commentsByBlogIdQuery, ...queryByParentId },
-    },
-    orderBy: orderByQuery,
-    select: selectQuery,
-  });
+    const { selectQuery } =
+      this.prismaUtils.generateCommonPrismaQuery(queryDto);
 
-  return res.custom({
-    code: 200,
-    success: true,
-    data: { data: comments, count },
-  });
-});
+    const comment = await this.blogCommentService.findOne({
+      where: { id: +id },
+      select: selectQuery,
+    });
 
-blogCommentController.get("/:id", async (req, res) => {
-  await authorize(() => true);
+    return res.custom({ code: 200, success: true, data: comment });
+  }
 
-  const id = req.params.id;
-  const queryDto = BlogCommentFindOneQuerySchema.parse(req.query);
+  async update(req: Request, res: Response) {
+    const id = req.params.id;
+    const dto = UpdateBlogCommentSchema.parse(req.body);
 
-  const blogCommentService = req.scope.resolve<BlogCommentsService>(
-    "BlogCommentsService",
-  );
-  const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
+    const comment = await this.blogCommentService.update(+id, dto);
 
-  const { selectQuery } = prismaUtils.generateCommonPrismaQuery(queryDto);
+    return res.custom({
+      success: true,
+      code: 200,
+      data: comment,
+      message: "Comment Updated",
+    });
+  }
 
-  const comment = await blogCommentService.findOne({
-    where: { id: +id },
-    select: selectQuery,
-  });
+  async remove(req: Request, res: Response) {
+    const id = req.params.id;
 
-  return res.custom({ code: 200, success: true, data: comment });
-});
+    const comments = await this.blogCommentService.remove(+id);
 
-blogCommentController.patch("/:id", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
-
-  const blogCommentService = req.scope.resolve<BlogCommentsService>(
-    "BlogCommentsService",
-  );
-
-  const id = req.params.id;
-  const dto = UpdateBlogCommentSchema.parse(req.body);
-
-  const comment = await blogCommentService.update(+id, dto);
-
-  return res.custom({
-    success: true,
-    code: 200,
-    data: comment,
-    message: "Comment Updated",
-  });
-});
-
-blogCommentController.delete("/:id", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
-  const id = req.params.id;
-
-  const blogCommentService = req.scope.resolve<BlogCommentsService>(
-    "BlogCommentsService",
-  );
-
-  const comments = await blogCommentService.remove(+id);
-
-  return res.custom({
-    success: true,
-    code: 200,
-    data: comments,
-    message: "Comment deleted",
-  });
-});
-
-export { blogCommentController };
+    return res.custom({
+      success: true,
+      code: 200,
+      data: comments,
+      message: "Comment deleted",
+    });
+  }
+}

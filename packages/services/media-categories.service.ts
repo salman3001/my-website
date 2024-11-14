@@ -1,13 +1,9 @@
 import { CreateMediaCategoryDto } from "my-website.common/dtos/media-category/create-media-category.dto.js";
-import { Prisma as PrismaService } from "my-website.data/prisma.js";
 import { Prisma, PrismaClient } from "my-website.data/generates/index.js";
 import { UpdateMediaCategoryDto } from "my-website.common/dtos/media-category/update-media-category.dto.js";
 
 export class MediaCategoriesService {
-  private readonly prisma: PrismaClient;
-  constructor(opt: { PrismaClient: PrismaClient }) {
-    this.prisma = opt.PrismaClient;
-  }
+  constructor(private readonly prisma: PrismaClient) {}
 
   async create(dto: CreateMediaCategoryDto) {
     const mediaCategory = await this.prisma.mediaCategory.create({

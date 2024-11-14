@@ -3,120 +3,101 @@ import {
   EmailSubscriptionFindOneQuerySchema,
   EmailSubscriptionQuerySchema,
 } from "my-website.common/dtos/email-subscription/email-subscription-query.dto.js";
-import { Router } from "express";
 import { UpdateEmailSubscriptionSchema } from "my-website.common/dtos/email-subscription/update-email-subscription.dto.js";
-import { authorize } from "my-website.common/utils/authorize.js";
 import { EmailSubscriptionsService } from "my-website.services/email-subscriptions.service.js";
 import { PrismaUtils } from "my-website.common/utils/PrismaUtils.js";
+import { Controller } from "my-website.common/express/Controller.js";
+import { Request, Response } from "my-website.common/express/index.js";
 
-const emailSubscriptionController = Router();
+export class EmailSubscriptionController extends Controller {
+  constructor(
+    private readonly prismaUtils: PrismaUtils,
+    private readonly emailSubscriptionsService: EmailSubscriptionsService,
+  ) {
+    super();
+  }
 
-emailSubscriptionController.post("/", async (req, res) => {
-  await authorize(() => true);
+  async create(req: Request, res: Response) {
+    const dto = CreateEmailSubscriptionSchema.parse(req.body);
 
-  const dto = CreateEmailSubscriptionSchema.parse(req.body);
+    const subscription = await this.emailSubscriptionsService.create(dto);
 
-  const emailSubscriptionsService =
-    req.scope.resolve<EmailSubscriptionsService>("EmailSubscriptionsService");
+    return res.custom({
+      code: 200,
+      success: true,
+      data: subscription,
+      message: "Subscription Created",
+    });
+  }
 
-  const subscription = await emailSubscriptionsService.create(dto);
+  async findAll(req: Request, res: Response) {
+    const queryDto = EmailSubscriptionQuerySchema.parse(req.query);
+    const { search, ...commonQueryDto } = queryDto;
 
-  return res.custom({
-    code: 200,
-    success: true,
-    data: subscription,
-    message: "Subscription Created",
-  });
-});
+    const { selectQuery, orderByQuery, skip, take } =
+      this.prismaUtils.generateCommonPrismaQuery(commonQueryDto);
 
-emailSubscriptionController.get("/", async (req, res) => {
-  await authorize(() => req.user?.userType === "Admin");
+    const { subscriptions, count } =
+      await this.emailSubscriptionsService.findAll({
+        skip,
+        take,
+        orderBy: orderByQuery,
+        select: selectQuery,
+      });
 
-  const queryDto = EmailSubscriptionQuerySchema.parse(req.query);
-  const { search, ...commonQueryDto } = queryDto;
+    return res.custom({
+      code: 200,
+      success: true,
+      data: { data: subscriptions, count },
+    });
+  }
 
-  const emailSubscriptionsService =
-    req.scope.resolve<EmailSubscriptionsService>("EmailSubscriptionsService");
-  const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
+  async findOne(req: Request, res: Response) {
+    const email = req.params.email;
 
-  const { selectQuery, orderByQuery, skip, take } =
-    prismaUtils.generateCommonPrismaQuery(commonQueryDto);
+    const queryDto = EmailSubscriptionFindOneQuerySchema.parse(req.query);
+    const { selectQuery } =
+      this.prismaUtils.generateCommonPrismaQuery(queryDto);
 
-  const { subscriptions, count } = await emailSubscriptionsService.findAll({
-    skip,
-    take,
-    orderBy: orderByQuery,
-    select: selectQuery,
-  });
+    const subscription = await this.emailSubscriptionsService.findOne({
+      where: { email },
+      select: selectQuery,
+    });
 
-  return res.custom({
-    code: 200,
-    success: true,
-    data: { data: subscriptions, count },
-  });
-});
+    return res.custom({
+      code: 200,
+      success: true,
+      data: subscription,
+    });
+  }
 
-emailSubscriptionController.get("/:email", async (req, res) => {
-  const email = req.params.email;
+  async update(req: Request, res: Response) {
+    const email = req.params.email;
+    const dto = UpdateEmailSubscriptionSchema.parse(req.body);
 
-  const emailSubscriptionsService =
-    req.scope.resolve<EmailSubscriptionsService>("EmailSubscriptionsService");
-  const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
+    const subscription = await this.emailSubscriptionsService.update(
+      email,
+      dto,
+    );
 
-  const queryDto = EmailSubscriptionFindOneQuerySchema.parse(req.query);
-  const { selectQuery } = prismaUtils.generateCommonPrismaQuery(queryDto);
+    return res.custom({
+      success: true,
+      code: 200,
+      data: subscription,
+      message: "Subscription Updated",
+    });
+  }
 
-  const subscription = await emailSubscriptionsService.findOne({
-    where: { email },
-    select: selectQuery,
-  });
+  async remove(req: Request, res: Response) {
+    const email = req.params.email;
 
-  await authorize(
-    () => req.user?.userType === "Admin" || req.user?.email === email,
-  );
+    const subscription = await this.emailSubscriptionsService.remove(email);
 
-  return res.custom({
-    code: 200,
-    success: true,
-    data: subscription,
-  });
-});
-
-emailSubscriptionController.patch("/:email", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
-
-  const emailSubscriptionsService =
-    req.scope.resolve<EmailSubscriptionsService>("EmailSubscriptionsService");
-
-  const email = req.params.email;
-  const dto = UpdateEmailSubscriptionSchema.parse(req.body);
-
-  const subscription = await emailSubscriptionsService.update(email, dto);
-
-  return res.custom({
-    success: true,
-    code: 200,
-    data: subscription,
-    message: "Subscription Updated",
-  });
-});
-
-emailSubscriptionController.delete("/:email", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
-
-  const email = req.params.email;
-
-  const emailSubscriptionsService =
-    req.scope.resolve<EmailSubscriptionsService>("EmailSubscriptionsService");
-
-  const subscription = await emailSubscriptionsService.remove(email);
-
-  return res.custom({
-    success: true,
-    code: 200,
-    data: subscription,
-    message: "Subscription deleted",
-  });
-});
-
-export { emailSubscriptionController };
+    return res.custom({
+      success: true,
+      code: 200,
+      data: subscription,
+      message: "Subscription deleted",
+    });
+  }
+}

@@ -1,4 +1,3 @@
-import { Config } from "my-website.common/server/config/config.js";
 import {
   existsSync,
   mkdirSync,
@@ -6,16 +5,13 @@ import {
   unlinkSync,
   writeFileSync,
 } from "fs";
+import { Config } from "my-website.common/config/config.js";
 import { join, extname } from "path";
 
 import { v4 as uuidv4 } from "uuid";
 
 export class FilesUploadService {
-  private readonly config: Config;
-
-  constructor(opt: { Config: Config }) {
-    this.config = opt.Config;
-  }
+  constructor(private readonly config: Config) {}
 
   async uploadFile(
     file: Express.Multer.File,

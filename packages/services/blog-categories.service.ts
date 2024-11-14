@@ -2,15 +2,14 @@ import { Prisma } from "my-website.data/generates/index.js";
 import { Prisma as PrismaClient } from "my-website.data/prisma.js";
 import { CreateBlogCategoryDto } from "my-website.common/dtos/blog-categories/create-blog-category.dto.js";
 import slugify from "slugify";
-import { ConflictException } from "../common/server/exceptions/conflict-exception.js";
 import { UpdateBlogCategoryDto } from "my-website.common/dtos/blog-categories/update-blog-category.dto.js";
-import { NotFoundException } from "../common/server/exceptions/not-found-exception.js";
+import {
+  ConflictException,
+  NotFoundException,
+} from "my-website.common/express/exceptions/index.js";
 
 export class BlogCategoriesService {
-  private readonly prisma: PrismaClient;
-  constructor(opt: { PrismaClient: PrismaClient }) {
-    this.prisma = opt.PrismaClient;
-  }
+  constructor(readonly prisma: PrismaClient) {}
 
   async create(dto: CreateBlogCategoryDto) {
     const id = slugify.default(dto.name, { lower: true, strict: true });

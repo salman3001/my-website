@@ -1,88 +1,69 @@
 import { CreateContactMessageSchema } from "my-website.common/dtos/contact-messages/create-contact-message.dto.js";
-import { Router } from "express";
 import { ContactMessageQueryShema } from "my-website.common/dtos/contact-messages/contact-message-query.dto.js";
-import { authorize } from "my-website.common/utils/authorize.js";
 import { ContactMessagesService } from "my-website.services/contact-messages.service.js";
 import { PrismaUtils } from "my-website.common/utils/PrismaUtils.js";
+import { Controller } from "my-website.common/express/Controller.js";
+import { Request, Response } from "my-website.common/express/index.js";
 
-const contactMessageController = Router();
+export class ContactMessageController extends Controller {
+  constructor(
+    private readonly prismaUtils: PrismaUtils,
+    private readonly contactMessagesService: ContactMessagesService,
+  ) {
+    super();
+  }
 
-contactMessageController.post("/", async (req, res) => {
-  await authorize(() => true);
+  async create(req: Request, res: Response) {
+    const dto = CreateContactMessageSchema.parse(req.body);
 
-  const dto = CreateContactMessageSchema.parse(req.body);
+    const message = await this.contactMessagesService.create(dto);
 
-  const contactMessageService = req.scope.resolve<ContactMessagesService>(
-    "ContactMessagesService",
-  );
+    return res.custom({
+      code: 201,
+      success: true,
+      data: message,
+      message: "Contact Message Created",
+    });
+  }
 
-  const message = await contactMessageService.create(dto);
+  async findAll(req: Request, res: Response) {
+    const queryDto = ContactMessageQueryShema.parse(req.query);
+    const { selectQuery, orderByQuery, skip, take } =
+      this.prismaUtils.generateCommonPrismaQuery(queryDto);
 
-  return res.custom({
-    code: 201,
-    success: true,
-    data: message,
-    message: "Contact Message Created",
-  });
-});
+    const { messages, count } = await this.contactMessagesService.findAll({
+      skip,
+      take,
+      orderBy: orderByQuery,
+      select: selectQuery,
+    });
 
-contactMessageController.get("/", async (req, res) => {
-  await authorize(() => req.user?.userType === "Admin");
+    return res.custom({
+      code: 200,
+      success: true,
+      data: { data: messages, count },
+    });
+  }
 
-  const contactMessageService = req.scope.resolve<ContactMessagesService>(
-    "ContactMessagesService",
-  );
-  const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
+  async findOne(req: Request, res: Response) {
+    const id = req.params.id;
 
-  const queryDto = ContactMessageQueryShema.parse(req.query);
-  const { selectQuery, orderByQuery, skip, take } =
-    prismaUtils.generateCommonPrismaQuery(queryDto);
+    const message = await this.contactMessagesService.findOne({
+      id: +id,
+    });
+    return res.custom({ code: 200, success: true, data: message });
+  }
 
-  const { messages, count } = await contactMessageService.findAll({
-    skip,
-    take,
-    orderBy: orderByQuery,
-    select: selectQuery,
-  });
+  async remove(req: Request, res: Response) {
+    const id = req.params.id;
 
-  return res.custom({
-    code: 200,
-    success: true,
-    data: { data: messages, count },
-  });
-});
+    const message = await this.contactMessagesService.remove(+id);
 
-contactMessageController.get("/:id", async (req, res) => {
-  await authorize(() => req.user?.userType === "Admin");
-  const id = req.params.id;
-
-  const contactMessageService = req.scope.resolve<ContactMessagesService>(
-    "ContactMessagesService",
-  );
-
-  const message = await contactMessageService.findOne({
-    id: +id,
-  });
-  return res.custom({ code: 200, success: true, data: message });
-});
-
-contactMessageController.delete("/:id", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
-
-  const id = req.params.id;
-
-  const contactMessageService = req.scope.resolve<ContactMessagesService>(
-    "ContactMessagesService",
-  );
-
-  const message = await contactMessageService.remove(+id);
-
-  return res.custom({
-    success: true,
-    code: 200,
-    data: message,
-    message: "Comment deleted",
-  });
-});
-
-export { contactMessageController };
+    return res.custom({
+      success: true,
+      code: 200,
+      data: message,
+      message: "Comment deleted",
+    });
+  }
+}

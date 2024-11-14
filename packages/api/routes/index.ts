@@ -1,0 +1,15 @@
+export { authRoutes } from "./authRoutes.js";
+export { backupRoutes } from "./backupRoutes.js";
+export { blogCategoryRoutes } from "./blogCategoryRoutes.js";
+export { blogCommentRoutes } from "./blogCommentRoutes.js";
+export { blogRoutes } from "./blogRoutes.js";
+export { contactMessageRoutes } from "./contactMessageRoutes.js";
+export { discussionCommentRoutes } from "./discussionCommentRoutes.js";
+export { discussionRoutes } from "./discussionRoutes.js";
+export { emailSubscriptionRoutes } from "./emailSubscriptionRoutes.js";
+export { mediaCategoryRoutes } from "./mediaCategoryRoutes.js";
+export { mediaRoutes } from "./mediaRoutes.js";
+export { profileRoutes } from "./profileRoutes.js";
+export { projectRoutes } from "./projectRoutes.js";
+export { tagRoutes } from "./tagRoutes.js";
+export { userRoutes } from "./userRoutes.js";

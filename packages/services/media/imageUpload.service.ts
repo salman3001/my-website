@@ -1,16 +1,12 @@
-import { Config } from "my-website.common/server/config/config.js";
-import { Request } from "express";
 import { v4 as uuidv4 } from "uuid";
 import sharp from "sharp";
 import { join } from "node:path";
 import { existsSync, mkdirSync, unlinkSync, writeFileSync } from "node:fs";
+import { Config } from "my-website.common/config/config.js";
+import { Request } from "my-website.common/express/index.js";
 
 export class ImageUploadService {
-  private readonly config: Config;
-
-  constructor(opt: { Config: Config }) {
-    this.config = opt.Config;
-  }
+  constructor(private readonly config: Config) {}
 
   async uploadImage(
     file: Request["file"],

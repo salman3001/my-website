@@ -34,4 +34,14 @@ export class Config {
       }
     }
   }
+
+  nodeMailerConfig = {
+    host: this.envs.smtpHost!,
+    port: this.envs.smtpPort! as unknown as number,
+    secure: true,
+    auth: {
+      user: this.envs.smtpUser!,
+      pass: this.envs.smtpPass!,
+    },
+  };
 }

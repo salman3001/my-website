@@ -1,16 +1,14 @@
 import { CreateBlogDto } from "my-website.common/dtos/blogs/create-blog.dto.js";
-import { Prisma as PrismaService } from "my-website.data/prisma.js";
 import slugify from "slugify";
-import { ConflictException } from "my-website.common/server/exceptions/conflict-exception.js";
 import { Prisma, PrismaClient } from "my-website.data/generates/index.js";
-import { NotFoundException } from "my-website.common/server/exceptions/not-found-exception.js";
+import {
+  NotFoundException,
+  ConflictException,
+} from "my-website.common/express/exceptions/index.js";
 import { UpdateBlogDto } from "my-website.common/dtos/blogs/update-blog.dto.js";
 
 export class BlogsService {
-  private readonly prisma: PrismaClient;
-  constructor(opt: { PrismaClient: PrismaClient }) {
-    this.prisma = opt.PrismaClient;
-  }
+  constructor(readonly prisma: PrismaClient) {}
 
   async create(dto: CreateBlogDto, userId: number) {
     const { seo, blogCategoryId, tagIds, mediaId, ...blogDto } = dto;

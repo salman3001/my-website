@@ -1,7 +1,4 @@
 import { CreateBlogSchema } from "my-website.common/dtos/blogs/create-blog.dto.js";
-import { Router } from "express";
-import { authorize } from "my-website.common/utils/authorize.js";
-
 import { UpdateBlogSchema } from "my-website.common/dtos/blogs/update-blog.dto.js";
 import {
   BlogsFindOneQuerySchema,
@@ -9,131 +6,118 @@ import {
 } from "my-website.common/dtos/blogs/blogs-query.dto.js";
 import { BlogsService } from "my-website.services/blogs.service.js";
 import { PrismaUtils } from "my-website.common/utils/PrismaUtils.js";
+import { Controller } from "my-website.common/express/Controller.js";
+import { Request, Response } from "my-website.common/express/index.js";
 
-const blogController = Router();
+export class BlogController extends Controller {
+  constructor(
+    private readonly prismaUtils: PrismaUtils,
+    private readonly blogsService: BlogsService,
+  ) {
+    super();
+  }
 
-//create
-blogController.post("/", async (req, res) => {
-  await authorize(() => req.user?.userType === "Admin");
+  async create(req: Request, res: Response) {
+    const userId = req.user?.id!;
+    const dto = CreateBlogSchema.parse(req.body);
 
-  const userId = req.user?.id!;
-  const dto = CreateBlogSchema.parse(req.body);
+    const blog = await this.blogsService.create(dto, userId);
 
-  const blogService = req.scope.resolve<BlogsService>("BlogsService");
+    return res.custom({
+      code: 201,
+      success: true,
+      data: blog,
+      message: "Blog Created",
+    });
+  }
 
-  const blog = await blogService.create(dto, userId);
+  async findAll(req: Request, res: Response) {
+    const queryDto = BlogsQuerySchema.parse(req.query);
+    const {
+      blogCategoryId,
+      tagId,
+      isFeatured,
+      isPublished,
+      search,
+      ...restQuery
+    } = queryDto;
 
-  return res.custom({
-    code: 201,
-    success: true,
-    data: blog,
-    message: "Blog Created",
-  });
-});
+    const { orderByQuery, selectQuery, skip, take } =
+      this.prismaUtils.generateCommonPrismaQuery(restQuery);
 
-//findall
-blogController.get("/", async (req, res) => {
-  await authorize(() => true);
+    const searchQuery = search
+      ? { title: { contains: search, mode: "insensitive" as any } }
+      : {};
 
-  const queryDto = BlogsQuerySchema.parse(req.query);
-  const {
-    blogCategoryId,
-    tagId,
-    isFeatured,
-    isPublished,
-    search,
-    ...restQuery
-  } = queryDto;
+    const serachByCategoryQuery = blogCategoryId
+      ? { blogCategoryId: { equals: blogCategoryId } }
+      : {};
 
-  const blogService = req.scope.resolve<BlogsService>("BlogsService");
-  const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
+    const serachByTagQuery = tagId ? { tags: { some: { id: tagId } } } : {};
 
-  const { orderByQuery, selectQuery, skip, take } =
-    prismaUtils.generateCommonPrismaQuery(restQuery);
+    const isFeaturedQuery = isFeatured ? { isFeatured: { equals: true } } : {};
+    const isPublishedQuery = isPublished
+      ? { isPublished: { equals: true } }
+      : {};
 
-  const searchQuery = search
-    ? { title: { contains: search, mode: "insensitive" as any } }
-    : {};
+    const { blogs, count } = await this.blogsService.findAll({
+      skip,
+      take,
+      where: {
+        ...searchQuery,
+        ...serachByCategoryQuery,
+        ...isFeaturedQuery,
+        ...isPublishedQuery,
+        ...serachByTagQuery,
+      },
+      orderBy: orderByQuery,
+      select: selectQuery,
+    });
 
-  const serachByCategoryQuery = blogCategoryId
-    ? { blogCategoryId: { equals: blogCategoryId } }
-    : {};
+    return res.custom({
+      code: 200,
+      success: true,
+      data: { data: blogs, count },
+    });
+  }
 
-  const serachByTagQuery = tagId ? { tags: { some: { id: tagId } } } : {};
+  async findOne(req: Request, res: Response) {
+    const id = req.params.id;
 
-  const isFeaturedQuery = isFeatured ? { isFeatured: { equals: true } } : {};
-  const isPublishedQuery = isPublished ? { isPublished: { equals: true } } : {};
+    const queryDto = BlogsFindOneQuerySchema.parse(req.query);
+    const { selectQuery } =
+      this.prismaUtils.generateCommonPrismaQuery(queryDto);
 
-  const { blogs, count } = await blogService.findAll({
-    skip,
-    take,
-    where: {
-      ...searchQuery,
-      ...serachByCategoryQuery,
-      ...isFeaturedQuery,
-      ...isPublishedQuery,
-      ...serachByTagQuery,
-    },
-    orderBy: orderByQuery,
-    select: selectQuery,
-  });
+    const blog = await this.blogsService.findOne({
+      where: { id },
+      select: selectQuery,
+    });
+    return res.custom({ code: 200, success: true, data: blog });
+  }
 
-  return res.custom({
-    code: 200,
-    success: true,
-    data: { data: blogs, count },
-  });
-});
+  async update(req: Request, res: Response) {
+    const id = req.params.id;
+    const dto = UpdateBlogSchema.parse(req.body);
 
-blogController.get("/:id", async (req, res) => {
-  await authorize(() => true);
+    const blog = await this.blogsService.update(id, dto);
+    return res.custom({
+      success: true,
+      code: 201,
+      data: blog,
+      message: "Blog Updated",
+    });
+  }
 
-  const id = req.params.id;
+  async remove(req: Request, res: Response) {
+    const id = req.params.id;
 
-  const blogService = req.scope.resolve<BlogsService>("BlogsService");
-  const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
+    const blog = await this.blogsService.remove(id);
 
-  const queryDto = BlogsFindOneQuerySchema.parse(req.query);
-  const { selectQuery } = prismaUtils.generateCommonPrismaQuery(queryDto);
-
-  const blog = await blogService.findOne({
-    where: { id },
-    select: selectQuery,
-  });
-  return res.custom({ code: 200, success: true, data: blog });
-});
-
-blogController.patch("/:id", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
-
-  const id = req.params.id;
-  const dto = UpdateBlogSchema.parse(req.body);
-
-  const blogService = req.scope.resolve<BlogsService>("BlogsService");
-
-  const blog = await blogService.update(id, dto);
-  return res.custom({
-    success: true,
-    code: 201,
-    data: blog,
-    message: "Blog Updated",
-  });
-});
-
-blogController.delete("/:id", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
-  const id = req.params.id;
-
-  const blogService = req.scope.resolve<BlogsService>("BlogsService");
-
-  const blog = await blogService.remove(id);
-
-  return res.custom({
-    success: true,
-    code: 200,
-    data: blog,
-    message: "Blog deleted",
-  });
-});
-
-export { blogController };
+    return res.custom({
+      success: true,
+      code: 200,
+      data: blog,
+      message: "Blog deleted",
+    });
+  }
+}

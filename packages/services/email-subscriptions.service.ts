@@ -1,13 +1,9 @@
 import { CreateEmailSubscriptionDto } from "my-website.common/dtos/email-subscription/create-email-subscription.dto.js";
-import { Prisma as PrismaService } from "my-website.data/prisma.js";
 import { Prisma, PrismaClient } from "my-website.data/generates/index.js";
 import { UpdateEmailSubscriptionDto } from "my-website.common/dtos/email-subscription/update-email-subscription.dto.js";
 
 export class EmailSubscriptionsService {
-  private readonly prisma: PrismaClient;
-  constructor(opt: { PrismaClient: PrismaClient }) {
-    this.prisma = opt.PrismaClient;
-  }
+  constructor(private readonly prisma: PrismaClient) {}
 
   async create(dto: CreateEmailSubscriptionDto) {
     const subscription = await this.prisma.emailSubscription.create({

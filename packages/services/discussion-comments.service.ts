@@ -2,13 +2,10 @@ import { CreateDiscussionCommentDto } from "my-website.common/dtos/discussion-co
 import { AuthUserType } from "./types/common.js";
 import { Prisma, PrismaClient } from "my-website.data/generates/index.js";
 import { UpdateDiscussionCommentDto } from "my-website.common/dtos/discussion-comments/update-discussion-comment.dto.js";
-import { NotFoundException } from "my-website.common/server/exceptions/not-found-exception.js";
+import { NotFoundException } from "my-website.common/express/exceptions/index.js";
 
 export class DiscussionCommentsService {
-  private readonly prisma: PrismaClient;
-  constructor(opt: { PrismaClient: PrismaClient }) {
-    this.prisma = opt.PrismaClient;
-  }
+  constructor(private readonly prisma: PrismaClient) {}
 
   async create(dto: CreateDiscussionCommentDto, user: AuthUserType) {
     const comment = await this.prisma.discussionComment.create({

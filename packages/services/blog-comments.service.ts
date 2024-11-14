@@ -2,14 +2,11 @@ import { Prisma } from "my-website.data/generates/index.js";
 import { Prisma as PrismaClient } from "my-website.data/prisma.js";
 import { CreateBlogCommentDto } from "my-website.common/dtos/blog-comments/create-blog-comment.dto.js";
 import { AuthUserType } from "./types/common.js";
-import { NotFoundException } from "my-website.common/server/exceptions/not-found-exception.js";
+import { NotFoundException } from "my-website.common/express/exceptions/index.js";
 import { UpdateBlogCommentDto } from "my-website.common/dtos/blog-comments/update-blog-comment.dto.js";
 
 export class BlogCommentsService {
-  private readonly prisma: PrismaClient;
-  constructor(opt: { PrismaClient: PrismaClient }) {
-    this.prisma = opt.PrismaClient;
-  }
+  constructor(private readonly prisma: PrismaClient) {}
 
   async create(dto: CreateBlogCommentDto, user: AuthUserType) {
     const comment = await this.prisma.blogComment.create({

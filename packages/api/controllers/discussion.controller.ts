@@ -4,119 +4,101 @@ import {
   DiscussionQuerySchema,
 } from "my-website.common/dtos/discussions/discussion-query.dto.js";
 import { UpdateDiscussionSchema } from "my-website.common/dtos/discussions/update-discussion.dto.js";
-import { Router } from "express";
-import { authorize } from "my-website.common/utils/authorize.js";
 import { DiscussionsService } from "my-website.services/discussions.service.js";
 import { PrismaUtils } from "my-website.common/utils/PrismaUtils.js";
-const discussionController = Router();
+import { Controller } from "my-website.common/express/Controller.js";
+import { Request, Response } from "my-website.common/express/index.js";
 
-discussionController.post("/", async (req, res) => {
-  await authorize(() => (req?.user ? true : false));
-  const userId = req.user?.id!;
-  const dto = CreateDiscussionSchema.parse(req.body);
+export class DiscussionController extends Controller {
+  constructor(
+    private readonly prismaUtils: PrismaUtils,
+    private readonly discussionsService: DiscussionsService,
+  ) {
+    super();
+  }
 
-  const discussionService =
-    req.scope.resolve<DiscussionsService>("DiscussionsService");
+  async create(req: Request, res: Response) {
+    const userId = req.user?.id!;
+    const dto = CreateDiscussionSchema.parse(req.body);
 
-  const discussion = await discussionService.create(dto, userId);
+    const discussion = await this.discussionsService.create(dto, userId);
 
-  return res.custom({
-    code: 201,
-    success: true,
-    data: discussion,
-    message: "Discussion Category Created",
-  });
-});
+    return res.custom({
+      code: 201,
+      success: true,
+      data: discussion,
+      message: "Discussion Category Created",
+    });
+  }
 
-discussionController.get("/", async (req, res) => {
-  await authorize(() => true);
+  async findAll(req: Request, res: Response) {
+    const queryDto = DiscussionQuerySchema.parse(req.query);
+    const { search, ...commonQueryDto } = queryDto;
 
-  const queryDto = DiscussionQuerySchema.parse(req.query);
-  const { search, ...commonQueryDto } = queryDto;
+    const { selectQuery, orderByQuery, skip, take } =
+      this.prismaUtils.generateCommonPrismaQuery(commonQueryDto);
 
-  const discussionService =
-    req.scope.resolve<DiscussionsService>("DiscussionsService");
-  const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
+    const searchQuery = search
+      ? { title: { contains: search, mode: "insensitive" as any } }
+      : {};
 
-  const { selectQuery, orderByQuery, skip, take } =
-    prismaUtils.generateCommonPrismaQuery(commonQueryDto);
+    const { discussions, count } = await this.discussionsService.findAll({
+      skip,
+      take,
+      where: { AND: { ...searchQuery } },
+      orderBy: orderByQuery,
+      select: selectQuery,
+    });
 
-  const searchQuery = search
-    ? { title: { contains: search, mode: "insensitive" as any } }
-    : {};
+    return res.custom({
+      code: 200,
+      success: true,
+      data: { data: discussions, count },
+    });
+  }
 
-  const { discussions, count } = await discussionService.findAll({
-    skip,
-    take,
-    where: { AND: { ...searchQuery } },
-    orderBy: orderByQuery,
-    select: selectQuery,
-  });
+  async findOne(req: Request, res: Response) {
+    const id = req.params.id;
 
-  return res.custom({
-    code: 200,
-    success: true,
-    data: { data: discussions, count },
-  });
-});
+    const queryDto = DiscussionFindOneQuerySchema.parse(req.query);
+    const { selectQuery } =
+      this.prismaUtils.generateCommonPrismaQuery(queryDto);
 
-discussionController.get("/:id", async (req, res) => {
-  await authorize(() => true);
+    const discussion = await this.discussionsService.findOne({
+      where: { id },
+      select: selectQuery,
+    });
+    return res.custom({
+      code: 200,
+      success: true,
+      data: discussion,
+    });
+  }
 
-  const id = req.params.id;
+  async update(req: Request, res: Response) {
+    const id = req.params.id;
+    const dto = UpdateDiscussionSchema.parse(req.body);
 
-  const discussionService =
-    req.scope.resolve<DiscussionsService>("DiscussionsService");
-  const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
+    const discussion = await this.discussionsService.update(id, dto);
 
-  const queryDto = DiscussionFindOneQuerySchema.parse(req.query);
-  const { selectQuery } = prismaUtils.generateCommonPrismaQuery(queryDto);
+    return res.custom({
+      success: true,
+      code: 201,
+      data: discussion,
+      message: "Discussion Updated",
+    });
+  }
 
-  const discussion = await discussionService.findOne({
-    where: { id },
-    select: selectQuery,
-  });
-  return res.custom({
-    code: 200,
-    success: true,
-    data: discussion,
-  });
-});
+  async remove(req: Request, res: Response) {
+    const id = req.params.id;
 
-discussionController.patch("/:id", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
+    const discussion = await this.discussionsService.remove(id);
 
-  const id = req.params.id;
-  const dto = UpdateDiscussionSchema.parse(req.body);
-
-  const discussionService =
-    req.scope.resolve<DiscussionsService>("DiscussionsService");
-
-  const discussion = await discussionService.update(id, dto);
-
-  return res.custom({
-    success: true,
-    code: 201,
-    data: discussion,
-    message: "Discussion Updated",
-  });
-});
-
-discussionController.delete("/:id", async (req, res) => {
-  await authorize(() => req?.user?.userType === "Admin");
-  const id = req.params.id;
-
-  const discussionService =
-    req.scope.resolve<DiscussionsService>("DiscussionsService");
-
-  const discussion = await discussionService.remove(id);
-
-  return res.custom({
-    success: true,
-    code: 200,
-    data: discussion,
-    message: "Discusssion deleted",
-  });
-});
-
-export { discussionController };
+    return res.custom({
+      success: true,
+      code: 200,
+      data: discussion,
+      message: "Discusssion deleted",
+    });
+  }
+}
