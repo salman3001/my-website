@@ -9,11 +9,13 @@ export const globalExceptionMiddleware: ErrorRequestHandler = (
   next,
 ) => {
   console.error(err);
+  console.error("Error type", typeof err);
   if (res.headersSent) {
     return next(err);
   }
 
   if (err instanceof ZodError) {
+    console.error("yes");
     return res.custom({
       code: 423,
       success: false,

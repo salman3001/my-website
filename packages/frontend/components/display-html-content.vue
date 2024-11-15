@@ -7,7 +7,9 @@ const { setLightBoxSrc } = useLightbox();
 
 onMounted(() => {
   // Select all img tags in the content
-  const images = document.querySelectorAll("img");
+  const images = document.querySelectorAll(
+    "tiptap img",
+  ) as NodeListOf<HTMLImageElement>;
 
   // Add click event listener to each image
   images.forEach((img) => {

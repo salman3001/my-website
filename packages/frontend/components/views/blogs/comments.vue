@@ -4,29 +4,44 @@ defineProps<{
   commentCount: number;
 }>();
 
-const { user } = useAuth();
+const listRef = ref();
 </script>
 
 <template>
-  <v-card class="bg-background py-8 border-none">
-    <v-card-item class="text-h6 font-weight-bold">
-      Join The discussion! ({{ commentCount }} comments)
-    </v-card-item>
-    <v-card-item v-if="!user">
-      Please
-      <NuxtLink
-        class="text-primary"
-        :to="routes.auth.signin() + `?next=${routes.web.blogs.view(blogId)}`"
-        >Sign in</NuxtLink
-      >
-      or
-      <NuxtLink class="text-primary" :to="routes.auth.signup()"
-        >Sign up</NuxtLink
-      >
-      for free to join in on the dicussion.
-    </v-card-item>
+  <v-card class="bg-surface pt-8 border-none" density="compact">
+    <v-card-title class="d-flex justify-space-between">
+      <h3>Responses ({{ commentCount }})</h3>
+      <div class="d-flex ga-2">
+        <v-tooltip text="Community Guidelines">
+          <template v-slot:activator="{ props }">
+            <v-btn variant="text" size="sm">
+              <v-icon icon="mdi-shield-outline" v-bind="props"></v-icon>
+            </v-btn>
+          </template>
+        </v-tooltip>
+      </div>
+    </v-card-title>
   </v-card>
-
   <br />
-  <ListsComments :blog-Id="blogId" type="blog" :with-reply-form="true" />
+  <v-card-item>
+    <div class="pb-4">
+      <FormsAddComment
+        :blog-id="blogId"
+        type="blog"
+        @success="
+          () => {
+            listRef.refreshComments();
+          }
+        "
+      />
+      <br />
+      <v-divider></v-divider>
+    </div>
+    <ListsComments
+      ref="listRef"
+      type="blog"
+      :blog-id="blogId"
+      :are-replies="false"
+    />
+  </v-card-item>
 </template>

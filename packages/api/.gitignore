@@ -6,8 +6,6 @@
 /public/uploads
 
 
-/packages/**/node_modules
-
 # Logs
 logs
 *.log

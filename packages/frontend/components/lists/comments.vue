@@ -7,15 +7,24 @@ const props = defineProps<{
   blogId?: string;
   discussionId?: string;
   parentId?: number;
-  withReplyForm?: boolean;
+  areReplies: boolean;
 }>();
+
+const refreshComments = () => {
+  refresh();
+};
+
+defineExpose({ refreshComments });
 
 const { data, status, refresh } = await useFetcherGet<
   IResType<{ count: number; data: BlogComment[] | DiscussionComment[] }>
 >(
   props.type === "blog"
     ? apiRoutes.blogComments.index()
-    : apiRoutes.discussionComments.index(),
+    : props.type === "discussion"
+    ? apiRoutes.discussionComments.index()
+    : "",
+
   {
     query: {
       select: [
@@ -25,6 +34,7 @@ const { data, status, refresh } = await useFetcherGet<
         "user",
         "parentId",
         "count:replies",
+        props.type === "blog" ? "blogId" : "discussionId",
       ],
       take: 1000,
       skip: 0,
@@ -38,31 +48,18 @@ const { data, status, refresh } = await useFetcherGet<
 </script>
 
 <template>
-  <div class="d-flex flex-column ga-4" v-if="data">
+  <div class="d-flex flex-column" v-if="data">
     <v-card
-      v-if="data.data?.data.length === 0 && !parentId"
-      class="bg-background py-8 text-center"
+      v-if="data.data?.data.length === 0 && !areReplies"
+      class="bg-background pa-0 text-center border-none"
+      density="compact"
     >
       <v-card-item>
         <v-icon icon="mdi-message" size="64" color="primary"></v-icon>
       </v-card-item>
       <v-card-item>Be the first to Comment!</v-card-item>
     </v-card>
-    <CommentCard
-      v-for="comment in data.data?.data"
-      :comment="comment"
-      :blog-id="blogId"
-      :discussion-id="discussionId"
-    />
-    <FormsAddComment
-      v-if="withReplyForm"
-      :blog-id="blogId"
-      placeholder="Reply"
-      type="blog"
-      :parent-id="parentId"
-      :rows="withReplyForm ? 2 : undefined"
-      @success="() => refresh()"
-    />
+    <CommentCard v-for="comment in data.data?.data" :comment="comment" />
   </div>
 
   <Loader v-else type="card" />

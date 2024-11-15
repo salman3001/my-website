@@ -8,7 +8,7 @@ const { user } = useAuth();
 </script>
 
 <template>
-  <v-layout>
+  <v-layout ref="app" main-layout>
     <v-app-bar color="primary" class="pr-2 glass border-b-md">
       <v-app-bar-nav-icon
         :color="$vuetify.theme.global.name === 'dark' ? 'white' : 'black'"
@@ -132,13 +132,13 @@ const { user } = useAuth();
       </v-list>
     </v-navigation-drawer>
 
-    <v-main>
-      <div>
+    <v-main scrollable>
+      <div style="min-height: 70vh">
         <slot />
       </div>
       <Footer />
-      <Lightbox />
     </v-main>
+    <Lightbox />
   </v-layout>
 </template>
 

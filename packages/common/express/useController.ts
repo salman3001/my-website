@@ -5,8 +5,8 @@ export const useController = function <T extends Controller>(
   controller: new (...args: any[]) => T,
   method: keyof T,
 ): Handler {
-  return (req, res, next) => {
+  return async (req, res, next) => {
     const resolvedController = req.scope.resolve(controller.name);
-    resolvedController[method](req, res, next);
+    await resolvedController[method](req, res, next);
   };
 };

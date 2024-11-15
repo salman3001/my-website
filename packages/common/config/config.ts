@@ -24,7 +24,7 @@ export class Config {
     };
   }
 
-  validate() {
+  private validate() {
     for (const key in this.envs) {
       if (Object.prototype.hasOwnProperty.call(this.envs, key)) {
         const element = this.envs[key as keyof typeof this.envs];

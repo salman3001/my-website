@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
+    "express": "^5.0.1",
     "my-website.common": "workspace:*"
   },
   "prisma": {

@@ -9,7 +9,7 @@ export const themes: Record<string, ThemeDefinition> = {
     colors: {
       primary: staticPrimaryColor,
       "on-primary": "#fff",
-      "primary-darken-1": "#675DD8",
+      "primary-darken-1": "#654f2d",
       secondary: "#808390",
       "on-secondary": "#fff",
       "secondary-darken-1": "#737682",
@@ -22,7 +22,7 @@ export const themes: Record<string, ThemeDefinition> = {
       warning: "#FF9F43",
       "on-warning": "#fff",
       "warning-darken-1": "#E68F3C",
-      error: "#FEFEFE",
+      error: "#ff4c51",
       "on-error": "#fff",
       "error-darken-1": "#E64449",
       background: "#fff",
@@ -83,7 +83,7 @@ export const themes: Record<string, ThemeDefinition> = {
     colors: {
       primary: staticPrimaryDarkenColor,
       "on-primary": "#fff",
-      "primary-darken-1": "#675DD8",
+      "primary-darken-1": "#654f2d",
       secondary: "#808390",
       "on-secondary": "#fff",
       "secondary-darken-1": "#737682",

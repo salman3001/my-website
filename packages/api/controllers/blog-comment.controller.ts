@@ -13,7 +13,7 @@ import { Request, Response } from "my-website.common/express/index.js";
 export class BlogCommentsController extends Controller {
   constructor(
     private readonly prismaUtils: PrismaUtils,
-    private readonly blogCommentService: BlogCommentsService,
+    private readonly blogCommentsService: BlogCommentsService,
   ) {
     super();
   }
@@ -21,7 +21,7 @@ export class BlogCommentsController extends Controller {
   async create(req: Request, res: Response) {
     const dto = CreateBlogCommentSchema.parse(req.body);
 
-    const comment = await this.blogCommentService.create(dto, req.user);
+    const comment = await this.blogCommentsService.create(dto, req.user);
 
     return res.custom({
       code: 201,
@@ -48,7 +48,7 @@ export class BlogCommentsController extends Controller {
       ? { parentId: { equals: parentId } }
       : { parentId: { equals: null } };
 
-    const { comments, count } = await this.blogCommentService.findAll({
+    const { comments, count } = await this.blogCommentsService.findAll({
       skip,
       take,
       where: {
@@ -72,7 +72,7 @@ export class BlogCommentsController extends Controller {
     const { selectQuery } =
       this.prismaUtils.generateCommonPrismaQuery(queryDto);
 
-    const comment = await this.blogCommentService.findOne({
+    const comment = await this.blogCommentsService.findOne({
       where: { id: +id },
       select: selectQuery,
     });
@@ -84,7 +84,7 @@ export class BlogCommentsController extends Controller {
     const id = req.params.id;
     const dto = UpdateBlogCommentSchema.parse(req.body);
 
-    const comment = await this.blogCommentService.update(+id, dto);
+    const comment = await this.blogCommentsService.update(+id, dto);
 
     return res.custom({
       success: true,
@@ -97,7 +97,7 @@ export class BlogCommentsController extends Controller {
   async remove(req: Request, res: Response) {
     const id = req.params.id;
 
-    const comments = await this.blogCommentService.remove(+id);
+    const comments = await this.blogCommentsService.remove(+id);
 
     return res.custom({
       success: true,

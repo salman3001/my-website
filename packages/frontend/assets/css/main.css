@@ -35,71 +35,35 @@ p {
   -webkit-line-clamp: 4;
 }
 
-/* .markdown * {
-  color: rgb(var(--v-theme-on-surface));
+/* scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
 }
 
-.markdown h1,
-.markdown h2,
-.markdown h3,
-.markdown h4,
-.markdown h5,
-.markdown h6,
-.markdown ul,
-.markdown ol,
-.markdown img,
-.markdown table,
-.markdown p {
-  padding: 1rem 0rem 1rem 0rem;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.markdown ul,
-.markdown ol {
-  padding-left: 2rem;
+::-webkit-scrollbar-thumb {
+  background: rgba(var(--v-theme-primary));
 }
 
-.markdown code {
-  background: rgb(var(--v-theme-background));
-  border: 1px solid rgb(var(--v-theme-grey-200));
-  border-left: 3px solid rgb(var(--v-theme-primary));
-  color: var(--v-theme-on-background);
-  page-break-inside: avoid;
-  font-family: monospace;
-  font-size: 15px;
-  line-height: 1.6;
-  margin-bottom: 1.6em;
-  max-width: 100%;
-  overflow: auto;
-  padding: 1em 1.5em;
-  display: block;
-  word-wrap: break-word;
-  border-radius: 0.5rem;
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--v-theme-primary-darken-1));
 }
 
-.markdown blockquote {
-  color: rgb(var(--v-theme-primary));
-  font-style: italic;
-  padding: 0.75rem;
-  padding-left: 15px;
-  border-left: 3px solid rgb(var(--v-theme-primary));
-  border-top: 1px solid rgb(var(--v-theme-grey-200));
-  border-right: 1px solid rgb(var(--v-theme-grey-200));
-  border-bottom: 1px solid rgb(var(--v-theme-grey-200));
-  border-radius: 0.5rem;
+/* Transition */
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.3s;
 }
 
-.markdown a {
-  color: rgb(var(--v-theme-primary));
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }
 
-.markdown img {
-  display: block;
-  width: auto;
-  max-width: 100%;
-  height: auto;
-} */
-
-/* tip tap  */
+/* tip tap */
 .tiptap .ProseMirror {
   padding: 0.5rem;
   min-block-size: 15vh;

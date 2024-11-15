@@ -59,7 +59,7 @@ app.use(cookieParser());
 app.use(AuthMiddleware);
 app.use(cleanTempUploadFilesMiddleware);
 
-// controllers
+// routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/blogs", blogRoutes);
