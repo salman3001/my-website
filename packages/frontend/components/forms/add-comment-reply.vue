@@ -45,16 +45,16 @@ const createComment = async () => {
 <template>
   <div>
     <v-form v-if="user" @submit.prevent="createComment">
-      <div class="d-flex flex-column ga-4">
-        <v-textarea
-          placeholder="What are Your thoughts?"
-          v-model="form.message"
-          :error-messages="errors?.message?._errors"
-          class="bg-surface"
-          :auto-grow="true"
-          rows="2"
-        >
-        </v-textarea>
+      <div class="d-flex flex-column ga-2">
+        <div>
+          <TipTapEditorLight
+            v-model="form.message"
+            placeholder="What are Your thoughts?"
+          />
+          <span class="text-error" v-if="errors?.message?._errors">{{
+            errors?.message?._errors
+          }}</span>
+        </div>
         <v-btn
           :disabled="loading"
           class="align-self-end"

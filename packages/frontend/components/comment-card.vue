@@ -11,17 +11,22 @@ const showReplyForm = ref(false);
 const listRef = ref();
 
 const { exec: deleteComment, loading: isDeleting } = useFetcher();
+const { user } = useAuth();
+
+defineEmits<{
+  deleted: [];
+}>();
 </script>
 <template>
   <v-card
     class="bg-background"
-    border="none"
+    rounded="0"
     style="min-width: 200px"
     :style="{ overflow: $vuetify.display.smAndDown ? 'scroll' : 'auto' }"
     density="compact"
   >
-    <VCardItem class="pt-1">
-      <div class="d-flex ga-4 justify-space-between pt-4">
+    <VCardItem class="pa-0">
+      <div class="d-flex ga-4 justify-space-between pt-2">
         <div class="d-flex ga-4">
           <div>
             <VAvatar
@@ -55,43 +60,67 @@ const { exec: deleteComment, loading: isDeleting } = useFetcher();
         </v-menu>
       </div>
     </VCardItem>
-    <VCardText class="text-body-1 pa-1">
-      {{ comment.message }}
+    <VCardText class="text-body-1 pa-2">
+      <DisplayHtmlContent
+        :content="comment.message"
+        :unique-id="'comment-' + comment.id"
+      />
     </VCardText>
 
-    <VCardActions class="pt-1">
+    <VCardActions class="pa-0 ma-0" style="min-height: auto">
       <div class="d-flex flex-wrap-reverse justify-space-between w-100">
         <div>
-          <v-btn variant="text"
-            ><v-icon icon="mdi-heart-outline"></v-icon>20</v-btn
-          >
-          <v-btn
-            variant="text"
-            v-if="comment?._count?.replies > 0"
-            @click="() => (showReplies = !showReplies)"
-            ><v-icon icon="mdi-chat-outline"></v-icon
-            >{{ comment?._count?.replies }}</v-btn
-          >
-        </div>
-        <div>
-          <v-btn variant="text" @click="() => (showReplyForm = !showReplyForm)">
-            Reply
+          <v-btn variant="text" size="small">
+            <v-icon icon="mdi-heart-outline"></v-icon>20
           </v-btn>
           <v-btn
-            icon="mdi-delete"
-            color="error"
             variant="text"
             size="small"
-            @click="
+            v-if="comment?._count?.replies > 0"
+            @click="() => (showReplies = !showReplies)"
+          >
+            <v-icon icon="mdi-chat-outline"> </v-icon
+            >{{ comment?._count?.replies }}
+          </v-btn>
+        </div>
+        <div>
+          <v-btn
+            variant="text"
+            size="small"
+            @click="() => (showReplyForm = !showReplyForm)"
+          >
+            Reply
+          </v-btn>
+          <DialogsConfirm
+            v-if="user?.userType === 'Admin'"
+            @confirm="
               async () => {
-                await deleteComment(apiRoutes.blogComments.delete(comment.id), {
-                  method: 'delete',
-                });
+                await deleteComment(
+                  apiRoutes.blogComments.delete(comment.id),
+                  {
+                    method: 'delete',
+                  },
+                  {
+                    onSuccess: () => {
+                      $emit('deleted');
+                    },
+                  },
+                );
               }
             "
-            :disabled="isDeleting"
           >
-          </v-btn>
+            <template #default="{ props }">
+              <v-btn
+                v-bind="props"
+                color="error"
+                variant="text"
+                size="small"
+                :disabled="isDeleting"
+                icon="mdi-delete"
+              >
+              </v-btn>
+            </template>
+          </DialogsConfirm>
         </div>
       </div>
     </VCardActions>
@@ -104,7 +133,13 @@ const { exec: deleteComment, loading: isDeleting } = useFetcher();
           :parent-id="comment.id"
           @success="
             () => {
-              listRef?.refreshComments();
+              if (!showReplies) {
+                showReplies = true;
+                showReplyForm = false;
+              } else {
+                showReplyForm = false;
+                listRef?.refreshComments();
+              }
             }
           "
         />
@@ -112,17 +147,16 @@ const { exec: deleteComment, loading: isDeleting } = useFetcher();
     </v-card-item>
   </v-card>
   <Transition>
-    <div v-if="showReplies" class="ml-1 border-s-md">
-      <div class="my-1 pl-1">
+    <div v-if="showReplies" class="ml-1">
+      <div class="pl-2">
         <ListsComments
+          ref="listRef"
           type="blog"
           :blog-id="(comment as BlogComment).blogId"
           :parent-id="comment.id"
           :are-replies="true"
-          ref="listRef"
         />
       </div>
     </div>
   </Transition>
-  <v-divider></v-divider>
 </template>

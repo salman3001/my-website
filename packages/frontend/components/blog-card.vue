@@ -31,9 +31,11 @@ defineProps<{
       <v-col :cols="horzontal ? 6 : 12">
         <div>
           <v-card-item>
-            <v-chip v-if="blog?.blogCategory" size="small">
-              {{ blog?.blogCategory?.name }}
-            </v-chip>
+            <NuxtLink @click.stop="() => {}" href="#">
+              <v-chip v-if="blog?.blogCategory" size="small" rounded="md">
+                {{ blog?.blogCategory?.name }}
+              </v-chip>
+            </NuxtLink>
           </v-card-item>
 
           <v-card-text class="text-h6 line-clamp-3 py-0">

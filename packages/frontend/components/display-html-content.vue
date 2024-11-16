@@ -1,6 +1,7 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   content: string;
+  uniqueId: string;
 }>();
 
 const { setLightBoxSrc } = useLightbox();
@@ -8,7 +9,7 @@ const { setLightBoxSrc } = useLightbox();
 onMounted(() => {
   // Select all img tags in the content
   const images = document.querySelectorAll(
-    "tiptap img",
+    `#${props.uniqueId} img`,
   ) as NodeListOf<HTMLImageElement>;
 
   // Add click event listener to each image
@@ -20,5 +21,5 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="tiptap" v-html="content"></div>
+  <div :id="uniqueId" class="tiptap tiptap-content" v-html="content"></div>
 </template>

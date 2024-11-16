@@ -30,7 +30,6 @@ const login = async () => {
 
 <template>
   <v-container max-width="1280">
-    <v-sheet>ss</v-sheet>
     <div class="py-2">
       <Logo color="dark" />
     </div>

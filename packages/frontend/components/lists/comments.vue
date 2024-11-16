@@ -11,12 +11,12 @@ const props = defineProps<{
 }>();
 
 const refreshComments = () => {
-  refresh();
+  execute();
 };
 
 defineExpose({ refreshComments });
 
-const { data, status, refresh } = await useFetcherGet<
+const { data, status, execute } = await useFetcherGet<
   IResType<{ count: number; data: BlogComment[] | DiscussionComment[] }>
 >(
   props.type === "blog"
@@ -59,7 +59,11 @@ const { data, status, refresh } = await useFetcherGet<
       </v-card-item>
       <v-card-item>Be the first to Comment!</v-card-item>
     </v-card>
-    <CommentCard v-for="comment in data.data?.data" :comment="comment" />
+    <CommentCard
+      v-for="comment in data.data?.data"
+      :comment="comment"
+      @deleted="refreshComments"
+    />
   </div>
 
   <Loader v-else type="card" />

@@ -8,7 +8,7 @@ const listRef = ref();
 </script>
 
 <template>
-  <v-card class="bg-surface pt-8 border-none" density="compact">
+  <v-card class="bg-surface border-none" density="compact">
     <v-card-title class="d-flex justify-space-between">
       <h3>Responses ({{ commentCount }})</h3>
       <div class="d-flex ga-2">

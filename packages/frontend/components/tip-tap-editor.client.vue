@@ -10,6 +10,7 @@ import Youtube from "@tiptap/extension-youtube";
 const props = defineProps<{
   modelValue: string;
   placeholder?: string;
+  minHeight?: number;
 }>();
 
 const emit = defineEmits<{
@@ -34,6 +35,7 @@ const editor = useEditor({
     }),
     Underline,
     Image,
+    Youtube,
   ],
   onUpdate() {
     if (!editor.value) return;
@@ -74,15 +76,14 @@ const addVideo = () => {
 
 <template>
   <div class="border tiptap position-relative">
-    <div class="overflow-y-auto" style="max-height: 800px">
+    <div v-if="editor" class="overflow-y-auto" style="max-height: 400px">
       <div
-        v-if="editor"
-        class="d-flex gap-2 py-2 px-6 flex-wrap align-center editor position-sticky top-0 bg-background"
+        class="d-flex gap-2 flex-wrap align-center editor position-sticky top-0 bg-background"
         style="z-index: 1"
       >
-        <v-btn-group variant="outlined" divided>
-          <v-btn
-            size="small"
+        <VBtnGroup class="d-flex flex-wrap h-auto ga-1 py-2">
+          <VBtn
+            size="x-small"
             rounded="sm"
             type="button"
             :variant="
@@ -94,11 +95,10 @@ const addVideo = () => {
             @click.prevent="
               editor.chain().focus().toggleHeading({ level: 1 }).run()
             "
-          >
-            H1
-          </v-btn>
-          <v-btn
-            size="small"
+            text="H1"
+          />
+          <VBtn
+            size="x-small"
             rounded="sm"
             type="button"
             :variant="
@@ -110,27 +110,10 @@ const addVideo = () => {
             @click.prevent="
               editor.chain().focus().toggleHeading({ level: 2 }).run()
             "
-          >
-            H2
-          </v-btn>
-          <v-btn
-            size="small"
-            rounded="sm"
-            type="button"
-            :variant="
-              editor.isActive('heading', { level: 1 }) ? 'tonal' : 'text'
-            "
-            :color="
-              editor.isActive('heading', { level: 1 }) ? 'primary' : 'default'
-            "
-            @click.prevent="
-              editor.chain().focus().toggleHeading({ level: 1 }).run()
-            "
-          >
-            H3
-          </v-btn>
-          <v-btn
-            size="small"
+            text="H2"
+          />
+          <VBtn
+            size="x-small"
             rounded="sm"
             type="button"
             :variant="
@@ -140,206 +123,221 @@ const addVideo = () => {
               editor.isActive('heading', { level: 3 }) ? 'primary' : 'default'
             "
             @click.prevent="
+              editor.chain().focus().toggleHeading({ level: 1 }).run()
+            "
+            text="H3"
+          />
+          <VBtn
+            size="x-small"
+            rounded="sm"
+            type="button"
+            :variant="
+              editor.isActive('heading', { level: 4 }) ? 'tonal' : 'text'
+            "
+            :color="
+              editor.isActive('heading', { level: 4 }) ? 'primary' : 'default'
+            "
+            @click.prevent="
               editor.chain().focus().toggleHeading({ level: 3 }).run()
             "
-          >
-            H3
-          </v-btn>
-        </v-btn-group>
-        <v-btn
-          size="small"
-          rounded="sm"
-          type="button"
-          :variant="editor.isActive('bold') ? 'tonal' : 'text'"
-          :color="editor.isActive('bold') ? 'primary' : 'default'"
-          @click.prevent="editor.chain().focus().toggleBold().run()"
-        >
-          <VIcon icon="mdi-format-bold" />
-        </v-btn>
-
-        <v-btn
-          size="small"
-          rounded="sm"
-          type="button"
-          :variant="editor.isActive('underline') ? 'tonal' : 'text'"
-          :color="editor.isActive('underline') ? 'primary' : 'default'"
-          @click.prevent="editor.commands.toggleUnderline()"
-        >
-          <VIcon icon="mdi-format-underline" />
-        </v-btn>
-
-        <v-btn
-          size="small"
-          rounded="sm"
-          type="button"
-          :variant="editor.isActive('italic') ? 'tonal' : 'text'"
-          :color="editor.isActive('italic') ? 'primary' : 'default'"
-          @click.prevent="editor.chain().focus().toggleItalic().run()"
-        >
-          <VIcon icon="mdi-format-italic" class="font-weight-medium" />
-        </v-btn>
-
-        <v-btn
-          size="small"
-          rounded="sm"
-          type="button"
-          :variant="editor.isActive('strike') ? 'tonal' : 'text'"
-          :color="editor.isActive('strike') ? 'primary' : 'default'"
-          @click.prevent="editor.chain().focus().toggleStrike().run()"
-        >
-          <VIcon icon="mdi-format-strikethrough" />
-        </v-btn>
-
-        <v-btn
-          size="small"
-          rounded="sm"
-          type="button"
-          :variant="editor.isActive({ textAlign: 'left' }) ? 'tonal' : 'text'"
-          :color="
-            editor.isActive({ textAlign: 'left' }) ? 'primary' : 'default'
-          "
-          @click.prevent="editor.chain().focus().setTextAlign('left').run()"
-        >
-          <VIcon icon="mdi-format-align-left" />
-        </v-btn>
-
-        <v-btn
-          size="small"
-          rounded="sm"
-          type="button"
-          :color="
-            editor.isActive({ textAlign: 'center' }) ? 'primary' : 'default'
-          "
-          :variant="editor.isActive({ textAlign: 'center' }) ? 'tonal' : 'text'"
-          @click.prevent="editor.chain().focus().setTextAlign('center').run()"
-        >
-          <VIcon icon="mdi-format-align-center" />
-        </v-btn>
-
-        <v-btn
-          size="small"
-          rounded="sm"
-          type="button"
-          :variant="editor.isActive({ textAlign: 'right' }) ? 'tonal' : 'text'"
-          :color="
-            editor.isActive({ textAlign: 'right' }) ? 'primary' : 'default'
-          "
-          @click.prevent="editor.chain().focus().setTextAlign('right').run()"
-        >
-          <VIcon icon="mdi-format-align-right" />
-        </v-btn>
-
-        <v-btn
-          size="small"
-          rounded="sm"
-          type="button"
-          :variant="
-            editor.isActive({ textAlign: 'justify' }) ? 'tonal' : 'text'
-          "
-          :color="
-            editor.isActive({ textAlign: 'justify' }) ? 'primary' : 'default'
-          "
-          @click.prevent="editor.chain().focus().setTextAlign('justify').run()"
-        >
-          <VIcon icon="mdi-format-align-justify" />
-        </v-btn>
-
-        <v-btn
-          size="small"
-          rounded="sm"
-          type="button"
-          :variant="editor.isActive('blockquote') ? 'tonal' : 'text'"
-          :color="editor.isActive('blockquote') ? 'primary' : 'default'"
-          @click.prevent="editor.chain().focus().toggleBlockquote().run()"
-        >
-          <VIcon icon="mdi-format-quote-close" />
-        </v-btn>
-
-        <v-btn
-          size="small"
-          rounded="sm"
-          type="button"
-          :variant="editor.isActive('bulletList') ? 'tonal' : 'text'"
-          :color="editor.isActive('bulletList') ? 'primary' : 'default'"
-          @click.prevent="editor.chain().focus().toggleBulletList().run()"
-        >
-          <VIcon icon="mdi-format-list-bulleted" />
-        </v-btn>
-
-        <v-btn
-          size="small"
-          rounded="sm"
-          type="button"
-          :variant="editor.isActive('orderedList') ? 'tonal' : 'text'"
-          :color="editor.isActive('orderedList') ? 'primary' : 'default'"
-          @click.prevent="editor.chain().focus().toggleOrderedList().run()"
-        >
-          <VIcon icon="mdi-format-list-numbered" />
-        </v-btn>
-
-        <v-btn
-          size="small"
-          rounded="sm"
-          type="button"
-          :variant="editor.isActive('codeBlock') ? 'tonal' : 'text'"
-          :color="editor.isActive('codeBlock') ? 'primary' : 'default'"
-          @click.prevent="editor.chain().focus().toggleCodeBlock().run()"
-        >
-          <VIcon icon="mdi-code-braces" />
-        </v-btn>
-
-        <v-btn
-          size="small"
-          rounded="sm"
-          type="button"
-          variant="text"
-          @click.prevent="editor.chain().focus().setHorizontalRule().run()"
-        >
-          <VIcon icon="mdi-minus" />
-        </v-btn>
-
-        <v-btn
-          size="small"
-          rounded="sm"
-          variant="text"
-          type="button"
-          @click.prevent="addImage"
-        >
-          <VIcon icon="mdi-image" />
-        </v-btn>
-        <v-divider vertical inset></v-divider>
-        <div class="d-flex ga-2 pa-2">
-          <v-text-field
-            id="width"
-            type="number"
-            v-model="youtube.width"
-            placeholder="width"
-            density="compact"
-            :width="80"
+            text="H4"
           />
-          <v-text-field
-            id="height"
-            type="number"
-            v-model="youtube.height"
-            placeholder="height"
-            :width="80"
-          />
-
-          <v-btn
+          <v-divider vertical></v-divider>
+          <VBtn
+            size="x-small"
             rounded="sm"
-            variant="tonal"
+            icon="mdi-format-bold"
+            type="button"
+            :variant="editor.isActive('bold') ? 'tonal' : 'text'"
+            :color="editor.isActive('bold') ? 'primary' : 'default'"
+            @click.prevent="editor.chain().focus().toggleBold().run()"
+          />
+
+          <VBtn
+            size="x-small"
+            rounded="sm"
+            type="button"
+            icon="mdi-format-underline"
+            :variant="editor.isActive('underline') ? 'tonal' : 'text'"
+            :color="editor.isActive('underline') ? 'primary' : 'default'"
+            @click.prevent="editor.commands.toggleUnderline()"
+          />
+
+          <VBtn
+            size="x-small"
+            rounded="sm"
+            type="button"
+            icon="mdi-format-italic"
+            :variant="editor.isActive('italic') ? 'tonal' : 'text'"
+            :color="editor.isActive('italic') ? 'primary' : 'default'"
+            @click.prevent="editor.chain().focus().toggleItalic().run()"
+          />
+          <VBtn
+            size="x-small"
+            rounded="sm"
+            type="button"
+            icon="mdi-format-strikethrough"
+            :variant="editor.isActive('strike') ? 'tonal' : 'text'"
+            :color="editor.isActive('strike') ? 'primary' : 'default'"
+            @click.prevent="editor.chain().focus().toggleStrike().run()"
+          />
+          <VBtn
+            size="x-small"
+            rounded="sm"
+            type="button"
+            icon="mdi-format-align-left"
+            :variant="editor.isActive({ textAlign: 'left' }) ? 'tonal' : 'text'"
+            :color="
+              editor.isActive({ textAlign: 'left' }) ? 'primary' : 'default'
+            "
+            @click.prevent="editor.chain().focus().setTextAlign('left').run()"
+          />
+          <VBtn
+            size="x-small"
+            rounded="sm"
+            type="button"
+            icon="mdi-format-align-center"
+            :color="
+              editor.isActive({ textAlign: 'center' }) ? 'primary' : 'default'
+            "
+            :variant="
+              editor.isActive({ textAlign: 'center' }) ? 'tonal' : 'text'
+            "
+            @click.prevent="editor.chain().focus().setTextAlign('center').run()"
+          />
+
+          <VBtn
+            size="x-small"
+            rounded="sm"
+            type="button"
+            icon="mdi-format-align-right"
+            :variant="
+              editor.isActive({ textAlign: 'right' }) ? 'tonal' : 'text'
+            "
+            :color="
+              editor.isActive({ textAlign: 'right' }) ? 'primary' : 'default'
+            "
+            @click.prevent="editor.chain().focus().setTextAlign('right').run()"
+          />
+
+          <VBtn
+            size="x-small"
+            rounded="sm"
+            type="button"
+            icon="mdi-format-align-justify"
+            :variant="
+              editor.isActive({ textAlign: 'justify' }) ? 'tonal' : 'text'
+            "
+            :color="
+              editor.isActive({ textAlign: 'justify' }) ? 'primary' : 'default'
+            "
+            @click.prevent="
+              editor.chain().focus().setTextAlign('justify').run()
+            "
+          />
+          <VBtn
+            size="x-small"
+            rounded="sm"
+            icon="mdi-format-quote-close"
+            type="button"
+            :variant="editor.isActive('blockquote') ? 'tonal' : 'text'"
+            :color="editor.isActive('blockquote') ? 'primary' : 'default'"
+            @click.prevent="editor.chain().focus().toggleBlockquote().run()"
+          />
+
+          <VBtn
+            size="x-small"
+            rounded="sm"
+            icon="mdi-format-list-bulleted"
+            type="button"
+            :variant="editor.isActive('bulletList') ? 'tonal' : 'text'"
+            :color="editor.isActive('bulletList') ? 'primary' : 'default'"
+            @click.prevent="editor.chain().focus().toggleBulletList().run()"
+          />
+          <VBtn
+            size="x-small"
+            icon="mdi-format-list-numbered"
+            rounded="sm"
+            type="button"
+            :variant="editor.isActive('orderedList') ? 'tonal' : 'text'"
+            :color="editor.isActive('orderedList') ? 'primary' : 'default'"
+            @click.prevent="editor.chain().focus().toggleOrderedList().run()"
+          />
+
+          <VBtn
+            size="x-small"
+            icon="mdi-code-braces"
+            rounded="sm"
+            type="button"
+            :variant="editor.isActive('codeBlock') ? 'tonal' : 'text'"
+            :color="editor.isActive('codeBlock') ? 'primary' : 'default'"
+            @click.prevent="editor.chain().focus().toggleCodeBlock().run()"
+          />
+
+          <VBtn
+            size="x-small"
+            icon="mdi-minus"
+            rounded="sm"
+            type="button"
+            variant="text"
+            @click.prevent="editor.chain().focus().setHorizontalRule().run()"
+          />
+
+          <VBtn
+            size="x-small"
+            icon="mdi-image"
+            rounded="sm"
+            variant="text"
             type="button"
             @click.prevent="addImage"
-          >
-            <VIcon icon="mdi-youtube" />
-          </v-btn>
-        </div>
-        <v-divider vertical inset></v-divider>
+          />
+          <v-divider vertical inset></v-divider>
+          <div class="d-flex">
+            <v-text-field
+              id="width"
+              type="number"
+              v-model="youtube.width"
+              placeholder="width"
+              density="compact"
+              :width="40"
+              variant="plain"
+              class="small-text-input"
+            />
+            <v-text-field
+              id="height"
+              type="number"
+              v-model="youtube.height"
+              placeholder="height"
+              :width="40"
+              variant="plain"
+              class="small-text-input"
+            />
+
+            <VBtn
+              rounded="sm"
+              variant="tonal"
+              type="button"
+              @click.prevent="addVideo"
+              icon="mdi-youtube"
+              size="x-small"
+            />
+          </div>
+        </VBtnGroup>
       </div>
 
-      <div style="z-index: 0">
-        <EditorContent ref="editorRef" :editor="editor" />
+      <div style="z-index: 0" class="bg-background">
+        <EditorContent
+          ref="editorRef"
+          :editor="editor"
+          :style="{ minHeight: `${minHeight || 50}px` }"
+        />
       </div>
     </div>
   </div>
 </template>
+
+<style scopped>
+.small-text-input input {
+  font-size: 0.75rem;
+}
+</style>

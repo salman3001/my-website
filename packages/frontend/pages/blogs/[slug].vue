@@ -34,7 +34,7 @@ const togelDrawer = () => (drawer.value = !drawer.value);
 
 const timeOut = setTimeout(() => {
   isCommentsDrawerDisabled.value = false;
-}, 3000);
+}, 1000);
 
 onUnmounted(() => {
   clearTimeout(timeOut);
@@ -49,7 +49,17 @@ onUnmounted(() => {
       :location="$vuetify.display.smAndDown ? 'bottom' : 'right'"
       temporary
       sticky
+      floating
+      :style="{ marginTop: $vuetify.display.smAndDown ? '5rem' : 'auto' }"
     >
+      <div :class="$vuetify.display.smAndDown ? 'text-end px-1' : 'px-1'">
+        <VBtn
+          icon="mdi-close"
+          variant="text"
+          rounded="sm"
+          @click="drawer = false"
+        />
+      </div>
       <ViewsBlogsComments
         :blog-id="data?.data?.id || ''"
         :comment-count="data?.data?._count?.comment"
@@ -57,7 +67,7 @@ onUnmounted(() => {
     </v-navigation-drawer>
   </Teleport>
 
-  <v-container max-width="800">
+  <v-container max-width="1100">
     <br />
     <h1>{{ data?.data?.title }}</h1>
 
@@ -99,7 +109,8 @@ onUnmounted(() => {
           ><v-icon icon="mdi-heart-outline"></v-icon>20</v-btn
         >
         <v-btn variant="text" @click="togelDrawer"
-          ><v-icon icon="mdi-chat-outline"></v-icon>2000</v-btn
+          ><v-icon icon="mdi-chat-outline"></v-icon
+          >{{ data?.data?._count?.comment }}</v-btn
         >
       </div>
       <div>
@@ -125,7 +136,10 @@ onUnmounted(() => {
               cover
             ></v-img>
           </div> -->
-    <DisplayHtmlContent :content="data?.data?.longDesc || ''" />
+    <DisplayHtmlContent
+      :content="data?.data?.longDesc || ''"
+      :unique-id="'blog-' + data?.data?.id"
+    />
     <br />
   </v-container>
 </template>

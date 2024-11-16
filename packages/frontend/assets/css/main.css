@@ -3,7 +3,6 @@ a {
 }
 
 p {
-  padding: 0.75rem 0 0.75rem 0;
   color: rgba(var(--v-theme-on-background));
 }
 
@@ -45,11 +44,12 @@ p {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(var(--v-theme-primary));
+  background: #7d62368c;
+  cursor: pointer;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(var(--v-theme-primary-darken-1));
+  background: #7d6236;
 }
 
 /* Transition */
@@ -66,7 +66,6 @@ p {
 /* tip tap */
 .tiptap .ProseMirror {
   padding: 0.5rem;
-  min-block-size: 15vh;
   outline: none;
 }
 .tiptap.ProseMirror p {
@@ -93,18 +92,14 @@ p {
   margin: 1.25rem 1rem 1.25rem 0.4rem;
 }
 
-.tiptap ul ol p {
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-}
-
-.tiptap ul li p {
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
+.tiptap li > p {
+  margin-top: 0em;
+  margin-bottom: 0em;
+  padding: 0px;
 }
 
 .tiptap pre {
-  background: rgb(3, 0, 3);
+  background: rgb(15, 1, 15);
   border-radius: 0.5rem;
   color: var(--white);
   font-family: "JetBrainsMono", monospace;
@@ -128,6 +123,14 @@ p {
 }
 
 .tiptap p {
-  padding: 0.75rem 0 0.75rem 0;
   color: rgba(var(--v-theme-on-background));
+}
+
+.tiptap-content p {
+  padding: 0.75rem 0 0.75rem 0;
+}
+
+.tiptap [data-youtube-video] {
+  display: flex;
+  justify-content: center;
 }

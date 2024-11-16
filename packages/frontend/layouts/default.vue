@@ -8,117 +8,121 @@ const { user } = useAuth();
 </script>
 
 <template>
-  <v-layout ref="app" main-layout>
-    <v-app-bar color="primary" class="pr-2 glass border-b-md">
-      <v-app-bar-nav-icon
-        :color="$vuetify.theme.global.name === 'dark' ? 'white' : 'black'"
-        @click.stop="drawer = !drawer"
-        v-if="$vuetify.display.smAndDown"
-      ></v-app-bar-nav-icon>
+  <VApp>
+    <v-layout ref="app" main-layout>
+      <v-app-bar color="primary" class="pr-2 glass border-b-md">
+        <v-app-bar-nav-icon
+          :color="$vuetify.theme.global.name === 'dark' ? 'white' : 'black'"
+          @click.stop="drawer = !drawer"
+          v-if="$vuetify.display.smAndDown"
+        ></v-app-bar-nav-icon>
 
-      <v-toolbar-title>
-        <Logo />
-      </v-toolbar-title>
+        <v-toolbar-title>
+          <Logo />
+        </v-toolbar-title>
 
-      <!-- <v-spacer></v-spacer> -->
+        <!-- <v-spacer></v-spacer> -->
 
-      <v-row
-        style="max-width: max-content"
-        v-if="$vuetify.display.mdAndUp"
-        no-gutters
-      >
-        <v-col v-for="(menu, i) in NavMenus">
-          <v-menu
-            open-on-hover
-            v-if="
-              menu?.child &&
-              (menu?.userAllowed ? menu?.userAllowed(user) : true)
-            "
-          >
-            <template v-slot:activator="{ props }">
-              <v-btn
-                v-bind="props"
-                append-icon="mdi-chevron-down"
-                :color="
-                  $vuetify.theme.global.name === 'dark' ? 'white' : 'black'
-                "
-                variant="text"
-                active-color="primary-darken-1"
-              >
-                {{ menu.name }}
-              </v-btn>
-            </template>
+        <v-row
+          style="max-width: max-content"
+          v-if="$vuetify.display.mdAndUp"
+          no-gutters
+        >
+          <v-col v-for="(menu, i) in NavMenus">
+            <v-menu
+              open-on-hover
+              v-if="
+                menu?.child &&
+                (menu?.userAllowed ? menu?.userAllowed(user) : true)
+              "
+            >
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  append-icon="mdi-chevron-down"
+                  :color="
+                    $vuetify.theme.global.name === 'dark' ? 'white' : 'black'
+                  "
+                  variant="text"
+                  active-color="primary-darken-1"
+                >
+                  {{ menu.name }}
+                </v-btn>
+              </template>
 
-            <v-list density="compact">
-              <template v-for="(subMenu, index) in menu.child">
+              <v-list density="compact">
+                <template v-for="(subMenu, index) in menu.child">
+                  <v-list-item
+                    v-if="
+                      subMenu?.userAllowed ? subMenu?.userAllowed(user) : true
+                    "
+                    :to="subMenu.href"
+                    :key="index"
+                    nuxt
+                  >
+                    <v-list-item-title>{{ subMenu.name }}</v-list-item-title>
+                  </v-list-item>
+                </template>
+              </v-list>
+            </v-menu>
+            <v-btn
+              v-else-if="menu?.userAllowed ? menu?.userAllowed(user) : true"
+              :to="menu.href"
+              nuxt
+              :color="$vuetify.theme.global.name === 'dark' ? 'white' : 'black'"
+              variant="text"
+              active-color="primary"
+            >
+              {{ menu.name }}
+            </v-btn>
+          </v-col>
+        </v-row>
+        <div class="d-flex ga-1 align-center">
+          <template v-if="$vuetify.display.mdAndUp">
+            <v-btn
+              icon="mdi-magnify"
+              :color="$vuetify.theme.global.name === 'dark' ? 'white' : 'black'"
+              class="text-black"
+            ></v-btn>
+          </template>
+          <ThemeSwitcher />
+          <AuthMenu />
+        </div>
+      </v-app-bar>
+
+      <v-navigation-drawer v-model="drawer" temporary>
+        <v-list v-model:opened="sideMenuGroups">
+          <template v-for="(menu, i) in NavMenus" :key="i">
+            <v-list-group
+              v-if="
+                menu.child &&
+                (menu?.userAllowed ? menu?.userAllowed(user) : true)
+              "
+              :value="menu.name"
+            >
+              <template v-slot:activator="{ props }">
+                <v-list-item v-bind="props" :title="menu.name" />
+              </template>
+              <template v-for="subMenu in menu.child">
                 <v-list-item
                   v-if="
                     subMenu?.userAllowed ? subMenu?.userAllowed(user) : true
                   "
+                  :title="subMenu.name"
                   :to="subMenu.href"
-                  :key="index"
                   nuxt
-                >
-                  <v-list-item-title>{{ subMenu.name }}</v-list-item-title>
-                </v-list-item>
+                />
               </template>
-            </v-list>
-          </v-menu>
-          <v-btn
-            v-else-if="menu?.userAllowed ? menu?.userAllowed(user) : true"
-            :to="menu.href"
-            nuxt
-            :color="$vuetify.theme.global.name === 'dark' ? 'white' : 'black'"
-            variant="text"
-            active-color="primary"
-          >
-            {{ menu.name }}
-          </v-btn>
-        </v-col>
-      </v-row>
-      <div class="d-flex ga-1 align-center">
-        <template v-if="$vuetify.display.mdAndUp">
-          <v-btn
-            icon="mdi-magnify"
-            :color="$vuetify.theme.global.name === 'dark' ? 'white' : 'black'"
-            class="text-black"
-          ></v-btn>
-        </template>
-        <ThemeSwitcher />
-        <AuthMenu />
-      </div>
-    </v-app-bar>
+            </v-list-group>
 
-    <v-navigation-drawer v-model="drawer" temporary>
-      <v-list v-model:opened="sideMenuGroups">
-        <template v-for="(menu, i) in NavMenus" :key="i">
-          <v-list-group
-            v-if="
-              menu.child && (menu?.userAllowed ? menu?.userAllowed(user) : true)
-            "
-            :value="menu.name"
-          >
-            <template v-slot:activator="{ props }">
-              <v-list-item v-bind="props" :title="menu.name" />
-            </template>
-            <template v-for="subMenu in menu.child">
-              <v-list-item
-                v-if="subMenu?.userAllowed ? subMenu?.userAllowed(user) : true"
-                :title="subMenu.name"
-                :to="subMenu.href"
-                nuxt
-              />
-            </template>
-          </v-list-group>
-
-          <v-list-item
-            v-else-if="menu?.userAllowed ? menu?.userAllowed(user) : true"
-            :to="menu.href"
-            nuxt
-            >{{ menu.name }}</v-list-item
-          >
-        </template>
-        <!-- <v-list-group value="User">
+            <v-list-item
+              v-else-if="menu?.userAllowed ? menu?.userAllowed(user) : true"
+              :to="menu.href"
+              nuxt
+              >{{ menu.name }}</v-list-item
+            >
+          </template>
+          <!-- <v-list-group value="User">
           <template v-slot:activator="{ props }">
             <v-list-item v-bind="props" title="User" />
           </template>
@@ -129,17 +133,18 @@ const { user } = useAuth();
             nuxt
           />
         </v-list-group> -->
-      </v-list>
-    </v-navigation-drawer>
+        </v-list>
+      </v-navigation-drawer>
 
-    <v-main scrollable>
-      <div style="min-height: 70vh">
-        <slot />
-      </div>
-      <Footer />
-    </v-main>
-    <Lightbox />
-  </v-layout>
+      <v-main scrollable>
+        <div style="min-height: 70vh">
+          <slot />
+        </div>
+        <Footer />
+      </v-main>
+    </v-layout>
+  </VApp>
+  <Lightbox />
 </template>
 
 <style>
