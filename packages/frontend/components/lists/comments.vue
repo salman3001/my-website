@@ -51,7 +51,7 @@ const { data, status, execute } = await useFetcherGet<
   <div class="d-flex flex-column" v-if="data">
     <v-card
       v-if="data.data?.data.length === 0 && !areReplies"
-      class="bg-background pa-0 text-center border-none"
+      class="bg-background py-4 text-center border-none mb-4"
       density="compact"
     >
       <v-card-item>
@@ -61,6 +61,7 @@ const { data, status, execute } = await useFetcherGet<
     </v-card>
     <CommentCard
       v-for="comment in data.data?.data"
+      :type="type"
       :comment="comment"
       @deleted="refreshComments"
     />

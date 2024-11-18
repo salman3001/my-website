@@ -5,6 +5,7 @@ const showReplies = ref(false);
 
 defineProps<{
   comment: BlogComment | DiscussionComment;
+  type: "blog" | "discussion";
 }>();
 
 const showReplyForm = ref(false);
@@ -19,14 +20,14 @@ defineEmits<{
 </script>
 <template>
   <v-card
-    class="bg-background"
+    class="bg-background rounded-bs-lg"
     rounded="0"
     style="min-width: 200px"
     :style="{ overflow: $vuetify.display.smAndDown ? 'scroll' : 'auto' }"
     density="compact"
   >
-    <VCardItem class="pa-0">
-      <div class="d-flex ga-4 justify-space-between pt-2">
+    <VCardItem>
+      <div class="d-flex ga-4 justify-space-between ma-0">
         <div class="d-flex ga-4">
           <div>
             <VAvatar
@@ -60,14 +61,14 @@ defineEmits<{
         </v-menu>
       </div>
     </VCardItem>
-    <VCardText class="text-body-1 pa-2">
+    <VCardText class="text-body-1 px-2">
       <DisplayHtmlContent
         :content="comment.message"
         :unique-id="'comment-' + comment.id"
       />
     </VCardText>
 
-    <VCardActions class="pa-0 ma-0" style="min-height: auto">
+    <VCardActions class="py-0 my-0" style="min-height: auto">
       <div class="d-flex flex-wrap-reverse justify-space-between w-100">
         <div>
           <v-btn variant="text" size="small">
@@ -96,7 +97,11 @@ defineEmits<{
             @confirm="
               async () => {
                 await deleteComment(
-                  apiRoutes.blogComments.delete(comment.id),
+                  type === 'blog'
+                    ? apiRoutes.blogComments.delete(comment.id)
+                    : type === 'discussion'
+                    ? apiRoutes.discussionComments.delete(comment.id)
+                    : '',
                   {
                     method: 'delete',
                   },
@@ -124,12 +129,13 @@ defineEmits<{
         </div>
       </div>
     </VCardActions>
-    <v-card-item class="pt-1">
+    <v-card-item>
       <Transition>
         <FormsAddCommentReply
           v-if="showReplyForm"
-          type="blog"
+          :type="type"
           :blog-id="(comment as BlogComment)?.blogId"
+          :discussion-id="(comment as DiscussionComment).discussionId"
           :parent-id="comment.id"
           @success="
             () => {
@@ -151,7 +157,7 @@ defineEmits<{
       <div class="pl-2">
         <ListsComments
           ref="listRef"
-          type="blog"
+          :type="type"
           :blog-id="(comment as BlogComment).blogId"
           :parent-id="comment.id"
           :are-replies="true"

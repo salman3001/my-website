@@ -13,7 +13,7 @@ export async function seedUser(prisma: PrismaClient) {
     create: {
       fullName: "Admin",
       email: "admin@gmail.com",
-      userName: "Admin",
+      userName: "admin",
       password: hashUtils.hash("123456789"),
       emailVerified: true,
       userType: UserType.Admin,
@@ -25,7 +25,7 @@ export async function seedUser(prisma: PrismaClient) {
     where: { email: "user@gmail.com" },
     update: {},
     create: {
-      fullName: "User",
+      fullName: "user",
       email: "user@gmail.com",
       userName: "User" + MathUtils.getRandom6number(),
       password: hashUtils.hash("123456789"),

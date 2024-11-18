@@ -13,6 +13,7 @@ import { ProfileController } from "./profile.controller.js";
 import { ProjectController } from "./project.controller.js";
 import { UserController } from "./user.controller.js";
 import { TagController } from "./tags.controller.js";
+import { DiscussionController } from "./discussion.controller.js";
 
 appContainer.addController = function () {
   this.register(AuthController.name, asClass(AuthController).singleton());
@@ -29,6 +30,10 @@ appContainer.addController = function () {
   this.register(
     ContactMessageController.name,
     asClass(ContactMessageController).singleton(),
+  );
+  this.register(
+    DiscussionController.name,
+    asClass(DiscussionController).singleton(),
   );
   this.register(
     DiscussionCommentsController.name,

@@ -43,7 +43,12 @@ const createComment = async () => {
 };
 </script>
 <template>
-  <div>
+  <v-sheet
+    v-if="user"
+    @submit.prevent="createComment"
+    class="pa-2"
+    rounded="lg"
+  >
     <v-form v-if="user" @submit.prevent="createComment">
       <div class="d-flex flex-column ga-2">
         <div>
@@ -76,5 +81,5 @@ const createComment = async () => {
       >
       to reply this comment.
     </div>
-  </div>
+  </v-sheet>
 </template>

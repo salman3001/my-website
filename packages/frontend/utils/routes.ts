@@ -14,7 +14,8 @@ export const routes = {
     },
     discussions: {
       index: () => "/discussions",
-      view: (id: number) => `/discussions/${id}`,
+      create: () => "/discussions/create",
+      view: (id: string) => `/discussions/${id}`,
     },
     blogs: { index: () => "/blogs", view: (slug: string) => `/blogs/${slug}` },
     categories: {
@@ -24,6 +25,9 @@ export const routes = {
     topics: {
       index: () => "/topics",
       view: (slug: string) => `/topics/${slug}`,
+    },
+    user: {
+      index: (userName: string) => `/user/${userName}`,
     },
   },
   auth: {

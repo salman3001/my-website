@@ -1,28 +1,25 @@
 <script setup lang="ts">
-import type { Blog } from "~/utils/types/modals";
+import type { Discussion } from "~/utils/types/modals";
 
-// const appConfig = useAppConfig();
-
-// defineProps<{
-//   horzontal: boolean;
-//   blog: Blog;
-// }>();
+defineProps<{
+  disicussion: Discussion;
+}>();
 </script>
 
 <template>
   <v-card
-    class="mx-auto bg-background"
+    class="bg-background"
     subtitle="prepend-icon and append-icon"
-    :to="routes.web.discussions.view(1)"
+    :to="routes.web.discussions.view(disicussion.id)"
   >
     <template #title>
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat quis
-      earum magni, excepturi fugiat ex architecto quas officiis aperiam beatae.
+      <h5>{{ disicussion?.user?.userName }}</h5>
     </template>
     <template #subtitle>
       <div class="d-flex flex-wrap ga-2 alighn-center">
-        <div>John Doe</div>
-        <div class="text-caption text-center">2 days ego</div>
+        <div class="text-caption text-center">
+          started {{ new Date(disicussion.createdAt).toDateString() }}
+        </div>
       </div>
     </template>
     <template #prepend>
@@ -33,40 +30,32 @@ import type { Blog } from "~/utils/types/modals";
         ></v-img>
       </v-avatar>
     </template>
-    <v-card-text class="line-clamp-4 pa-2" style="max-height: 92px"
-      >Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.
-      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quis fugiat fuga
-      dicta error sed libero quas consequuntur quia, possimus voluptates?
+    <v-card-text style="height: 3rem; overflow: hidden" class="py-0">
+      <h3 class="line-clamp-2 py-0">
+        {{ disicussion.title }}
+      </h3>
     </v-card-text>
-    <v-card-action>
-      <div class="pa-3 d-flex justify-space-between flex-wrap-reverse ga-2">
-        <div class="d-flex ga-2">
-          <v-tooltip text="Likes">
-            <template #activator="{ props }">
-              <v-chip v-bind="props" prepend-icon="mdi-heart" size="small">
-                7
-              </v-chip>
-            </template>
-          </v-tooltip>
-          <v-tooltip text="Replies">
-            <template #activator="{ props }">
-              <v-chip v-bind="props" prepend-icon="mdi-message" size="small">
-                2
-              </v-chip>
-            </template>
-          </v-tooltip>
-          <v-tooltip text="Impressions">
-            <template #activator="{ props }">
-              <v-chip v-bind="props" prepend-icon="mdi-eye" size="small">
-                2
-              </v-chip>
-            </template>
-          </v-tooltip>
-        </div>
-        <div>
-          <v-chip size="small">Adonis Js</v-chip>
-        </div>
-      </div>
-    </v-card-action>
+    <v-card-actions>
+      <VChipGroup color="primary" column class="pa-1">
+        <v-tooltip text="Replies">
+          <template #activator="{ props }">
+            <v-chip
+              v-bind="props"
+              prepend-icon="mdi-chat-outline"
+              size="small"
+              color="primary"
+              variant="elevated"
+            >
+              {{ disicussion?._count?.comment }}
+            </v-chip>
+          </template>
+        </v-tooltip>
+        <VChip text="Tagname" variant="tonal" size="small" to="#" />
+        <VChip text="Tagname" variant="tonal" size="small" to="#" />
+        <VChip text="Tagname" variant="tonal" size="small" to="#" />
+        <VChip text="Tagname" variant="tonal" size="small" to="#" />
+        <VChip text="Tagname" variant="tonal" size="small" />
+      </VChipGroup>
+    </v-card-actions>
   </v-card>
 </template>

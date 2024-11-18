@@ -41,17 +41,19 @@ export class DiscussionCommentsController extends Controller {
       ? { name: { contains: search, mode: "insensitive" as any } }
       : {};
 
-    const queryByDiscussion = discussionId
+    const queryByDiscussionId = discussionId
       ? { discussionId: { equals: discussionId } }
       : {};
 
-    const queryByParentId = parentId ? { parentId: { equals: parentId } } : {};
+    const queryByParentId = parentId
+      ? { parentId: { equals: parentId } }
+      : { parentId: { equals: null } };
 
     const { comments, count } = await this.discussionCommentsService.findAll({
       skip,
       take,
       where: {
-        AND: { ...searchQuery, ...queryByDiscussion, ...queryByParentId },
+        AND: { ...searchQuery, ...queryByDiscussionId, ...queryByParentId },
       },
       orderBy: orderByQuery,
       select: selectQuery,

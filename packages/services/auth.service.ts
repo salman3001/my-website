@@ -76,7 +76,9 @@ export class AuthService {
       data: {
         ...rest,
         password: this.hashUtils.hash(password),
-        userName: rest.fullName + MathUtils.getRandom6number(),
+        userName: (
+          rest.fullName + MathUtils.getRandom6number()
+        ).toLocaleLowerCase(),
         emailVerified: false,
         userType: UserType.User,
         isActive: true,

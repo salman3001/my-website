@@ -6,7 +6,7 @@ const userRoutes = Router();
 userRoutes.get("/", useController(UserController, "findAll"));
 userRoutes.get("/:id", useController(UserController, "findOne"));
 userRoutes.get(
-  "/:userName",
+  "/public-profile/:userName",
   useController(UserController, "findUserPublicProfile"),
 );
 userRoutes.post("/", useController(UserController, "create"));

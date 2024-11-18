@@ -26,11 +26,19 @@ export class DiscussionsService {
       data: {
         ...discussionDto,
         id,
-        isPublished: false,
+        isPublished: true,
         user: {
           connect: { id: userId },
         },
-        seo: { create: seo },
+        seo: seo
+          ? { create: seo }
+          : {
+              create: {
+                title: discussionDto.title,
+                desc: discussionDto.desc.slice(0, 50),
+                keyword: tagIds?.join(",") || "",
+              },
+            },
         tags: {
           connect: tagIds ? tagIds.map((id) => ({ id })) : [],
         },

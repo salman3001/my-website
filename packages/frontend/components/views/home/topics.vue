@@ -18,15 +18,16 @@ const { data } = await useFetcherGet<IResType<{ count: number; data: Tag[] }>>(
 <template>
   <v-container max-width="1280" class="my-5 bg-background">
     <div class="d-flex align-center justify-space-between">
-      <h2 class="text-h5 py-5">Topics</h2>
+      <h2 class="py-5">Topics</h2>
       <div>
         <NuxtLink
           :to="routes.web.topics.index()"
-          class="text-subtitle-1 text-decoration-none text-primsary"
+          class="text-subtitle-1 text-decoration-none text-primary"
           >View All Topics <v-icon icon="mdi-arrow-right"></v-icon
         ></NuxtLink>
       </div>
     </div>
+    <br />
     <v-row>
       <v-col v-for="tag in data?.data?.data" cols="12" sm="6" md="4" lg="3">
         <TopicCard :tag="tag" />

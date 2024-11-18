@@ -10,7 +10,9 @@ export class UserService {
     const user = await this.prisma.user.create({
       data: {
         ...dto,
-        userName: dto.fullName + MathUtils.getRandom6number(),
+        userName: (
+          dto.fullName + MathUtils.getRandom6number()
+        ).toLocaleLowerCase(),
         profile: { create: {} },
         subscription: { create: { email: dto.email } },
       },

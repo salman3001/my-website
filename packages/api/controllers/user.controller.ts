@@ -77,9 +77,7 @@ export class UserController extends Controller {
   async findUserPublicProfile(req: Request, res: Response) {
     const userName = req.params.userName;
 
-    const userService = req.scope.resolve<UserService>("UserService");
-
-    const user = await userService.getPublicProfile(userName);
+    const user = await this.userService.getPublicProfile(userName);
 
     return res.custom({
       code: 200,

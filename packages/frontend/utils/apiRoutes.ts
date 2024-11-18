@@ -92,6 +92,6 @@ export const apiRoutes = {
     tags: () => "/backup/tags",
   },
   users: {
-    publicProfile: (userName: string) => `users/public-profile/${userName}`,
+    publicProfile: (userName: string) => `/users/public-profile/${userName}`,
   },
 };

@@ -75,10 +75,10 @@ const addVideo = () => {
 </script>
 
 <template>
-  <div class="border tiptap position-relative">
+  <div class="border rounded-lg pa-2 tiptap position-relative">
     <div v-if="editor" class="overflow-y-auto" style="max-height: 400px">
       <div
-        class="d-flex gap-2 flex-wrap align-center editor position-sticky top-0 bg-background"
+        class="d-flex gap-2 flex-wrap align-center editor position-sticky top-0 bg-background border-b"
         style="z-index: 1"
       >
         <VBtnGroup class="d-flex flex-wrap h-auto ga-1 py-2">

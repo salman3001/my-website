@@ -70,8 +70,8 @@ onUnmounted(() => {
   <v-container max-width="1100">
     <br />
     <h1>{{ data?.data?.title }}</h1>
-
     <p class="text-h6 text-medium-emphasis">{{ data?.data?.shortDesc }}</p>
+    <br />
     <div class="d-flex ga-4">
       <v-avatar size="48">
         <v-img

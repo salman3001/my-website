@@ -41,13 +41,19 @@ const createComment = async () => {
 };
 </script>
 <template>
-  <v-sheet v-if="user" @submit.prevent="createComment">
+  <v-sheet
+    v-if="user"
+    @submit.prevent="createComment"
+    class="pa-4"
+    rounded="lg"
+  >
     <v-form @submit.prevent="">
       <div class="d-flex flex-column ga-2">
         <div>
           <TipTapEditorLight
             v-model="form.message"
             placeholder="What are Your thoughts?"
+            :min-height="100"
           />
           <span class="text-error" v-if="errors?.message?._errors">{{
             errors?.message?._errors
@@ -64,6 +70,6 @@ const createComment = async () => {
     <NuxtLink class="text-primary" :to="routes.auth.signin()">Sign in</NuxtLink>
     or
     <NuxtLink class="text-primary" :to="routes.auth.signup()">Sign up</NuxtLink>
-    to Respond to this blog.
+    to Respond .
   </div>
 </template>

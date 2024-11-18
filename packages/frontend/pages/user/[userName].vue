@@ -14,6 +14,7 @@ const { data } = await useFetcherGet<IResType<User>>(
   <br />
   <v-container max-width="1280">
     <h1 class="text-h4 font-weight-bold">{{ data?.data?.fullName }}</h1>
+    <h2 class="text-h4 font-weight-bold">{{ data?.data?.userName }}</h2>
     <br />
     <p class="text-subtitle-1">{{ data?.data?.profile?.avatar }}</p>
     <br />
