@@ -50,11 +50,13 @@ defineProps<{
             </v-chip>
           </template>
         </v-tooltip>
-        <VChip text="Tagname" variant="tonal" size="small" to="#" />
-        <VChip text="Tagname" variant="tonal" size="small" to="#" />
-        <VChip text="Tagname" variant="tonal" size="small" to="#" />
-        <VChip text="Tagname" variant="tonal" size="small" to="#" />
-        <VChip text="Tagname" variant="tonal" size="small" />
+        <VChip
+          v-for="tag in disicussion.tags"
+          :text="tag.name"
+          variant="tonal"
+          size="small"
+          to="#"
+        />
       </VChipGroup>
     </v-card-actions>
   </v-card>
