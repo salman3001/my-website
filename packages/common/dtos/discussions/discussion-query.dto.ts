@@ -4,8 +4,11 @@ import { z } from "zod";
 export const DiscussionQuerySchema = z.intersection(
   CommonQueryDto,
   z.object({
-    discussionId: z.string().optional(),
-    parentId: z.coerce.number().optional(),
+    tagId: z.string().optional(),
+    isPublished: z
+      .string()
+      .transform((v) => (v === "true" ? true : false))
+      .optional(),
   }),
 );
 

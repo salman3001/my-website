@@ -20,11 +20,8 @@ const { data } = await useFetcherGet<
     <div class="d-flex align-center justify-space-between">
       <h2 class="py-5">Categories</h2>
       <div>
-        <NuxtLink
-          :to="routes.web.topics.index()"
-          class="text-subtitle-1 text-decoration-none text-primsary"
-          >View All Categories <v-icon icon="mdi-arrow-right"></v-icon
-        ></NuxtLink>
+        <NuxtLink :to="routes.web.categories.index()" class="text-subtitle-1 text-decoration-none text-primsary">View All
+          Categories <v-icon icon="mdi-arrow-right"></v-icon></NuxtLink>
       </div>
     </div>
     <v-row>

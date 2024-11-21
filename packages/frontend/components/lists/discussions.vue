@@ -33,6 +33,7 @@ const { data, status } = await useFetcherGet<
       "desc",
       "seo",
       "user",
+      "tags",
       "createdAt",
       "count:comment",
     ].concat(props?.select ? props.select : []),
@@ -49,35 +50,20 @@ const { data, status } = await useFetcherGet<
 <template>
   <div v-if="data?.data?.data && data?.data?.data?.length > 0">
     <v-row>
-      <v-col
-        v-if="data?.data?.data"
-        v-for="blog in data?.data?.data"
-        cols="12"
-        sm="6"
-        md="4"
-      >
+      <v-col v-if="data?.data?.data" v-for="blog in data?.data?.data" cols="12" sm="6" md="4">
         <DiscussionCard :disicussion="blog" />
       </v-col>
     </v-row>
     <br />
-    <TablePagination
-      class="pt-5"
-      v-if="showPagination"
-      :page="Number(page)"
-      :items-per-page="Number(perPage)"
-      :total-items="Number(data?.data?.count)"
-      @update:page="
-        (p) => {
+    <TablePagination class="pt-5" v-if="showPagination" :page="Number(page)" :items-per-page="Number(perPage)"
+      :total-items="Number(data?.data?.count)" @update:page="(p) => {
           page = p;
         }
-      "
-    />
+        " />
   </div>
 
-  <v-card
-    v-else-if="data?.data?.data && data?.data?.data?.length === 0"
-    class="bg-background text-center border-none py-10"
-  >
+  <v-card v-else-if="data?.data?.data && data?.data?.data?.length === 0"
+    class="bg-background text-center border-none py-10">
     <v-card-item>
       <v-icon icon="mdi-chat-alert-outline" size="64" color="info"></v-icon>
     </v-card-item>
@@ -85,11 +71,7 @@ const { data, status } = await useFetcherGet<
       No Discussion yet! Be the first one to start a discussion
     </v-card-item>
     <VCardActions class="d-flex justify-center py-2">
-      <VBtn
-        text="Start Discussion"
-        variant="flat"
-        :to="routes.web.discussions.create()"
-      />
+      <VBtn text="Start Discussion" variant="flat" :to="routes.web.discussions.create()" />
     </VCardActions>
   </v-card>
   <Loader v-else type="card" />

@@ -6,24 +6,12 @@ const appConfig = useAppConfig();
 </script>
 
 <template>
-  <v-card
-    class="mx-auto bg-background"
-    :min-width="220"
-    :to="routes.web.categories.view(category?.id)"
-    nuxt
-  >
+  <v-card class="mx-auto bg-background" :min-width="220" :to="routes.web.categories.view(category?.id)" nuxt>
     <template #prepend>
-      <v-img
-        :src="
-          category.icon
-            ? $config.public.uploadsPath + category?.icon?.url
-            : appConfig.noImageUrl
-        "
-        class="rounded-xl elevation-10"
-        cover
-        height="70"
-        width="70"
-      ></v-img>
+      <v-img :src="category.icon
+          ? $config.public.uploadsPath + category?.icon?.url
+          : appConfig.noImageUrl
+        " class="rounded-xl elevation-10" cover height="70" width="70"></v-img>
     </template>
     <template #title>
       <span class="ml-4"> {{ category.name }} </span>

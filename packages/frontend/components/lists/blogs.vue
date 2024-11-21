@@ -56,31 +56,21 @@ const { data, status } = await useFetcherGet<
 </script>
 
 <template>
-  <div v-if="data">
+  <div v-if="data?.data?.data.length && data.data?.data.length > 0">
     <v-row>
-      <v-col
-        v-if="data?.data?.data"
-        v-for="blog in data?.data?.data"
-        cols="12"
-        sm="6"
-        md="4"
-      >
+      <v-col v-if="data?.data?.data" v-for="blog in data?.data?.data" cols="12" sm="6" md="4">
         <BlogCard :blog="blog" :horzontal="false" />
       </v-col>
     </v-row>
     <br />
-    <TablePagination
-      class="pt-5"
-      v-if="showPagination"
-      :page="Number(page)"
-      :items-per-page="Number(perPage)"
-      :total-items="Number(data?.data?.count)"
-      @update:page="
-        (p) => {
-          page = p;
-        }
-      "
-    />
+    <TablePagination class="pt-5" v-if="showPagination" :page="Number(page)" :items-per-page="Number(perPage)"
+      :total-items="Number(data?.data?.count)" @update:page="(p) => {
+        page = p;
+      }
+        " />
   </div>
-  <Loader v-else type="card" />
+  <p class="text-h6" v-else>
+    No Blogs Found..
+  </p>
+  <Loader v-if="status == 'pending'" type="card" />
 </template>

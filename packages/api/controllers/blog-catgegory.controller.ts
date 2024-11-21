@@ -60,14 +60,11 @@ export class BlogCategoryController extends Controller {
     const id = req.params.id;
 
     const queryDto = BlogCategoryFindOneShema.parse(req.query);
-    const blogCategoriesService = req.scope.resolve<BlogCategoriesService>(
-      "BlogCategoriesService",
-    );
-    const prismaUtils = req.scope.resolve<PrismaUtils>("PrismaUtils");
 
-    const { selectQuery } = prismaUtils.generateCommonPrismaQuery(queryDto);
+    const { selectQuery } =
+      this.prismaUtils.generateCommonPrismaQuery(queryDto);
 
-    const blogCategory = await blogCategoriesService.findOne({
+    const blogCategory = await this.blogCategoriesService.findOne({
       where: { id },
       select: selectQuery,
     });
@@ -83,11 +80,7 @@ export class BlogCategoryController extends Controller {
     const id = req.params.id;
     const dto = UpdateBlogCategorySchema.parse(req.body);
 
-    const blogCategoriesService = req.scope.resolve<BlogCategoriesService>(
-      "BlogCategoriesService",
-    );
-
-    const blogCategory = await blogCategoriesService.update(id, dto);
+    const blogCategory = await this.blogCategoriesService.update(id, dto);
     return res.custom({
       success: true,
       code: 200,

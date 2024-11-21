@@ -10,24 +10,14 @@ defineProps<{
 </script>
 
 <template>
-  <v-card
-    density="compact"
-    class="bg-background pa-4"
-    :to="routes.web.blogs.view(blog.id)"
-  >
-    <v-img
-      height="200px"
-      class="rounded-xl elevation-10"
-      :src="
-        blog?.image
-          ? $config.public.uploadsPath + blog?.image?.url
-          : appConfig.noImageUrl
-      "
-      cover
-    ></v-img>
+  <v-card density="compact" class="bg-background pa-4" :to="routes.web.blogs.view(blog.id)">
+    <v-img height="200px" class="rounded-xl elevation-10" :src="blog?.image
+        ? $config.public.uploadsPath + blog?.image?.url
+        : appConfig.noImageUrl
+      " cover></v-img>
 
     <v-card-item>
-      <NuxtLink @click.stop="() => {}" href="#">
+      <NuxtLink @click.stop="() => { }" :to="routes.web.categories.view(blog?.blogCategory?.name!)">
         <v-chip v-if="blog?.blogCategory" size="small" rounded="md">
           {{ blog?.blogCategory?.name }}
         </v-chip>
@@ -36,16 +26,11 @@ defineProps<{
 
     <v-card-text class="text-h6" style="min-height: 3rem">
       <div class="line-clamp-2">
-        {{ blog.title }} Lorem ipsum dolor, sit amet consectetur adipisicing
-        elit. Assumenda obcaecati incidunt sunt blanditiis reprehenderit
-        distinctio harum minus accusantium. Exercitationem, expedita.
+        {{ blog.title }}
       </div>
     </v-card-text>
 
-    <v-card-text
-      class="text-body-1 text-medium-emphasis"
-      style="min-height: 6rem"
-    >
+    <v-card-text class="text-body-1 text-medium-emphasis" style="min-height: 6rem">
       <div class="line-clamp-3">
         {{ blog.shortDesc }} Lorem ipsum dolor sit amet.
       </div>
@@ -54,18 +39,11 @@ defineProps<{
     <v-card-item>
       <div class="d-flex ga-4">
         <v-avatar size="48">
-          <v-img
-            alt="John"
-            src="https://cdn.vuetifyjs.com/images/john.jpg"
-          ></v-img>
+          <v-img alt="John" src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
         </v-avatar>
         <div class="d-flex flex-column text-on-background">
-          <NuxtLink
-            variant="text"
-            @click.stop=""
-            :href="routes.web.user.index(blog.author?.userName)"
-            >{{ blog.author.fullName }}</NuxtLink
-          >
+          <NuxtLink variant="text" @click.stop="" :href="routes.web.user.index(blog.author?.userName)">{{
+            blog.author.fullName }}</NuxtLink>
           <div class="text-caption">
             {{ new Date(blog.createdAt).toDateString() }}
           </div>

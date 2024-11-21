@@ -33,7 +33,9 @@ export class DiscussionController extends Controller {
 
   async findAll(req: Request, res: Response) {
     const queryDto = DiscussionQuerySchema.parse(req.query);
-    const { search, ...commonQueryDto } = queryDto;
+    const { search, tagId, isPublished, ...commonQueryDto } = queryDto;
+
+    console.log(isPublished, tagId);
 
     const { selectQuery, orderByQuery, skip, take } =
       this.prismaUtils.generateCommonPrismaQuery(commonQueryDto);
@@ -42,10 +44,16 @@ export class DiscussionController extends Controller {
       ? { title: { contains: search, mode: "insensitive" as any } }
       : {};
 
+    const serachByTagQuery = tagId ? { tags: { some: { id: tagId } } } : {};
+
+    const isPublishedQuery = isPublished
+      ? { isPublished: { equals: true } }
+      : {};
+
     const { discussions, count } = await this.discussionsService.findAll({
       skip,
       take,
-      where: { AND: { ...searchQuery } },
+      where: { ...searchQuery, ...isPublishedQuery, ...serachByTagQuery },
       orderBy: orderByQuery,
       select: selectQuery,
     });
