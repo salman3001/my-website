@@ -35,8 +35,6 @@ export class DiscussionController extends Controller {
     const queryDto = DiscussionQuerySchema.parse(req.query);
     const { search, tagId, isPublished, ...commonQueryDto } = queryDto;
 
-    console.log(isPublished, tagId);
-
     const { selectQuery, orderByQuery, skip, take } =
       this.prismaUtils.generateCommonPrismaQuery(commonQueryDto);
 

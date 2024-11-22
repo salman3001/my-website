@@ -111,7 +111,9 @@ export class BlogsService {
               connect: { id: blogCategoryId },
             }
           : {},
-        seo: { update: seo },
+        seo: {
+          upsert: { where: { blogId: id }, create: {}, update: seo ? seo : {} },
+        },
         tags: {
           set: tagIds ? tagIds.map((id) => ({ id })) : [],
         },
