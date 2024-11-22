@@ -2,13 +2,12 @@
 import type { IResType } from "~/utils/types";
 import type { Tag } from "~/utils/types/modals";
 
-const route = useRoute()
-const tag = computed(() => route.query?.tag)
-
+const route = useRoute();
+const tag = computed(() => route.query?.tag);
 
 const search = ref("");
 
-const topic = ref(tag.value as string || "");
+const topic = ref((tag.value as string) || "");
 
 const { data: tags } = await useFetcherGet<
   IResType<{ count: number; data: Tag[] }>
@@ -22,32 +21,53 @@ const { data: tags } = await useFetcherGet<
 });
 
 watch(tag, () => {
-  topic.value = tag.value as string
-})
+  topic.value = tag.value as string;
+});
 </script>
 
 <template>
-  <br />
   <v-container max-width="1280">
+    <br />
     <div class="d-flex justify-space-between align-center ga-4 flex-wrap">
       <h1>Discussions</h1>
 
       <div class="d-flex ga-2 align-center flex-wrap">
-        <v-text-field v-model="search" placeholder="Search Discussions"
-          style="max-inline-size: 200px; min-inline-size: 200px" hide-details append-inner-icon="mdi-magnify" />
+        <v-text-field
+          v-model="search"
+          placeholder="Search Discussions"
+          style="max-inline-size: 200px; min-inline-size: 200px"
+          hide-details
+          append-inner-icon="mdi-magnify"
+        />
 
-        <v-select style="min-inline-size: 150px" placeholder="Topics" v-model="topic"
-          :items="(tags?.data?.data || []).concat([{ name: 'All Tags', id: '' } as any])" item-value="id"
-          item-title="name" hide-details />
+        <v-select
+          style="min-inline-size: 150px"
+          placeholder="Topics"
+          v-model="topic"
+          :items="(tags?.data?.data || []).concat([{ name: 'All Tags', id: '' } as any])"
+          item-value="id"
+          item-title="name"
+          hide-details
+        />
       </div>
     </div>
     <br />
     <div class="text-end">
-      <VBtn text="Start Discussion" prepend-icon="mdi-chat-outline" variant="flat"
-        :to="routes.web.discussions.create()" />
+      <VBtn
+        text="Start Discussion"
+        prepend-icon="mdi-chat-outline"
+        variant="flat"
+        :to="routes.web.discussions.create()"
+      />
     </div>
     <br />
     <br />
-    <ListsDiscussions :per-page="10" :is-published="true" show-pagination v-model:search="search" :tag-id="topic" />
+    <ListsDiscussions
+      :per-page="10"
+      :is-published="true"
+      show-pagination
+      v-model:search="search"
+      :tag-id="topic"
+    />
   </v-container>
 </template>

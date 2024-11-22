@@ -20,7 +20,7 @@ const emit = defineEmits<{
 const editorRef = ref();
 const youtube = reactive({
   width: "640",
-  height: "480",
+  height: "380",
 });
 
 const editor = useEditor({
@@ -69,7 +69,7 @@ const addVideo = () => {
   editor.value?.commands.setYoutubeVideo({
     src: url,
     width: Math.max(320, parseInt(youtube.width, 10)) || 640,
-    height: Math.max(180, parseInt(youtube.height, 10)) || 480,
+    height: Math.max(180, parseInt(youtube.height, 10)) || 380,
   });
 };
 </script>

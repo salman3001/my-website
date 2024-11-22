@@ -1,17 +1,39 @@
 <script setup lang="ts">
-const { lightBoxSrc, setLightBoxSrc } = useLightbox();
+// const { lightBoxSrc, setLightBoxSrc } = useLightbox();
 
-onMounted(() => {
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      setLightBoxSrc("");
-    }
-  });
-});
+// const addKeyEvents = (e: KeyboardEvent) => {
+//   if (e.key === "Escape") {
+//     setLightBoxSrc({});
+//   }
+
+//   if (e.key === "ArrowRight") {
+//     if (lightBoxSrc.next) {
+//       console.log(lightBoxSrc.next);
+
+//       setLightBoxSrc();
+//     }
+//   }
+
+//   if (e.key === "ArrowLeft") {
+//     if (prevSrc.value) {
+//       console.log(prevSrc.value);
+
+//       setLightBoxSrc(prevSrc.value);
+//     }
+//   }
+// };
+
+// watch(lightBoxSrc, () => {
+//   if (lightBoxSrc.value) {
+//     document.addEventListener("keydown", addKeyEvents);
+//   } else {
+//     document.removeEventListener("keydown", addKeyEvents);
+//   }
+// });
 </script>
 
 <template>
-  <Transition>
+  <!-- <Transition>
     <div
       v-if="lightBoxSrc"
       id="lightboxOverlay"
@@ -21,6 +43,8 @@ onMounted(() => {
     >
       <v-btn
         icon="mdi-close"
+        variant="text"
+        color="white"
         class="close-btn"
         @click="() => setLightBoxSrc('')"
       ></v-btn>
@@ -31,9 +55,9 @@ onMounted(() => {
         @click.stop=""
       />
     </div>
-  </Transition>
+  </Transition> -->
 </template>
-
+<!-- 
 <style scoped>
 .lightbox-overlay {
   display: flex;
@@ -60,4 +84,4 @@ onMounted(() => {
   max-height: 90%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
-</style>
+</style> -->

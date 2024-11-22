@@ -26,9 +26,8 @@ const { data } = await useFetcherGet<IResType<Discussion>>(
 </script>
 
 <template>
-  <br />
-
   <v-container max-width="1000">
+    <br />
     <h2>
       {{ data?.data?.title }}
     </h2>
@@ -38,8 +37,11 @@ const { data } = await useFetcherGet<IResType<Discussion>>(
         <VImg alt="John" src="https://cdn.vuetifyjs.com/images/john.jpg" />
       </v-avatar>
       <div class="d-flex flex-column text-on-background">
-        <NuxtLink variant="text" @click.stop="" :href="routes.web.user.index(data?.data?.user?.userName || '')">{{
-          data?.data?.user?.fullName }}
+        <NuxtLink
+          variant="text"
+          @click.stop=""
+          :href="routes.web.user.index(data?.data?.user?.userName || '')"
+          >{{ data?.data?.user?.fullName }}
         </NuxtLink>
 
         <div class="text-caption">
@@ -52,19 +54,41 @@ const { data } = await useFetcherGet<IResType<Discussion>>(
     <v-divider></v-divider>
     <div class="d-flex justify-space-between flex-wrap pa-2">
       <VBtnGroup>
-        <VBtn variant="text" rounded="lg" icon="mdi-chat-outline" :text="data?.data?._count?.comment" />
-        <VBtn variant="text" rounded="lg" icon="mdi-export-variant" :text="data?.data?._count?.comment" />
+        <VBtn
+          variant="text"
+          rounded="lg"
+          icon="mdi-chat-outline"
+          :text="data?.data?._count?.comment"
+        />
+        <VBtn
+          variant="text"
+          rounded="lg"
+          icon="mdi-export-variant"
+          :text="data?.data?._count?.comment"
+        />
       </VBtnGroup>
       <VChipGroup>
-        <VChip v-for="tag in data?.data?.tags" :text="tag.name" variant="tonal" size="small" to="#" />
+        <VChip
+          v-for="tag in data?.data?.tags"
+          :text="tag.name"
+          variant="tonal"
+          size="small"
+          :to="routes.web.discussions.index() + `?tag=${tag.id}`"
+        />
       </VChipGroup>
     </div>
 
     <br />
-    <DisplayHtmlContent :content="data?.data?.desc || ''" :unique-id="'discussion-' + data?.data?.id" />
+    <DisplayHtmlContent
+      :content="data?.data?.desc || ''"
+      :unique-id="'discussion-' + data?.data?.id"
+    />
     <br />
     <VDivider />
     <br />
-    <ViewsDiscussionsComments :discussion-id="(id as string)" :comment-count="data?.data?._count.comment" />
+    <ViewsDiscussionsComments
+      :discussion-id="(id as string)"
+      :comment-count="data?.data?._count.comment"
+    />
   </v-container>
 </template>

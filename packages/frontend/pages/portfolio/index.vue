@@ -16,8 +16,8 @@ const { data: tags } = await useFetcherGet<
 });
 </script>
 <template>
-  <br />
   <v-container max-width="1100">
+    <br />
     <v-card class="py-10">
       <v-card-item>
         <div

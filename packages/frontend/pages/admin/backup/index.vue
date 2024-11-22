@@ -58,8 +58,8 @@ const entityList = [
 </script>
 
 <template>
-  <br />
   <v-container max-width="1280">
+    <br />
     <div>
       <VBtn
         text="Back"

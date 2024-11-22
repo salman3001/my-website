@@ -118,7 +118,6 @@ p {
 .tiptap img {
   width: 100%;
   display: block;
-  margin: 0 auto;
   max-width: 700px;
   cursor: pointer;
 }
@@ -133,5 +132,5 @@ p {
 
 .tiptap [data-youtube-video] {
   display: flex;
-  justify-content: center;
+  justify-content: start;
 }

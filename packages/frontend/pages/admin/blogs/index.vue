@@ -48,7 +48,7 @@ const headers = [
 </script>
 
 <template>
-  <VContainer>
+  <v-container>
     <br />
     <VCard>
       <!-- 👉 Order Table -->
@@ -236,5 +236,5 @@ const headers = [
       </VDataTableServer>
     </VCard>
     <br />
-  </VContainer>
+  </v-container>
 </template>

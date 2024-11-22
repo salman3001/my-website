@@ -19,13 +19,13 @@ const { data } = await useFetcherGet<IResType<{ count: number; data: Tag[] }>>(
   <v-container max-width="1280">
     <h1>Topics</h1>
 
-    <br>
+    <br />
     <v-row>
       <v-col v-for="tag in data?.data?.data" cols="12" sm="6" md="4" lg="3">
         <TopicCard :tag="tag" />
       </v-col>
     </v-row>
+    <br />
+    <br />
   </v-container>
-  <br>
-  <br>
 </template>

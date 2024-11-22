@@ -1,8 +1,14 @@
-const lightBoxSrc = ref<string>();
+interface ILightBoxSrc {
+  src?: string;
+  next?: string;
+  prev?: string;
+}
+
+const lightBoxSrc = reactive<ILightBoxSrc>({});
 
 export const useLightbox = () => {
-  function setLightBoxSrc(src: string) {
-    lightBoxSrc.value = src;
+  function setLightBoxSrc(src: ILightBoxSrc) {
+    Object.assign(lightBoxSrc, src);
   }
 
   return { lightBoxSrc, setLightBoxSrc };

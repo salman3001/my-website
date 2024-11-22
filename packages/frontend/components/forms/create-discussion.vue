@@ -6,7 +6,7 @@ const { errors, exec, loading } = useFetcher();
 
 const { data: tags } = await useFetcherGet<
   IResType<{ data: Tag[]; count: number }>
->(apiRoutes.discussions.index(), {
+>(apiRoutes.tags.index(), {
   query: {
     take: 1000,
   },

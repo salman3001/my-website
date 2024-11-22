@@ -19,7 +19,7 @@ const { data } = await useFetcherGet<
   <v-container max-width="1280">
     <h1>Categories</h1>
 
-    <br>
+    <br />
     <v-row>
       <v-col v-for="tag in data?.data?.data" cols="12" sm="6" md="4" lg="3">
         <CategoryCard :category="tag" />
