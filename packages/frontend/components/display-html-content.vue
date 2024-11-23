@@ -1,6 +1,8 @@
 <script setup lang="ts">
 const config = useRuntimeConfig();
 
+// import Prism from "prismjs";
+
 const props = defineProps<{
   content: string;
   /** in case if the server url host is changed,
@@ -12,13 +14,15 @@ const props = defineProps<{
 }>();
 
 const imageRefs = ref<HTMLImageElement[]>([]);
+const codeRefs = ref<HTMLSpanElement[]>([]);
 const imageUrls = ref<string[]>([]);
 const containerRef = ref<HTMLDivElement>();
 const hiddenElemContainerRef = ref<HTMLDivElement>();
 
-onMounted(() => {
+onMounted(async () => {
   if (containerRef.value) {
     imageRefs.value = Array.from(containerRef.value.querySelectorAll("img"));
+    codeRefs.value = Array.from(containerRef.value.querySelectorAll('code'));
   }
 
   if (imageRefs.value.length) {
@@ -48,6 +52,14 @@ onMounted(() => {
       });
     });
   }
+
+  await highlightCode(containerRef)
+  // if (codeRefs.value.length) {
+  //   codeRefs.value.forEach((code) => {
+  //     const currentHtml = code.innerHTML;
+  //     code.innerHTML = Prism.highlight(currentHtml, Prism.languages?.javascript, "javascript")
+  //   })
+  // }
 });
 </script>
 <template>
@@ -57,12 +69,8 @@ onMounted(() => {
   <EasyLightbox :images="imageUrls">
     <template #default="{ props }">
       <div ref="hiddenElemContainerRef">
-        <span
-          v-for="(img, index) in props.images || []"
-          :data-image="index"
-          @click="() => props.onShow(index)"
-          style="display: none"
-        ></span>
+        <span v-for="(img, index) in props.images || []" :data-image="index" @click="() => props.onShow(index)"
+          style="display: none"></span>
       </div>
     </template>
   </EasyLightbox>

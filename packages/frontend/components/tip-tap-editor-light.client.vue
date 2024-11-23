@@ -46,54 +46,31 @@ watch(
 <template>
   <div class="border tiptap position-relative">
     <div v-if="editor" class="overflow-y-auto" style="max-height: 300px">
-      <div
-        class="d-flex gap-2 flex-wrap align-center editor position-sticky top-0 border-b bg-background"
-        style="z-index: 1"
-      >
+      <div class="d-flex gap-2 flex-wrap align-center editor position-sticky top-0 border-b bg-background"
+        style="z-index: 1">
         <v-btn-group class="d-flex flex-wrap h-auto ga-1 py-2">
-          <v-btn
-            size="x-small"
-            icon="mdi-format-bold"
-            rounded="sm"
-            type="button"
-            :variant="editor.isActive('bold') ? 'tonal' : 'text'"
-            :color="editor.isActive('bold') ? 'primary' : 'default'"
-            @click.prevent="editor.chain().focus().toggleBold().run()"
-          >
+          <v-btn size="x-small" icon="mdi-format-bold" rounded="sm" type="button"
+            :variant="editor.isActive('bold') ? 'tonal' : 'text'" :color="editor.isActive('bold') ? 'primary' : 'default'"
+            @click.prevent="editor.chain().focus().toggleBold().run()">
           </v-btn>
 
-          <v-btn
-            size="x-small"
-            icon="mdi-format-underline"
-            rounded="sm"
-            type="button"
+          <v-btn size="x-small" icon="mdi-format-underline" rounded="sm" type="button"
             :variant="editor.isActive('underline') ? 'tonal' : 'text'"
             :color="editor.isActive('underline') ? 'primary' : 'default'"
-            @click.prevent="editor.commands.toggleUnderline()"
-          >
+            @click.prevent="editor.commands.toggleUnderline()">
           </v-btn>
 
-          <VBtn
-            size="x-small"
-            rounded="sm"
-            type="button"
-            icon="mdi-format-italic"
+          <VBtn size="x-small" rounded="sm" type="button" icon="mdi-format-italic"
             :variant="editor.isActive('italic') ? 'tonal' : 'text'"
             :color="editor.isActive('italic') ? 'primary' : 'default'"
-            @click.prevent="editor.chain().focus().toggleItalic().run()"
-          />
+            @click.prevent="editor.chain().focus().toggleItalic().run()" />
 
-          <v-btn
-            size="x-small"
-            icon="mdi-format-strikethrough"
-            rounded="sm"
-            type="button"
+          <v-btn size="x-small" icon="mdi-format-strikethrough" rounded="sm" type="button"
             :variant="editor.isActive('strike') ? 'tonal' : 'text'"
             :color="editor.isActive('strike') ? 'primary' : 'default'"
-            @click.prevent="editor.chain().focus().toggleStrike().run()"
-          >
+            @click.prevent="editor.chain().focus().toggleStrike().run()">
           </v-btn>
-          <v-divider vertical></v-divider>
+          <!-- <v-divider vertical></v-divider>
           <v-btn
             size="x-small"
             icon="mdi-code-braces"
@@ -103,15 +80,11 @@ watch(
             :color="editor.isActive('codeBlock') ? 'primary' : 'default'"
             @click.prevent="editor.chain().focus().toggleCodeBlock().run()"
           >
-          </v-btn>
+          </v-btn> -->
         </v-btn-group>
       </div>
       <div style="z-index: 0" class="bg-background">
-        <EditorContent
-          ref="editorRef"
-          :editor="editor"
-          :style="{ minHeight: `${minHeight || 50}px` }"
-        />
+        <EditorContent ref="editorRef" :editor="editor" :style="{ minHeight: `${minHeight || 50}px` }" />
       </div>
     </div>
   </div>

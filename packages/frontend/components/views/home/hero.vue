@@ -13,10 +13,16 @@ const { user } = useAuth();
     </h4>
     <br />
     <div class="d-flex flex-column ga-4">
-      <v-btn v-if="!user" variant="outlined">New to {{ $config.public.appName }}? Signup</v-btn>
-      <v-btn color="primary" variant="outlined" :to="routes.web.tutorials.index()" nuxt>Explore Tutorials</v-btn>
-      <v-btn color="primary" variant="outlined" :to="routes.web.blogs.index()" nuxt>View Blogs</v-btn>
-      <v-btn v-if="!user" color="primary" :to="routes.auth.signup()" nuxt>Signup</v-btn>
+      <v-btn v-if="!user" variant="outlined" :to="routes.auth.signup()">New to {{ $config.public.appName }}?
+        Signup</v-btn>
+      <v-btn color="primary" variant="outlined" :to="routes.web.tutorials.index()" prepend-icon="mdi-cast-education"
+        nuxt>Explore Tutorials</v-btn>
+      <v-btn color="primary" variant="outlined" :to="routes.web.blogs.index()" nuxt prepend-icon="mdi-post-outline">View
+        Blogs</v-btn>
+      <v-btn color="primary" variant="outlined" :to="routes.web.discussions.index()" prepend-icon="mdi-chat-outline"
+        nuxt>Start Discussion</v-btn>
+      <v-btn color="primary" :to="routes.web.portfolio.index()" nuxt prepend-icon="mdi-briefcase-outline">View
+        Portfolio</v-btn>
     </div>
   </div>
 </template>

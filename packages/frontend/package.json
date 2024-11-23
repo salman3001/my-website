@@ -28,6 +28,8 @@
     "md-editor-v3": "^4.21.0",
     "my-website.data": "workspace:*",
     "nuxt": "^3.13.0",
+    "shiki": "^1.23.1",
+    "tiptap-extension-code-block-shiki": "^0.4.0",
     "vue": "latest",
     "vue-easy-lightbox": "^1.19.0",
     "vue-markdown-render": "^2.2.1",
