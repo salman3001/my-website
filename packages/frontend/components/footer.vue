@@ -4,43 +4,47 @@ const links = ["Home", "About Us", "Team", "Services", "Blog", "Contact Us"];
 
 <template>
   <v-footer class="border elevation-4 pa-5 rounded-t-xl">
-    <v-row justify="center" class="mx-auto" style="max-width: 1280px">
-      <v-col class="d-flex flex-column" cols="12">
+    <v-row justify="start" class="mx-auto" style="max-width: 1280px">
+      <v-col class="d-flex flex-column pb-0" cols="12" style="margin-left: -1rem">
         <logo />
       </v-col>
-      <v-col class="d-flex flex-column" cols="6" sm="4" md="3">
-        <h6 class="footer-title text-h6">Services</h6>
-        <a>Branding</a>
-        <a>Design</a>
-        <a>Marketing</a>
-        <a>Advertisement</a>
+      <v-col class="d-flex flex-column" cols="6" sm="4" md="4">
+        <h6 class="text-h6 font-weight-bold">Content</h6>
+        <NuxtLink :to="routes.web.blogs.index()">Blogs</NuxtLink>
+        <NuxtLink :to="routes.web.tutorials.index()">Tutorials</NuxtLink>
+        <NuxtLink :to="routes.web.discussions.index()">Discussions</NuxtLink>
+        <NuxtLink :to="routes.web.categories.index()">Categories</NuxtLink>
+        <NuxtLink :to="routes.web.topics.index()">Topics</NuxtLink>
       </v-col>
-      <v-col class="d-flex flex-column" cols="6" sm="4" md="3">
-        <h6 class="footer-title text-h6">Company</h6>
-        <a>About us</a>
-        <a>Contact</a>
-        <a>Jobs</a>
-        <a>Press kit</a>
+      <v-col class="d-flex flex-column" cols="6" sm="4" md="4">
+        <h6 class="text-h6 font-weight-bold">Webiste</h6>
+        <NuxtLink :to="routes.web.home()">Home</NuxtLink>
+        <NuxtLink :to="routes.web.contact()">Contact</NuxtLink>
+        <NuxtLink :to="routes.auth.signin()">Signin</NuxtLink>
+        <NuxtLink :to="routes.auth.signup()">Signup</NuxtLink>
       </v-col>
-      <v-col class="d-flex flex-column" cols="12" sm="4" md="3">
-        <h6 class="footer-title text-h6">Legal</h6>
-        <a>Terms of use</a>
-        <a>Privacy policy</a>
-        <a>Cookie policy</a>
+      <v-col class="d-flex flex-column" cols="12" sm="4" md="4">
+        <h6 class="text-h6 font-weight-bold">Legal</h6>
+        <NuxtLink :to="routes.web.privacy()">Privacy policy</NuxtLink>
+        <NuxtLink :to="routes.web.communityGuidlines()">Community Guidelines</NuxtLink>
       </v-col>
-      <v-col cols="12" sm="4" md="3">
-        <h6 class="footer-title text-h6">Newsletter</h6>
-        <v-text-field
-          placeholder="Subscribe "
-          prepend-inner-icon="mdi-email-outline"
-          variant="outlined"
-          rounded="lg"
-        >
-          <template #append>
-            <v-btn>Submit</v-btn>
-          </template>
-        </v-text-field>
-        <div>Social Links</div>
+      <v-col cols="12">
+        <v-row align="center" justify="space-between">
+          <v-col cols="12" sm="8">
+            <v-text-field placeholder="Email" label="Subscribe Newsletters" prepend-inner-icon="mdi-email-outline"
+              variant="outlined" rounded="lg">
+              <template #append>
+                <v-btn>Submit</v-btn>
+              </template>
+            </v-text-field>
+          </v-col>
+          <v-col cols="12" sm="4" align-self="end" class="d-flex justify-end">
+            <socila-links></socila-links>
+          </v-col>
+
+        </v-row>
+
+
       </v-col>
     </v-row>
   </v-footer>

@@ -5,6 +5,7 @@ import { RegisterSchema } from "my-website.common/dtos/auth/register.dto.js";
 import { Controller, Request, Response } from "my-website.common/express";
 import { ResetPasswordSchema } from "my-website.common/dtos/auth/resetPassword.dto.js";
 import { AuthService } from "my-website.services/auth.service.js";
+import { ResendVerificationEmailSchema } from "my-website.common/dtos/auth/resendVerificationEmail.dto.js";
 
 export class AuthController extends Controller {
   constructor(private readonly authService: AuthService) {
@@ -58,6 +59,18 @@ export class AuthController extends Controller {
       code: 200,
       message: "Account activated",
       data: { user: userPayload, token },
+      success: true,
+    });
+  }
+
+  async resendVerificiationEmail(req: Request, res: Response) {
+    const dto = ResendVerificationEmailSchema.parse(req.body);
+
+    await this.authService.resendVerificiationEmail(dto);
+
+    return res.custom({
+      code: 200,
+      message: "Email Sent! please check your inbox",
       success: true,
     });
   }

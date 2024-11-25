@@ -22,7 +22,7 @@ export class ContactMessageController extends Controller {
       code: 201,
       success: true,
       data: message,
-      message: "Contact Message Created",
+      message: "Thank you, Your Message Recieved! Will contact you shortly",
     });
   }
 

@@ -3,7 +3,8 @@ export const routes = {
     home: () => "/",
     contact: () => "/contact",
     profile: () => "/profile",
-    privacy: () => "/privacy-policy",
+    privacy: () => "/privacy",
+    communityGuidlines: () => "/community-guidlines",
     portfolio: {
       index: () => "/portfolio",
       view: (id: number) => `/portfolio/${id}`,
@@ -33,6 +34,7 @@ export const routes = {
   auth: {
     signin: () => "/auth/login",
     signup: () => "/auth/signup",
+    confirmEmail: () => "/auth/confirm-email",
     forgotPassword: () => "/auth/forgot-password",
     resetPassword: (token: string) => `/auth/reset-password/${token}`,
     checkEmail: () => `/auth/check-email/`,

@@ -22,11 +22,22 @@ import { UserService } from "./user.service.js";
 import { MediaService } from "./media/media.service.js";
 import { ImageUploadService } from "./media/imageUpload.service.js";
 import { FilesUploadService } from "./media/fileUpload.service.js";
+import { MailNotificationService } from "./notifications/mailNotification.service.js";
 
 appContainer.addCoreServices = function () {
+  // databse services
   this.register("prisma", asValue(new PrismaClient()));
+
+  // events
   this.register("authEvents", asClass(AuthEvents).singleton());
 
+  // event listener and notification services
+  this.register(
+    "mailNotificationService",
+    asClass(MailNotificationService).singleton(),
+  );
+
+  // other services for business logic
   this.register("authService", asClass(AuthService).singleton());
   this.register("backupService", asClass(BackupService).singleton());
   this.register(

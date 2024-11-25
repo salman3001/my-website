@@ -116,7 +116,7 @@ p {
   cursor: pointer;
 }
 
-.tiptap .tiptap-content .shiki {
+.tiptap.tiptap-content .shiki {
   padding: 1rem 1rem 1rem;
   border-radius: 8px;
   overflow: scroll;

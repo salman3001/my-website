@@ -12,6 +12,7 @@
       <ViewsHomeFeaturedBlogs />
       <ViewsHomeCategories />
       <ViewsHomeDiscussions />
+      <ViewsHomeContact />
     </v-container>
   </div>
 </template>

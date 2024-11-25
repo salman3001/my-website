@@ -4,5 +4,8 @@
     "titleBar.activeBackground": "#16492E",
     "titleBar.activeForeground": "#F3FCF7"
   },
-  "zenMode.centerLayout": false
+  "zenMode.centerLayout": false,
+  "zenMode.hideActivityBar": true,
+  "zenMode.hideStatusBar": false,
+  "zenMode.hideLineNumbers": false
 }

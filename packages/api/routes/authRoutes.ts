@@ -10,6 +10,11 @@ authRoutes.post(
   "/confirm-email",
   useController(AuthController, "confirmEmail"),
 );
+
+authRoutes.post(
+  "/resend-verification-email",
+  useController(AuthController, "resendVerificiationEmail"),
+);
 authRoutes.post(
   "/forgot-password",
   useController(AuthController, "forgotPassword"),

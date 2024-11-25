@@ -33,15 +33,22 @@ import {
   tagRoutes,
   projectRoutes,
 } from "routes/index.js";
+import { MailNotificationService } from "my-website.services/notifications/mailNotification.service.js";
 
 // initializing container and adding services
 const config = appContainer.resolve<Config>("config");
 appContainer.addController();
 appContainer.addCoreServices();
 appContainer.addMailService({
-  adapter: "NodeMailer",
-  adapterConfig: config.nodeMailerConfig,
+  adapter: "Resend",
+  adapterConfig: config.resendConfig,
 });
+
+// notifictaion services to listen for events
+const mailNotificationService = appContainer.resolve<MailNotificationService>(
+  "mailNotificationService",
+);
+mailNotificationService.listen();
 
 // adding container to request scope
 app.addContainer(appContainer);
@@ -50,6 +57,7 @@ app.addContainer(appContainer);
 app.use(
   cors({
     origin: [config.envs.frontUrl!],
+    credentials: true,
   }),
 );
 app.use(staticMiddleware(join(process.cwd(), "public")));
@@ -65,7 +73,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/blog-categories", blogCategoryRoutes);
 app.use("/api/blog-comments", blogCommentRoutes);
-app.use("/api/contact-message", contactMessageRoutes);
+app.use("/api/contact-messages", contactMessageRoutes);
 app.use("/api/discussions", discussionRoutes);
 app.use("/api/discussion-comments", discussionCommentRoutes);
 app.use("/api/email-subscriptions", emailSubscriptionRoutes);

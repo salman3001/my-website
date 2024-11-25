@@ -2,7 +2,8 @@ export const apiRoutes = {
   auth: {
     signin: () => "/auth/login",
     signup: () => "/auth/register",
-    confirmEmail: () => "confirm-email",
+    confirmEmail: () => "/auth/confirm-email",
+    resendVerificationEmail: () => "/auth/resend-verification-email",
     forgotPassword: () => "/auth/forgot-password",
     resetPassword: () => `/auth/reset-password/`,
   },

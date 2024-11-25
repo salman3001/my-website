@@ -8,11 +8,11 @@ const { user } = useAuth();
       Welcome to {{ $config.public.appName }}
     </h1>
 
-    <h4 class="subheading text-h6" style="max-width: 40rem">
+    <h4 class="subheading text-h6" style="max-width: 30rem">
       Crafting Knowledge, Sharing Passion and Resource for Learning and Growth
     </h4>
     <br />
-    <div class="d-flex flex-column ga-4">
+    <div class="d-flex flex-column ga-4 mt-4">
       <v-btn v-if="!user" variant="outlined" :to="routes.auth.signup()">New to {{ $config.public.appName }}?
         Signup</v-btn>
       <v-btn color="primary" variant="outlined" :to="routes.web.tutorials.index()" prepend-icon="mdi-cast-education"

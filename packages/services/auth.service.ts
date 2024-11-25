@@ -8,12 +8,13 @@ import {
   IJwtPayload,
   JWTConfirmEmailPayload,
   JWTResetPasswordPayload,
-} from "./types/common.js";
+} from "my-website.common/types";
 import { RegisterDto } from "my-website.common/dtos/auth/register.dto.js";
 import { LoginDto } from "my-website.common/dtos/auth/login.dto.js";
 import { ForgotPasswordOtpDto } from "my-website.common/dtos/auth/forgotPasswordOtp.dto.js";
 import { ConfirmEmailDto } from "my-website.common/dtos/auth/confirmEmail.dto.js";
 import { ResetPasswordDto } from "my-website.common/dtos/auth/resetPassword.dto.js";
+import { ResendVerificationEmailDto } from "my-website.common/dtos/auth/resendVerificationEmail.dto.js";
 import { MathUtils } from "my-website.common/utils/MathUtils.js";
 import {
   UnAuthorizedException,
@@ -51,12 +52,12 @@ export class AuthService {
       throw new UnAuthorizedException("Invalid Username or Password!");
     }
 
-    const token = this.jwtUtils.sign({
+    const token = this.jwtUtils.signAuthToken({
       tokenType: "auth",
       id: user.id,
       userType: user.userType,
       email: user.email,
-    } as IJwtPayload);
+    });
 
     return { user, token };
   }
@@ -87,7 +88,7 @@ export class AuthService {
     });
 
     if (user) {
-      this.authEvents.emitUserSignedUp(user);
+      this.authEvents.emit("userSignedup", user);
     }
 
     return user;
@@ -119,6 +120,17 @@ export class AuthService {
     return { user, token };
   }
 
+  async resendVerificiationEmail(dto: ResendVerificationEmailDto) {
+    const user = await this.prisma.user.findFirstOrThrow({
+      where: { email: dto.email },
+    });
+    if (user.emailVerified) {
+      throw new BadRequestException("Email Already verified");
+    }
+
+    this.authEvents.emit("userSignedup", user);
+  }
+
   async forgotPasswordOtp(dto: ForgotPasswordOtpDto) {
     const user = await this.prisma.user.findFirstOrThrow({
       where: {
@@ -126,7 +138,7 @@ export class AuthService {
       },
     });
 
-    this.authEvents.emitUserForgotPassword(user);
+    this.authEvents.emit("userForgotPassword", user);
   }
 
   async resetPassword(dto: ResetPasswordDto): Promise<User> {

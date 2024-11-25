@@ -2,15 +2,13 @@ import * as nodemailer from "nodemailer";
 import { render } from "@react-email/components";
 import { IMailService } from "./interface/ImailService.js";
 import { IMailSendProps } from "./interface/IMailSendProps.js";
-import { MailServiceOptions } from "./interface/MailServiceOptions.js";
+import { NodeMailerOptions } from "./interface/NodeMailerOptions.js";
 
 export class NodeMailService implements IMailService {
   private transporter: nodemailer.Transporter;
 
-  constructor(mailServiceOptions: MailServiceOptions<"NodeMailer">) {
-    this.transporter = nodemailer.createTransport(
-      mailServiceOptions.adapterConfig,
-    );
+  constructor(mailServiceOptions: NodeMailerOptions) {
+    this.transporter = nodemailer.createTransport(mailServiceOptions);
   }
 
   async send(sendProps: IMailSendProps) {

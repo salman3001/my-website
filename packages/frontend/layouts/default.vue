@@ -5,25 +5,6 @@ import { NavMenus } from "~/utils/constants/nav-menus";
 const drawer = ref(false);
 const sideMenuGroups = ref([]);
 const { user } = useAuth();
-const nuxtApp = useNuxtApp();
-
-const mainContainerRef = ref<HTMLDivElement>();
-
-const scrollToTop = () => {
-  if (mainContainerRef.value) {
-    mainContainerRef.value.scrollTo({ top: 0, behavior: "smooth" });
-  }
-};
-
-onMounted(() => {
-  mainContainerRef.value = document.querySelector(
-    '[class="v-main__scroller"]',
-  ) as HTMLDivElement;
-});
-
-nuxtApp.hook("page:transition:finish", () => {
-  scrollToTop();
-});
 </script>
 
 <template>
@@ -157,7 +138,7 @@ nuxtApp.hook("page:transition:finish", () => {
 
       <v-main scrollable>
         <div style="min-height: 70vh">
-          <slot />
+          <slot></slot>
         </div>
         <Footer />
       </v-main>

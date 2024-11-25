@@ -15,20 +15,18 @@ export default function ForgotPasswordEmail(props: mailProps): ReactElement {
         <>
           <Text style={paragraph}>Hi {props.userName || "UserName"},</Text>
           <Text style={paragraph}>
-            Forgot your password? Please click below to reset your password
+            Forgot your password? Please click below to reset your password.
+            Link is valid only for 10 minutes.
           </Text>
           <Section style={btnContainer}>
-            <Button
-              style={button}
-              href={`${renderProps.baseUrl + props.resetUrl}`}
-            >
+            <Button style={button} href={`${props.resetUrl}`}>
               Reset Password
             </Button>
           </Section>
           <Text style={paragraph}>
             Best Regards,
             <br />
-            {renderProps.appName || "appName"} team
+            {renderProps.appName || "appName"} Team
           </Text>
         </>
       )}

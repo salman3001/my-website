@@ -29,9 +29,7 @@ export default defineNuxtConfig({
       uploadsPath: "http://localhost:4000/uploads/",
     },
   },
-  app: {
-    pageTransition: { name: "page", mode: "out-in" },
-  },
+  app: {},
   experimental: {
     noVueServer: true,
   },

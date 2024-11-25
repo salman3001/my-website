@@ -77,7 +77,6 @@ const headers = [
                 :items="[5, 10, 20, 50, 100]"
                 hide-details
               />
-              <VBtn variant="tonal" prepend-icon="mdi-upload" text="Export" />
             </div>
           </div>
         </template>
@@ -94,12 +93,14 @@ const headers = [
 
         <!-- Message-->
         <template #item.message="{ item }">
-          {{ item.message }}
+          <div style="min-width: 300px" class="text-wrap py-2">
+            {{ item.message }}
+          </div>
         </template>
 
         <!-- Date Time-->
         <template #item.createdAt="{ item }">
-          {{ new Date(item.createdAt).toString() }}
+          {{ new Date(item.createdAt).toDateString() }}
         </template>
 
         <!-- Actions -->

@@ -21,8 +21,10 @@ interface props {
 }
 
 export const EmailsLayout = ({ render }: PropsWithChildren<props>) => {
-  const baseUrl = process.env.APP_URL ? process.env.APP_URL : "";
-  const appName = process.env.APP_NAME ? process.env.APP_NAME : "";
+  const baseUrl = process.env?.APP_URL ? process.env.APP_URL : "SalmanDev";
+  const appName = process.env?.APP_NAME
+    ? process.env.APP_NAME
+    : "https://salmandev.in";
 
   return (
     <Html>
