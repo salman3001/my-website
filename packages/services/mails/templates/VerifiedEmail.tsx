@@ -18,7 +18,7 @@ export default function VerifiedEmail(props: mailProps) {
             verified successfully.
           </Text>
           <Section style={btnContainer}>
-            <Button style={button} href={`${renderProps.baseUrl}/auth/login`}>
+            <Button style={button} href={`${renderProps.frontUrl}/auth/login`}>
               Login
             </Button>
           </Section>

@@ -1,34 +1,35 @@
 import { Button, Section, Text } from "@react-email/components";
 import { EmailsLayout } from "./EmailsLayout.js";
-import { ReactElement } from "react";
+
 import React from "react";
 
 interface mailProps {
-  userName: string;
-  verifyUrl: string;
+  email: string;
+  message: string;
+  phone: string | null;
 }
 
-export default function VerifyYourEmail(props: mailProps): ReactElement {
+export default function NewContactMessageEmail(props: mailProps) {
   return (
     <EmailsLayout
       render={(renderProps) => (
         <>
-          <Text style={paragraph}>Hi {props?.userName || "User"},</Text>
+          <Text style={paragraph}>Hello, My Creator Salman,</Text>
+          <Text style={paragraph}>You have a new contact message</Text>
           <Text style={paragraph}>
-            Welcome to {renderProps?.appName || "AppName"}, Pleaese verify your
-            email. Link is valid for next 1 hour. But you can again send the
-            confirmation link from login page. You wont be able to login without
-            confirming the email.
+            Email: {props?.email || "xxxxx"}
+            <br />
+            Phone: {props?.phone || "xxxxxxx"}
+          </Text>
+          <Text style={paragraph}>
+            Message: {props?.message || "Would like to hire you for job"}
           </Text>
           <Section style={btnContainer}>
-            <Button>
-              <a
-                style={button}
-                href={`${renderProps.baseUrl + props.verifyUrl}`}
-                target="_blank"
-              >
-                Verify Email
-              </a>
+            <Button
+              style={button}
+              href={`${renderProps.frontUrl}/admin/contact-messages`}
+            >
+              Check out here
             </Button>
           </Section>
           <Text style={paragraph}>

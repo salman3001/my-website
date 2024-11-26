@@ -7,14 +7,11 @@ withDefaults(
 );
 </script>
 
+
+
 <template>
   <NuxtLink :to="routes.web.home()">
-    <VBtn
-      variant="text"
-      class="text-h5"
-      :color="color === 'light' ? 'primary' : 'primary'"
-    >
-      {{ $config.public.appName }}
-    </VBtn>
+    <VImg :src="$vuetify.theme.name === 'dark' ? '/images/logo/logo-white.webp' : '/images/logo/logo-black.webp'"
+      width="150px" />
   </NuxtLink>
 </template>

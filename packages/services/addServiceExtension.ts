@@ -23,6 +23,7 @@ import { MediaService } from "./media/media.service.js";
 import { ImageUploadService } from "./media/imageUpload.service.js";
 import { FilesUploadService } from "./media/fileUpload.service.js";
 import { MailNotificationService } from "./notifications/mailNotification.service.js";
+import { ContactMessageEvents } from "./events/contactMessage.events.js";
 
 appContainer.addCoreServices = function () {
   // databse services
@@ -30,6 +31,10 @@ appContainer.addCoreServices = function () {
 
   // events
   this.register("authEvents", asClass(AuthEvents).singleton());
+  this.register(
+    "contactMessageEvents",
+    asClass(ContactMessageEvents).singleton(),
+  );
 
   // event listener and notification services
   this.register(

@@ -4,13 +4,16 @@ import { Config } from "my-website.common/config/config.js";
 import VerifyYourEmail from "../mails/templates/VerifyYourEmaill.js";
 import ForgotPasswordEmail from "../mails/templates/ForgotPasswordEmail.js";
 import { JwtUtils } from "my-website.common/utils/JwtUtils.js";
+import { ContactMessageEvents } from "../events/contactMessage.events.js";
+import NewContactMessageEmail from "../mails/templates/NewContactMessageEmail.js";
 
 export class MailNotificationService {
   constructor(
-    private authEvents: AuthEvents,
-    private mailService: IMailService,
-    private config: Config,
-    private jwtUtils: JwtUtils,
+    private readonly authEvents: AuthEvents,
+    private readonly contactMessageEvents: ContactMessageEvents,
+    private readonly mailService: IMailService,
+    private readonly config: Config,
+    private readonly jwtUtils: JwtUtils,
   ) {}
 
   listen() {
@@ -69,6 +72,30 @@ export class MailNotificationService {
         }
       } else {
         console.log(resetUrl);
+      }
+    });
+
+    // contact message created
+    this.contactMessageEvents.on("messageCreated", (message) => {
+      if (this.config.envs.nodeEnv === "production") {
+        try {
+          this.mailService.send({
+            from: this.config.envs.emailFrom,
+            to: "salman.k3001@gmail.com",
+            subject:
+              "New Contact Message recieved -" + this.config.envs.appName,
+            react: () =>
+              NewContactMessageEmail({
+                email: message.email,
+                message: message.message,
+                phone: message.phone,
+              }),
+          });
+        } catch (error) {
+          console.error("Failed to send forgot password email");
+        }
+      } else {
+        console.log("new message recieved", message);
       }
     });
   }

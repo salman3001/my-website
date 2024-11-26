@@ -14,6 +14,7 @@ import { PropsWithChildren, ReactElement } from "react";
 interface RenderProps {
   baseUrl: string;
   appName: string;
+  frontUrl: string;
 }
 
 interface props {
@@ -21,10 +22,15 @@ interface props {
 }
 
 export const EmailsLayout = ({ render }: PropsWithChildren<props>) => {
-  const baseUrl = process.env?.APP_URL ? process.env.APP_URL : "SalmanDev";
-  const appName = process.env?.APP_NAME
-    ? process.env.APP_NAME
-    : "https://salmandev.in";
+  const baseUrl = process.env?.APP_URL
+    ? process.env.APP_URL
+    : "http://localhost:4000";
+
+  const frontUrl = process.env?.FRONT_URL
+    ? process.env.FRONT_URL
+    : "http://localhost:3000";
+
+  const appName = process.env?.APP_NAME ? process.env.APP_NAME : "SalmanDev";
 
   return (
     <Html>
@@ -35,13 +41,13 @@ export const EmailsLayout = ({ render }: PropsWithChildren<props>) => {
       <Body style={main}>
         <Container style={container}>
           <Img
-            src={`${baseUrl}/images/logo.jpg`}
-            width="120"
-            height="120"
+            src={`${baseUrl}/images/logo-black.webp`}
+            width="200"
+            height="auto"
             alt="Koala"
             style={logo}
           />
-          {render({ baseUrl, appName })}
+          {render({ baseUrl, frontUrl, appName })}
           <Hr style={hr} />
           <Text style={footer}>Developed by Salman</Text>
         </Container>
