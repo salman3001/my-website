@@ -1,6 +1,4 @@
 const scrollToTop = () => {
-  console.log("ran");
-
   const element = document.querySelector(
     '[class="v-main__scroller"]',
   ) as HTMLDivElement;

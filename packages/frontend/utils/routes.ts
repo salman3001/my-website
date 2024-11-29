@@ -2,9 +2,9 @@ export const routes = {
   web: {
     home: () => "/",
     contact: () => "/contact",
-    profile: () => "/profile",
     privacy: () => "/privacy",
     communityGuidlines: () => "/community-guidlines",
+    account: { index: () => "/account", security: () => "/account/security" },
     portfolio: {
       index: () => "/portfolio",
       view: (id: number) => `/portfolio/${id}`,

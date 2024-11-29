@@ -9,7 +9,7 @@ export { discussionRoutes } from "./discussionRoutes.js";
 export { emailSubscriptionRoutes } from "./emailSubscriptionRoutes.js";
 export { mediaCategoryRoutes } from "./mediaCategoryRoutes.js";
 export { mediaRoutes } from "./mediaRoutes.js";
-export { profileRoutes } from "./profileRoutes.js";
+export { accountRoutes } from "./accountRoutes.js";
 export { projectRoutes } from "./projectRoutes.js";
 export { tagRoutes } from "./tagRoutes.js";
 export { userRoutes } from "./userRoutes.js";

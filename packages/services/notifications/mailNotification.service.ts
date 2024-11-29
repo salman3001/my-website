@@ -6,11 +6,13 @@ import ForgotPasswordEmail from "../mails/templates/ForgotPasswordEmail.js";
 import { JwtUtils } from "my-website.common/utils/JwtUtils.js";
 import { ContactMessageEvents } from "../events/contactMessage.events.js";
 import NewContactMessageEmail from "../mails/templates/NewContactMessageEmail.js";
+import { AccountEvents } from "../events/account.events.js";
 
 export class MailNotificationService {
   constructor(
     private readonly authEvents: AuthEvents,
     private readonly contactMessageEvents: ContactMessageEvents,
+    private readonly accountEvents: AccountEvents,
     private readonly mailService: IMailService,
     private readonly config: Config,
     private readonly jwtUtils: JwtUtils,
@@ -32,6 +34,34 @@ export class MailNotificationService {
             from: this.config.envs.emailFrom,
             to: user.email,
             subject: "Verify Your Email -  " + this.config.envs.appName,
+            react: () =>
+              VerifyYourEmail({
+                userName: user.userName,
+                verifyUrl: verifyUrl,
+              }),
+          });
+        } catch (error) {
+          console.error("Failed to send verification email");
+        }
+      } else {
+        console.log(verifyUrl);
+      }
+    });
+
+    this.accountEvents.on("emailChanged", async (user) => {
+      const jwtToken = this.jwtUtils.signConfirmEmailToken({
+        email: user.email,
+        tokenType: "confirm-email",
+      });
+
+      const verifyUrl = `${this.config.envs.confirmEmailUrl}?jwt=${jwtToken}`;
+
+      if (this.config.envs.nodeEnv === "production") {
+        try {
+          this.mailService.send({
+            from: this.config.envs.emailFrom,
+            to: user.email,
+            subject: "Verify Your New Email -  " + this.config.envs.appName,
             react: () =>
               VerifyYourEmail({
                 userName: user.userName,

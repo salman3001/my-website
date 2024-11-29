@@ -9,7 +9,7 @@ import { DiscussionCommentsController } from "./discussion-comments.controller.j
 import { EmailSubscriptionController } from "./email-subscription.controller.js";
 import { MediaCategoryController } from "./media-catgegory.controller.js";
 import { MediaController } from "./media.controller.js";
-import { ProfileController } from "./profile.controller.js";
+import { AccountController } from "./account.controller.js";
 import { ProjectController } from "./project.controller.js";
 import { UserController } from "./user.controller.js";
 import { TagController } from "./tags.controller.js";
@@ -48,7 +48,7 @@ appContainer.addController = function () {
     asClass(MediaCategoryController).singleton(),
   );
   this.register(MediaController.name, asClass(MediaController).singleton());
-  this.register(ProfileController.name, asClass(ProfileController).singleton());
+  this.register(AccountController.name, asClass(AccountController).singleton());
   this.register(ProjectController.name, asClass(ProjectController).singleton());
   this.register(TagController.name, asClass(TagController).singleton());
   this.register(UserController.name, asClass(UserController).singleton());

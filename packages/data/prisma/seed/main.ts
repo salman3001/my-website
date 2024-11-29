@@ -16,6 +16,9 @@ export async function seedUser(prisma: PrismaClient) {
       emailVerified: true,
       userType: UserType.Admin,
       isActive: true,
+      profile: {
+        create: {},
+      },
     },
   });
 
@@ -30,6 +33,9 @@ export async function seedUser(prisma: PrismaClient) {
       emailVerified: true,
       userType: UserType.User,
       isActive: true,
+      profile: {
+        create: {},
+      },
     },
   });
 }

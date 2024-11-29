@@ -18,7 +18,12 @@ export class ImageUploadService {
   }
 
   async deleteImage(fileUrl: string): Promise<void> {
-    const filePath = join(this.config.envs.uploadsPath!, fileUrl);
+    const filePath = join(
+      process.cwd(),
+      this.config.envs.uploadsPath!,
+      fileUrl,
+    );
+
     if (existsSync(filePath)) {
       unlinkSync(filePath);
     }

@@ -6,5 +6,5 @@ export interface IAuthMenu {
 }
 
 export const AuthMenuItems: IAuthMenu[] = [
-  { name: "Profile", href: routes.web.profile() },
+  { name: "Account", href: routes.web.account.index() },
 ];

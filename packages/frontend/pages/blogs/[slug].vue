@@ -45,27 +45,12 @@ onUnmounted(() => {
 <template>
   <v-container max-width="1100">
     <Teleport :disabled="isCommentsDrawerDisabled" to="[main-layout]">
-      <v-navigation-drawer
-        width="500"
-        v-model="drawer"
-        :location="$vuetify.display.smAndDown ? 'bottom' : 'right'"
-        temporary
-        sticky
-        floating
-        :style="{ marginTop: $vuetify.display.smAndDown ? '5rem' : 'auto' }"
-      >
+      <v-navigation-drawer width="500" v-model="drawer" :location="$vuetify.display.smAndDown ? 'bottom' : 'right'"
+        temporary sticky floating :style="{ marginTop: $vuetify.display.smAndDown ? '5rem' : 'auto' }">
         <div :class="$vuetify.display.smAndDown ? 'text-end px-1' : 'px-1'">
-          <VBtn
-            icon="mdi-close"
-            variant="text"
-            rounded="sm"
-            @click="drawer = false"
-          />
+          <VBtn icon="mdi-close" variant="text" rounded="sm" @click="drawer = false" />
         </div>
-        <ViewsBlogsComments
-          :blog-id="data?.data?.id || ''"
-          :comment-count="data?.data?._count?.comment"
-        />
+        <ViewsBlogsComments :blog-id="data?.data?.id || ''" :comment-count="data?.data?._count?.comment" />
       </v-navigation-drawer>
     </Teleport>
     <br />
@@ -74,18 +59,11 @@ onUnmounted(() => {
     <br />
     <div class="d-flex ga-4">
       <v-avatar size="48">
-        <v-img
-          alt="John"
-          src="https://cdn.vuetifyjs.com/images/john.jpg"
-        ></v-img>
+        <v-img alt="John" src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
       </v-avatar>
       <div class="d-flex flex-column text-on-background">
-        <NuxtLink
-          variant="text"
-          @click.stop=""
-          :href="apiRoutes.users.publicProfile(data?.data?.author?.userName!)"
-          >{{ data?.data?.author.fullName }}</NuxtLink
-        >
+        <NuxtLink variant="text" @click.stop="" :href="apiRoutes.users.publicProfile(data?.data?.author?.userName!)">{{
+          data?.data?.author.fullName }}</NuxtLink>
         <div class="d-flex flex-wrap ga-2 text-medium-emphasis text-caption">
           <div class="">
             Published in
@@ -105,50 +83,34 @@ onUnmounted(() => {
     <v-divider></v-divider>
     <div class="d-flex flex-wrap-reverse justify-space-between py-2">
       <div>
-        <v-btn variant="text"> <VIcon icon="mdi-heart-outline" />0 </v-btn>
+        <v-btn variant="text">
+          <VIcon icon="mdi-heart-outline" />0
+        </v-btn>
         <v-btn variant="text" @click="togelDrawer">
-          <v-icon icon="mdi-chat-outline"></v-icon
-          >{{ data?.data?._count?.comment }}
+          <v-icon icon="mdi-chat-outline"></v-icon>{{ data?.data?._count?.comment }}
         </v-btn>
       </div>
       <div>
-        <v-btn variant="text"
-          ><v-icon icon="mdi-export-variant"></v-icon
-        ></v-btn>
-        <v-btn variant="text"
-          ><v-icon icon="mdi-bookmark-outline"></v-icon
-        ></v-btn>
+        <v-btn variant="text"><v-icon icon="mdi-export-variant"></v-icon></v-btn>
+        <v-btn variant="text"><v-icon icon="mdi-bookmark-outline"></v-icon></v-btn>
       </div>
     </div>
     <v-divider></v-divider>
     <br />
     <div class="d-flex justify-center">
-      <v-img
-        :src="
-          data?.data?.image
-            ? $config.public.uploadsPath + data.data?.image?.url
-            : appConfig.noImageUrl
-        "
-        max-width="700"
-        max-height="400"
-        cover
-      ></v-img>
+      <v-img :src="data?.data?.image
+          ? $config.public.uploadsPath + data.data?.image?.url
+          : appConfig.noImageUrl
+        " max-width="700" max-height="400" cover></v-img>
     </div>
     <br />
-    <DisplayHtmlContent
-      :content="data?.data?.longDesc || ''"
-      :unique-id="'blog-' + data?.data?.id"
-    />
+    <DisplayHtmlContent :content="data?.data?.longDesc || ''" :unique-id="'blog-' + data?.data?.id" />
     <br />
     <div class="d-flex ga-2 align-center">
       <h4 class="text-h5 font-weight-bold">
         ({{ data?.data?._count?.comment }} Responses)
       </h4>
-      <v-btn
-        variant="elevated"
-        @click="togelDrawer"
-        prepend-icon="mdi-chat-outline"
-      >
+      <v-btn variant="elevated" @click="togelDrawer" prepend-icon="mdi-chat-outline">
         View
       </v-btn>
     </div>

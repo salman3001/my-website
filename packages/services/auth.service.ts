@@ -83,7 +83,9 @@ export class AuthService {
         emailVerified: false,
         userType: UserType.User,
         isActive: true,
-        profile: {},
+        profile: {
+          create: {},
+        },
       },
     });
 

@@ -95,4 +95,10 @@ export const apiRoutes = {
   users: {
     publicProfile: (userName: string) => `/users/public-profile/${userName}`,
   },
+  account: {
+    getUserDetails: () => `/account/user-detail`,
+    updateUserDetails: () => `/account/user-detail`,
+    updateUserPassword: () => `/account/update-password`,
+    updateUserEmail: () => `/account/update-email`,
+  },
 };

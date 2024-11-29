@@ -15,7 +15,7 @@ import { DiscussionCommentsService } from "./discussion-comments.service.js";
 import { DiscussionsService } from "./discussions.service.js";
 import { EmailSubscriptionsService } from "./email-subscriptions.service.js";
 import { MediaCategoriesService } from "./media-categories.service.js";
-import { ProfileService } from "./profile.service.js";
+import { AccountService } from "./account.service.js";
 import { ProjectsService } from "./projects.service.js";
 import { TagsService } from "./tags.service.js";
 import { UserService } from "./user.service.js";
@@ -24,6 +24,7 @@ import { ImageUploadService } from "./media/imageUpload.service.js";
 import { FilesUploadService } from "./media/fileUpload.service.js";
 import { MailNotificationService } from "./notifications/mailNotification.service.js";
 import { ContactMessageEvents } from "./events/contactMessage.events.js";
+import { AccountEvents } from "./events/account.events.js";
 
 appContainer.addCoreServices = function () {
   // databse services
@@ -35,6 +36,7 @@ appContainer.addCoreServices = function () {
     "contactMessageEvents",
     asClass(ContactMessageEvents).singleton(),
   );
+  this.register("accountEvents", asClass(AccountEvents).singleton());
 
   // event listener and notification services
   this.register(
@@ -71,7 +73,7 @@ appContainer.addCoreServices = function () {
     "mediaCategoriesService",
     asClass(MediaCategoriesService).singleton(),
   );
-  this.register("profileService", asClass(ProfileService).singleton());
+  this.register("accountService", asClass(AccountService).singleton());
   this.register("projectsService", asClass(ProjectsService).singleton());
   this.register("tagsService", asClass(TagsService).singleton());
   this.register("userService", asClass(UserService).singleton());

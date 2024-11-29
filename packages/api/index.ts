@@ -29,7 +29,7 @@ import {
   emailSubscriptionRoutes,
   mediaRoutes,
   mediaCategoryRoutes,
-  profileRoutes,
+  accountRoutes,
   tagRoutes,
   projectRoutes,
 } from "routes/index.js";
@@ -80,7 +80,7 @@ app.use("/api/email-subscriptions", emailSubscriptionRoutes);
 app.use("/api/media", mediaRoutes);
 app.use("/api/media-categories", mediaCategoryRoutes);
 app.use("/api/projects", projectRoutes);
-app.use("/api/profiles", profileRoutes);
+app.use("/api/account", accountRoutes);
 app.use("/api/tags", tagRoutes);
 app.use("/api/backup", backupRoutes);
 

@@ -31,12 +31,7 @@ const links = ["Home", "About Us", "Team", "Services", "Blog", "Contact Us"];
       <v-col cols="12">
         <v-row align="center" justify="space-between">
           <v-col cols="12" sm="8">
-            <v-text-field placeholder="Email" label="Subscribe Newsletters" prepend-inner-icon="mdi-email-outline"
-              variant="outlined" rounded="lg">
-              <template #append>
-                <v-btn>Submit</v-btn>
-              </template>
-            </v-text-field>
+            <Subscribe />
           </v-col>
           <v-col cols="12" sm="4" align-self="end" class="d-flex justify-end">
             <socila-links></socila-links>
