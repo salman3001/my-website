@@ -7,6 +7,7 @@ const props = defineProps<{
 }>()
 
 const { exec, loading, errors } = useFetcher()
+const {user,setAuth,token} = useAuth()
 
 
 const form = reactive({
@@ -29,6 +30,18 @@ const updateProfile = async () => {
     exec(apiRoutes.account.updateUserDetails(), {
         method: 'PATCH',
         body: formData
+    },{
+        onSuccess(res) {
+            console.log(res);
+            if(
+                (res.data as User)?.profile?.avatar
+            ){
+                const newAuthUser:User = {...user.value!,profile:{...user.value?.profile!,avatar:(res.data as User)?.profile?.avatar}}
+                
+                setAuth(newAuthUser,token.value)
+
+            }
+        },
     })
 }
 </script>

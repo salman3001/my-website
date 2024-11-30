@@ -12,8 +12,8 @@ const listRef = ref();
     <h2>Responses ({{ commentCount }})</h2>
     <v-tooltip text="Community Guidelines">
       <template v-slot:activator="{ props }">
-        <v-btn variant="text" size="sm">
-          <v-icon icon="mdi-shield-outline" v-bind="props"></v-icon>
+        <v-btn variant="text" size="sm" :to="routes.web.communityGuidlines()">
+          <v-icon icon="mdi-shield-outline" v-bind="props" ></v-icon>
         </v-btn>
       </template>
     </v-tooltip>

@@ -39,7 +39,7 @@ defineProps<{
     <v-card-item>
       <div class="d-flex ga-4">
         <v-avatar size="48">
-          <v-img alt="John" src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
+          <v-img alt="John" :src="blog.author?.profile?.avatar ? $config.public.uploadsPath+blog.author?.profile?.avatar :appConfig.dummyAvatarUrl"></v-img>
         </v-avatar>
         <div class="d-flex flex-column text-on-background">
           <NuxtLink variant="text" @click.stop="" :href="routes.web.user.index(blog.author?.userName)">{{

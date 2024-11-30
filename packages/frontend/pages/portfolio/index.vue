@@ -31,7 +31,7 @@ const { data: tags } = await useFetcherGet<
           <div>
             <v-avatar color="grey" rounded="lg" size="150">
               <v-img
-                src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"
+                src="/images/projects/dp.jpg"
                 cover
               ></v-img>
             </v-avatar>
@@ -56,7 +56,7 @@ const { data: tags } = await useFetcherGet<
                 <socila-links></socila-links>
               </div>
               <div>
-                <v-btn append-icon="mdi-download">Resume</v-btn>
+                <v-btn append-icon="mdi-download" target="_blank" href="/docs/salman-cv.pdf">Resume</v-btn>
               </div>
             </div>
           </div>

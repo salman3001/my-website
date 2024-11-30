@@ -34,6 +34,9 @@ export class AuthService {
   async login(dto: LoginDto) {
     const user = await this.prisma.user.findFirst({
       where: { email: dto.email },
+      include:{
+        profile:true
+      }
     });
 
     if (!user) {

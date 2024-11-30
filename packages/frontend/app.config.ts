@@ -1,6 +1,6 @@
 export default defineAppConfig({
   noImageUrl: "/images/bg-1.avif",
-  dummyAvatarUrl: "/images/bg-1.avif",
+  dummyAvatarUrl: "/images/dummy-avatar.jpg",
   theme: "light" as "light" | "dark" | "system",
   socialLinks: {
     github: "https://github.com/salman3001",

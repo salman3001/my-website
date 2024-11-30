@@ -64,7 +64,14 @@ export class BlogsService {
         cursor,
         where,
         orderBy,
-        select,
+        select:{
+          ...select,
+          author:{
+            include:{
+              profile:true
+            }
+          }
+        },
       }),
     ]);
     return { count, blogs };
@@ -77,7 +84,14 @@ export class BlogsService {
     const { where, select } = params;
     return this.prisma.blog.findUnique({
       where,
-      select,
+      select:{
+        ...select,
+        author:{
+          include:{
+            profile:true
+          }
+        }
+      },
     });
   }
 

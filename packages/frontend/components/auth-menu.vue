@@ -2,12 +2,13 @@
 import { AuthMenuItems } from "~/utils/constants/auth-menu-items";
 
 const { user, setAuth } = useAuth();
+const appConfig = useAppConfig()
 </script>
 <template>
   <v-menu v-if="user">
     <template v-slot:activator="{ props }">
       <v-avatar
-        image="/images/dummy-avatar.jpg"
+        :image="user.profile?.avatar? $config.public.uploadsPath+user.profile.avatar:appConfig.dummyAvatarUrl"
         variant="text"
         v-bind="props"
         class="cursor-pointer"

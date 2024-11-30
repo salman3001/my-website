@@ -54,6 +54,7 @@ export class AccountService {
           update: { avatar: avatarUr },
         },
       },
+      include:{profile:true}
     });
 
     const { password, ...restData } = updatedUser;

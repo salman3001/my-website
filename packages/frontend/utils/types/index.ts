@@ -1,16 +1,6 @@
-import type { UserType } from "./modals";
+import type { User } from "./modals";
 
-export interface AuthUser {
-  id: number;
-  fullName: string;
-  email: string;
-  password: string;
-  phone: string;
-  userType: UserType;
-  isActive: boolean;
-  emailVerified: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+export interface AuthUser extends User{
 }
 
 export type IResType<T> = {

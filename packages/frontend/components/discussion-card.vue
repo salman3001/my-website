@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { config } from "md-editor-v3";
 import type { Discussion } from "~/utils/types/modals";
 
 defineProps<{
   disicussion: Discussion;
 }>();
+
+const appConfig = useAppConfig();
 </script>
 
 <template>
@@ -20,7 +23,7 @@ defineProps<{
     </template>
     <template #prepend>
       <v-avatar>
-        <v-img alt="John" src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
+        <v-img alt="John" :src="disicussion.user?.profile?.avatar ? $config.public.uploadsPath+disicussion.user?.profile?.avatar :appConfig.dummyAvatarUrl"></v-img>
       </v-avatar>
     </template>
     <v-card-text style="height: 3rem; overflow: hidden" class="py-0">
