@@ -99,6 +99,7 @@ const { user } = useAuth();
         </div>
       </v-main>
     </v-layout>
+    <AuthGoogleOnload />
   </VApp>
 </template>
 

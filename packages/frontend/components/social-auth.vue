@@ -1,3 +1,3 @@
 <template>
-  <div>Social Auth</div>
+  <AuthGoogleBtn />
 </template>

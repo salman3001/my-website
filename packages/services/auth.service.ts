@@ -15,6 +15,7 @@ import { ForgotPasswordOtpDto } from "my-website.common/dtos/auth/forgotPassword
 import { ConfirmEmailDto } from "my-website.common/dtos/auth/confirmEmail.dto.js";
 import { ResetPasswordDto } from "my-website.common/dtos/auth/resetPassword.dto.js";
 import { ResendVerificationEmailDto } from "my-website.common/dtos/auth/resendVerificationEmail.dto.js";
+import { GoogleLoginDto } from "my-website.common/dtos/auth/googleLoginSchema.js";
 import { MathUtils } from "my-website.common/utils/MathUtils.js";
 import {
   UnAuthorizedException,
@@ -22,6 +23,7 @@ import {
 } from "my-website.common/express/exceptions/index.js";
 import { JwtUtils } from "my-website.common/utils/JwtUtils.js";
 import { HashUtils } from "my-website.common/utils/HashUtils.js";
+import { OAuth2Client } from "google-auth-library";
 
 export class AuthService {
   constructor(
@@ -34,9 +36,9 @@ export class AuthService {
   async login(dto: LoginDto) {
     const user = await this.prisma.user.findFirst({
       where: { email: dto.email },
-      include:{
-        profile:true
-      }
+      include: {
+        profile: true,
+      },
     });
 
     if (!user) {
@@ -165,5 +167,79 @@ export class AuthService {
     });
 
     return user;
+  }
+
+  async googleAuth(dto: GoogleLoginDto) {
+    const client = new OAuth2Client("YOUR_GOOGLE_CLIENT_ID");
+
+    const ticket = await client.verifyIdToken({
+      idToken: dto.credential,
+    });
+
+    const payload = ticket.getPayload()!;
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email: payload.email,
+      },
+      include: {
+        profile: true,
+      },
+    });
+
+    if (user && user.isActive) {
+      await this.prisma.user.update({
+        where: { email: payload.email },
+        data: {
+          emailVerified: true,
+          profile: !user.profile?.avatar
+            ? {
+                update: {
+                  avatar: payload.picture,
+                },
+              }
+            : {},
+        },
+      });
+
+      const token = this.jwtUtils.signAuthToken({
+        tokenType: "auth",
+        id: user.id,
+        userType: user.userType,
+        email: user.email,
+      });
+
+      return { user, token };
+    } else {
+      const createdUser = await this.prisma.user.create({
+        data: {
+          fullName: payload.name!,
+          userName: (payload.name || "") + MathUtils.getRandom6number(),
+          email: payload.email!,
+          emailVerified: true,
+          isActive: true,
+          password: this.hashUtils.hash(
+            MathUtils.getRandom6number().toString(),
+          ),
+          userType: UserType.User,
+          profile: {
+            create: {
+              avatar: payload.picture,
+            },
+          },
+        },
+        include: {
+          profile: true,
+        },
+      });
+
+      const token = this.jwtUtils.signAuthToken({
+        tokenType: "auth",
+        id: createdUser.id,
+        userType: createdUser.userType,
+        email: createdUser.email,
+      });
+
+      return { user: createdUser, token };
+    }
   }
 }

@@ -6,6 +6,7 @@ import { Controller, Request, Response } from "my-website.common/express";
 import { ResetPasswordSchema } from "my-website.common/dtos/auth/resetPassword.dto.js";
 import { AuthService } from "my-website.services/auth.service.js";
 import { ResendVerificationEmailSchema } from "my-website.common/dtos/auth/resendVerificationEmail.dto.js";
+import { GoogleLoginSchema } from "my-website.common/dtos/auth/googleLoginSchema.js";
 
 export class AuthController extends Controller {
   constructor(private readonly authService: AuthService) {
@@ -15,6 +16,22 @@ export class AuthController extends Controller {
     const dto = LoginSchema.parse(req.body);
 
     const { user, token } = await this.authService.login(dto);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...userPayload } = user;
+
+    return res.custom({
+      data: { user: userPayload, token },
+      code: 200,
+      message: "Login Successfully",
+      success: true,
+    });
+  }
+
+  async google(req: Request, res: Response) {
+    const dto = GoogleLoginSchema.parse(req.body);
+
+    const { user, token } = await this.authService.googleAuth(dto);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userPayload } = user;

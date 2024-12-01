@@ -1,13 +1,27 @@
 <script setup lang="ts">
-     const appConfig = useAppConfig()
-     const basePath = window.location.origin
+import { onMounted } from "vue"
+import { googleOneTap } from "vue3-google-login"
+
+const { user } = useAuth()
+
+onMounted(() => {
+
+     if (!user.value) {
+          console.log('ran');
+
+          googleOneTap({ autoLogin: true })
+               .then(((response) => {
+                    // This promise is resolved when user selects an account from the the One Tap prompt
+                    console.log("Handle the response", response)
+               }))
+               .catch((error) => {
+                    console.log("Handle the error", error)
+               })
+     }
+})
+
 </script>
+
 <template>
-<div id="g_id_onload"
-     :data-client_id="appConfig.auth.googleClientId"
-     data-context="signin"
-     data-ux_mode="popup"
-     :data-login_uri="basePath+routes.auth.signin()"
-     data-itp_support="true">
-</div>
+     <span></span>
 </template>
