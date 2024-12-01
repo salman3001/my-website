@@ -29,7 +29,15 @@ export default defineNuxtConfig({
       uploadsPath: "http://localhost:4000/uploads/",
     },
   },
-  app: {},
+  app: {
+    head:{
+      script:[
+        {
+          src:'https://accounts.google.com/gsi/client'
+        }
+      ]
+    }
+  },
   experimental: {
     noVueServer: true,
   },

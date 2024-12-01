@@ -9,4 +9,8 @@ export default defineAppConfig({
     website: "https://salmandev.in/",
     youtube: "https://www.youtube.com/@asksk525",
   },
+  auth:{
+    googleClientId:"918205744815-oidb8t1elib4ucuvl87lk699rb9n4or2.apps.googleusercontent.com",
+    githubClientId:"918205744815-oidb8t1elib4ucuvl87lk699rb9n4or2.apps.googleusercontent.com"
+  }
 });
