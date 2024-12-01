@@ -1,7 +1,12 @@
 import { BackupController } from "controllers/backup.controller.js";
+import { authPolicy } from "my-website.common/express/authPolicy.js";
 import { Router, useController } from "my-website.common/express/index.js";
+import { AdminsOnly } from "policies/AdminsOnly.js";
 
 const backupRoutes = Router();
+
+//router policies
+backupRoutes.use(authPolicy([AdminsOnly]));
 
 backupRoutes.get("/tags", useController(BackupController, "exportTags"));
 backupRoutes.post("/tags", useController(BackupController, "importTags"));
