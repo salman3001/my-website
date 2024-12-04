@@ -2,7 +2,7 @@ import { UnAuthorizedException } from "my-website.common/express/exceptions/unau
 import { Request, Response } from "my-website.common/express/index.js";
 import { IPolicy } from "my-website.common/express/interfaces/IPolicy.js";
 
-export class AuthenticatedOnly extends IPolicy {
+export class AuthenticatedOnlyPolicy extends IPolicy {
   async handle(req: Request, res: Response) {
     if (req.user) {
       return;

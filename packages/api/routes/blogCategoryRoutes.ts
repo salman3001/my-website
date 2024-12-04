@@ -1,7 +1,7 @@
 import { BlogCategoryController } from "controllers/blog-catgegory.controller.js";
 import { authPolicy } from "my-website.common/express/authPolicy.js";
 import { Router, useController } from "my-website.common/express/index.js";
-import { AdminsOnly } from "policies/AdminsOnly.js";
+import { AdminsOnlyPolicy } from "policies/AdminsOnlyPolicy.js";
 
 const blogCategoryRoutes = Router();
 
@@ -16,19 +16,19 @@ blogCategoryRoutes.get(
 
 blogCategoryRoutes.post(
   "/",
-  authPolicy([AdminsOnly]),
+  authPolicy([AdminsOnlyPolicy]),
   useController(BlogCategoryController, "create"),
 );
 
 blogCategoryRoutes.patch(
   "/:id",
-  authPolicy([AdminsOnly]),
+  authPolicy([AdminsOnlyPolicy]),
   useController(BlogCategoryController, "update"),
 );
 
 blogCategoryRoutes.delete(
   "/:id",
-  authPolicy([AdminsOnly]),
+  authPolicy([AdminsOnlyPolicy]),
   useController(BlogCategoryController, "remove"),
 );
 

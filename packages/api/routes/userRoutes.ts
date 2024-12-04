@@ -1,43 +1,43 @@
 import { UserController } from "controllers/user.controller.js";
 import { authPolicy } from "my-website.common/express/authPolicy.js";
 import { Router, useController } from "my-website.common/express/index.js";
-import { AdminsOnly } from "policies/AdminsOnly.js";
+import { AdminsOnlyPolicy } from "policies/AdminsOnlyPolicy.js";
 
 const userRoutes = Router();
 
 userRoutes.get(
   "/",
-  authPolicy([AdminsOnly]),
+  authPolicy([AdminsOnlyPolicy]),
   useController(UserController, "findAll"),
 );
 
 userRoutes.get(
   "/:id",
-  authPolicy([AdminsOnly]),
+  authPolicy([AdminsOnlyPolicy]),
   useController(UserController, "findOne"),
 );
 
 userRoutes.get(
   "/public-profile/:userName",
-  authPolicy([AdminsOnly]),
+  authPolicy([AdminsOnlyPolicy]),
   useController(UserController, "findUserPublicProfile"),
 );
 
 userRoutes.post(
   "/",
-  authPolicy([AdminsOnly]),
+  authPolicy([AdminsOnlyPolicy]),
   useController(UserController, "create"),
 );
 
 userRoutes.patch(
   "/:id",
-  authPolicy([AdminsOnly]),
+  authPolicy([AdminsOnlyPolicy]),
   useController(UserController, "update"),
 );
 
 userRoutes.delete(
   "/:id",
-  authPolicy([AdminsOnly]),
+  authPolicy([AdminsOnlyPolicy]),
   useController(UserController, "remove"),
 );
 

@@ -32,7 +32,7 @@ export class DiscussionCommentsController extends Controller {
 
   async findAll(req: Request, res: Response) {
     const queryDto = DiscussionCommentQuerySchema.parse(req.query);
-    const { discussionId, parentId, search, ...commonQueryDto } = queryDto;
+    const { discussionId, parentId, search, withProfile,...commonQueryDto } = queryDto;
 
     const { selectQuery, orderByQuery, skip, take } =
       this.prismaUtils.generateCommonPrismaQuery(commonQueryDto);
@@ -56,7 +56,7 @@ export class DiscussionCommentsController extends Controller {
         AND: { ...searchQuery, ...queryByDiscussionId, ...queryByParentId },
       },
       orderBy: orderByQuery,
-      select: selectQuery,
+      select: withProfile ? {...selectQuery,user:{include:{profile:true}}}:selectQuery,
     });
 
     return res.custom({

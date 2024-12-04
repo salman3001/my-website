@@ -28,7 +28,7 @@ export class AuthController extends Controller {
     });
   }
 
-  async google(req: Request, res: Response) {
+  async googleLogin(req: Request, res: Response) {
     const dto = GoogleLoginSchema.parse(req.body);
 
     const { user, token } = await this.authService.googleAuth(dto);

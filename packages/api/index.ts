@@ -16,6 +16,7 @@ import {
 import "./controllers/addControllersExtension.js";
 import "my-website.services/addServiceExtension.js";
 import "my-website.services/mails/addMailServiceExtension.js";
+import "./policies/addPolicyExtension.js";
 import {
   authRoutes,
   userRoutes,
@@ -35,7 +36,7 @@ import {
 } from "routes/index.js";
 import { MailNotificationService } from "my-website.services/notifications/mailNotification.service.js";
 
-// initializing container and adding services
+// initializing container, adding services, adding auth policies
 const config = appContainer.resolve<Config>("config");
 appContainer.addController();
 appContainer.addCoreServices();
@@ -43,6 +44,7 @@ appContainer.addMailService({
   adapter: "Resend",
   adapterConfig: config.resendConfig,
 });
+appContainer.addPolicies();
 
 // notifictaion services to listen for events
 const mailNotificationService = appContainer.resolve<MailNotificationService>(

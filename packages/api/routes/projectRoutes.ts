@@ -1,7 +1,7 @@
 import { ProjectController } from "controllers/project.controller.js";
 import { authPolicy } from "my-website.common/express/authPolicy.js";
 import { Router, useController } from "my-website.common/express/index.js";
-import { AdminsOnly } from "policies/AdminsOnly.js";
+import { AdminsOnlyPolicy } from "policies/AdminsOnlyPolicy.js";
 
 const projectRoutes = Router();
 
@@ -9,19 +9,19 @@ projectRoutes.get("/", useController(ProjectController, "findAll"));
 projectRoutes.get("/:id", useController(ProjectController, "findOne"));
 projectRoutes.post(
   "/",
-  authPolicy([AdminsOnly]),
+  authPolicy([AdminsOnlyPolicy]),
   useController(ProjectController, "create"),
 );
 
 projectRoutes.patch(
   "/:id",
-  authPolicy([AdminsOnly]),
+  authPolicy([AdminsOnlyPolicy]),
   useController(ProjectController, "update"),
 );
 
 projectRoutes.delete(
   "/:id",
-  authPolicy([AdminsOnly]),
+  authPolicy([AdminsOnlyPolicy]),
   useController(ProjectController, "remove"),
 );
 

@@ -23,7 +23,7 @@ const appConfig = useAppConfig();
     </template>
     <template #prepend>
       <v-avatar>
-        <v-img alt="John" :src="disicussion.user?.profile?.avatar ? $config.public.uploadsPath+disicussion.user?.profile?.avatar :appConfig.dummyAvatarUrl"></v-img>
+        <v-img alt="John" :src="resolveAvatarUrl(disicussion.user,$config.public.uploadsPath,appConfig.dummyAvatarUrl)"></v-img>
       </v-avatar>
     </template>
     <v-card-text style="height: 3rem; overflow: hidden" class="py-0">

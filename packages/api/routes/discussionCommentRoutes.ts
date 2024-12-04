@@ -1,8 +1,8 @@
 import { DiscussionCommentsController } from "controllers/discussion-comments.controller.js";
 import { authPolicy } from "my-website.common/express/authPolicy.js";
 import { Router, useController } from "my-website.common/express/index.js";
-import { AdminsOnly } from "policies/AdminsOnly.js";
-import { AuthenticatedOnly } from "policies/AuthenticatedOnly.js";
+import { AdminsOnlyPolicy } from "policies/AdminsOnlyPolicy.js";
+import { AuthenticatedOnlyPolicy } from "policies/AuthenticatedOnlyPolicy.js";
 
 const discussionCommentRoutes = Router();
 
@@ -18,19 +18,19 @@ discussionCommentRoutes.get(
 
 discussionCommentRoutes.post(
   "/",
-  authPolicy([AuthenticatedOnly]),
+  authPolicy([AuthenticatedOnlyPolicy]),
   useController(DiscussionCommentsController, "create"),
 );
 
 discussionCommentRoutes.patch(
   "/:id",
-  authPolicy([AdminsOnly]),
+  authPolicy([AdminsOnlyPolicy]),
   useController(DiscussionCommentsController, "update"),
 );
 
 discussionCommentRoutes.delete(
   "/:id",
-  authPolicy([AdminsOnly]),
+  authPolicy([AdminsOnlyPolicy]),
   useController(DiscussionCommentsController, "remove"),
 );
 

@@ -27,8 +27,8 @@ defineEmits<{
         <div class="d-flex ga-4">
           <div>
             <VAvatar
-              :src="comment.user?.profile?.avatar ? $config.public.uploadsPath + comment.user?.profile?.avatar : appConfig.dummyAvatarUrl"
-              rounded="lg" size="44">
+              :image="resolveAvatarUrl(comment.user,$config.public.uploadsPath,appConfig.dummyAvatarUrl)"
+              rounded="true" size="44">
             </VAvatar>
           </div>
           <div>

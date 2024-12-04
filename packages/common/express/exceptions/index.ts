@@ -5,3 +5,4 @@ export { ForbiddenException } from "./forbidden-exception.js";
 export { NotFoundException } from "./not-found-exception.js";
 export { UnAuthorizedException } from "./unauthorized-exception.js";
 export { UnProcessableEntityException } from "./unprocessable-entity-exception.js";
+export { ServerException } from "./server-exception.js";

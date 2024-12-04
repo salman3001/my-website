@@ -4,6 +4,7 @@ import { Router, useController } from "my-website.common/express/index.js";
 const authRoutes = Router();
 
 authRoutes.post("/login", useController(AuthController, "login"));
+authRoutes.post("/google-login", useController(AuthController, "googleLogin"));
 authRoutes.post("/logout", useController(AuthController, "logout"));
 authRoutes.post("/register", useController(AuthController, "register"));
 authRoutes.post(

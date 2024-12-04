@@ -8,13 +8,14 @@ const appConfig = useAppConfig()
 const logout = () => {
   setAuth(null, null);
   googleLogout()
+  navigateTo(routes.web.home())
 }
 </script>
 <template>
   <v-menu v-if="user">
     <template v-slot:activator="{ props }">
       <v-avatar
-        :image="user.profile?.avatar ? $config.public.uploadsPath + user.profile.avatar : appConfig.dummyAvatarUrl"
+        :image="resolveAvatarUrl(user,$config.public.uploadsPath,appConfig.dummyAvatarUrl)"
         variant="text" v-bind="props" class="cursor-pointer"></v-avatar>
     </template>
 

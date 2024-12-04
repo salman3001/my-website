@@ -52,7 +52,7 @@ const updateProfile = async () => {
         <VCardText class="d-flex flex-column ga-2">
             <label class="font-weight-bold">Avatar</label>
             <FormsAvatarInput size="100"
-                :url="user?.profile?.avatar ? $config.public.uploadsPath + user?.profile?.avatar : appConfig.dummyAvatarUrl"
+                :url="resolveAvatarUrl(user!,$config.public.uploadsPath,appConfig.dummyAvatarUrl)"
                 @image="(f) => {
                     form.avatar = f
                 }

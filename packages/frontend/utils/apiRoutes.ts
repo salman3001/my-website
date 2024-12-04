@@ -1,6 +1,7 @@
 export const apiRoutes = {
   auth: {
     signin: () => "/auth/login",
+    googelSignin: () => "/auth/google-login",
     signup: () => "/auth/register",
     confirmEmail: () => "/auth/confirm-email",
     resendVerificationEmail: () => "/auth/resend-verification-email",

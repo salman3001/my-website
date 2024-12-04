@@ -20,10 +20,11 @@ import { MathUtils } from "my-website.common/utils/MathUtils.js";
 import {
   UnAuthorizedException,
   BadRequestException,
+  ServerException,
 } from "my-website.common/express/exceptions/index.js";
 import { JwtUtils } from "my-website.common/utils/JwtUtils.js";
 import { HashUtils } from "my-website.common/utils/HashUtils.js";
-import { OAuth2Client } from "google-auth-library";
+import { OAuth2Client, TokenPayload } from "google-auth-library";
 
 export class AuthService {
   constructor(
@@ -170,13 +171,13 @@ export class AuthService {
   }
 
   async googleAuth(dto: GoogleLoginDto) {
-    const client = new OAuth2Client("YOUR_GOOGLE_CLIENT_ID");
 
-    const ticket = await client.verifyIdToken({
-      idToken: dto.credential,
-    });
+    const payload =dto.type==='credential'? await this.verifyGoogleCredential(dto.credential!) : dto.type==='token'?await this.verifyGoogleToken(dto.token!):undefined
 
-    const payload = ticket.getPayload()!;
+    if(!payload){
+      throw new ServerException('Failed to authenticate by google auth')
+    }
+
     const user = await this.prisma.user.findFirst({
       where: {
         email: payload.email,
@@ -191,13 +192,11 @@ export class AuthService {
         where: { email: payload.email },
         data: {
           emailVerified: true,
-          profile: !user.profile?.avatar
-            ? {
+          profile:{
                 update: {
-                  avatar: payload.picture,
+                  googleAvatar: payload.picture,
                 },
-              }
-            : {},
+              }       
         },
       });
 
@@ -223,7 +222,7 @@ export class AuthService {
           userType: UserType.User,
           profile: {
             create: {
-              avatar: payload.picture,
+              googleAvatar: payload.picture,
             },
           },
         },
@@ -241,5 +240,25 @@ export class AuthService {
 
       return { user: createdUser, token };
     }
+  }
+
+  async verifyGoogleCredential(credential:string){
+    const client = new OAuth2Client();
+
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+    });
+
+    return ticket.getPayload()!;
+  }
+
+  async verifyGoogleToken(token:string){
+    const client = new OAuth2Client();
+
+    client.setCredentials({ access_token: token })
+    const userinfo = await client.request({
+      url: "https://www.googleapis.com/oauth2/v3/userinfo",
+    });
+    return userinfo.data as TokenPayload | undefined
   }
 }

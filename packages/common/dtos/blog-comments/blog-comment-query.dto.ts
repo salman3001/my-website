@@ -6,6 +6,7 @@ export const BlogCommentQueryShema = z.intersection(
   z.object({
     blogId: z.string().optional(),
     parentId: z.coerce.number().optional(),
+    withProfile:z.string().optional()
   }),
 );
 

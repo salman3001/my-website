@@ -1,9 +1,9 @@
 import { Prisma } from "my-website.data/generates/index.js";
 import { Prisma as PrismaClient } from "my-website.data/prisma.js";
 import { CreateBlogCommentDto } from "my-website.common/dtos/blog-comments/create-blog-comment.dto.js";
-import { AuthUserType } from "./types/common.js";
 import { NotFoundException } from "my-website.common/express/exceptions/index.js";
 import { UpdateBlogCommentDto } from "my-website.common/dtos/blog-comments/update-blog-comment.dto.js";
+import { AuthUserType } from "my-website.common/types/index.js";
 
 export class BlogCommentsService {
   constructor(private readonly prisma: PrismaClient) {}

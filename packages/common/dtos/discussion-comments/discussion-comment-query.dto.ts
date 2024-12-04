@@ -6,6 +6,7 @@ export const DiscussionCommentQuerySchema = z.intersection(
   z.object({
     discussionId: z.string().optional(),
     parentId: z.coerce.number().optional(),
+    withProfile:z.string().optional()
   }),
 );
 

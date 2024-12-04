@@ -1,19 +1,19 @@
 import { ContactMessageController } from "controllers/contact-message.controller.js";
 import { authPolicy } from "my-website.common/express/authPolicy.js";
 import { Router, useController } from "my-website.common/express/index.js";
-import { AdminsOnly } from "policies/AdminsOnly.js";
+import { AdminsOnlyPolicy } from "policies/AdminsOnlyPolicy.js";
 
 const contactMessageRoutes = Router();
 
 contactMessageRoutes.get(
   "/",
-  authPolicy([AdminsOnly]),
+  authPolicy([AdminsOnlyPolicy]),
   useController(ContactMessageController, "findAll"),
 );
 
 contactMessageRoutes.get(
   "/:id",
-  authPolicy([AdminsOnly]),
+  authPolicy([AdminsOnlyPolicy]),
   useController(ContactMessageController, "findOne"),
 );
 contactMessageRoutes.post(
@@ -23,7 +23,7 @@ contactMessageRoutes.post(
 
 contactMessageRoutes.delete(
   "/:id",
-  authPolicy([AdminsOnly]),
+  authPolicy([AdminsOnlyPolicy]),
   useController(ContactMessageController, "remove"),
 );
 

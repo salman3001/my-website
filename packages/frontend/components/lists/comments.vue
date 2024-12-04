@@ -36,6 +36,7 @@ const { data, status, execute } = await useFetcherGet<
         "count:replies",
         props.type === "blog" ? "blogId" : "discussionId",
       ],
+      withProfile:true,
       take: 1000,
       skip: 0,
       orderBy: "createdAt:desc",

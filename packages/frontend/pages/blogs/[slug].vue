@@ -59,7 +59,7 @@ onUnmounted(() => {
     <br />
     <div class="d-flex ga-4">
       <v-avatar size="48">
-        <v-img alt="John" :src="data?.data.author?.profile?.avatar ? $config.public.uploadsPath+data.data.author?.profile?.avatar :appConfig.dummyAvatarUrl"></v-img>
+        <v-img alt="John" :src="resolveAvatarUrl(data?.data?.author!,$config.public.uploadsPath,appConfig.dummyAvatarUrl)"></v-img>
       </v-avatar>
       <div class="d-flex flex-column text-on-background">
         <NuxtLink variant="text" @click.stop="" :href="apiRoutes.users.publicProfile(data?.data?.author?.userName!)">{{

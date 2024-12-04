@@ -30,6 +30,7 @@ export interface User extends BaseModel {
 export interface Profile extends BaseModel {
   id: number;
   avatar: string | undefined;
+  googleAvatar: string | undefined;
   user: User;
   userId: number;
 }

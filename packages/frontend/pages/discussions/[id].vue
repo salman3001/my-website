@@ -3,6 +3,7 @@ import type { IResType } from "~/utils/types";
 import type { Discussion } from "~/utils/types/modals";
 
 const { id } = useRoute().params;
+const appConfig = useAppConfig()
 
 const { data } = await useFetcherGet<IResType<Discussion>>(
   apiRoutes.discussions.view(id as string),
@@ -34,7 +35,7 @@ const { data } = await useFetcherGet<IResType<Discussion>>(
 
     <div class="d-flex ga-4 mt-2">
       <v-avatar size="48">
-        <VImg alt="John" src="https://cdn.vuetifyjs.com/images/john.jpg" />
+        <VImg alt="John" :src="resolveAvatarUrl(data?.data?.user!,$config.public.uploadsPath,appConfig.dummyAvatarUrl)" />
       </v-avatar>
       <div class="d-flex flex-column text-on-background">
         <NuxtLink

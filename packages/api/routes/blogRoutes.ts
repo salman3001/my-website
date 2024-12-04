@@ -1,7 +1,7 @@
 import { BlogController } from "controllers/blog.controller.js";
 import { authPolicy } from "my-website.common/express/authPolicy.js";
 import { Router, useController } from "my-website.common/express/index.js";
-import { AdminsOnly } from "policies/AdminsOnly.js";
+import { AdminsOnlyPolicy } from "policies/AdminsOnlyPolicy.js";
 
 const blogRoutes = Router();
 
@@ -10,19 +10,19 @@ blogRoutes.get("/:id", useController(BlogController, "findOne"));
 
 blogRoutes.post(
   "/",
-  authPolicy([AdminsOnly]),
+  authPolicy([AdminsOnlyPolicy]),
   useController(BlogController, "create"),
 );
 
 blogRoutes.patch(
   "/:id",
-  authPolicy([AdminsOnly]),
+  authPolicy([AdminsOnlyPolicy]),
   useController(BlogController, "update"),
 );
 
 blogRoutes.delete(
   "/:id",
-  authPolicy([AdminsOnly]),
+  authPolicy([AdminsOnlyPolicy]),
   useController(BlogController, "remove"),
 );
 
