@@ -9,9 +9,9 @@ const scrollToTop = () => {
 };
 
 export default defineNuxtPlugin((app) => {
-  app.hook("page:finish", () => {
-    setTimeout(() => {
-      scrollToTop();
-    }, 100);
-  });
+  // app.hook("page:finish", () => {
+  //   setTimeout(() => {
+  //     scrollToTop();
+  //   }, 100);
+  // });
 });

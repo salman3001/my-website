@@ -95,11 +95,10 @@ const { user } = useAuth();
         </div>
         <Footer />
         <div id="dialog-teleports">
-
         </div>
+        <AuthGoogleOnload />
       </v-main>
     </v-layout>
-    <AuthGoogleOnload />
   </VApp>
 </template>
 

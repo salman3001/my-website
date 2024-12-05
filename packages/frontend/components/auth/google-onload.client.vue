@@ -10,7 +10,7 @@ const {exec} = useFetcher()
 onMounted(() => {
 
      if (!user.value) {
-          googleOneTap({ autoLogin: true })
+          googleOneTap({ autoLogin: true, })
                .then(((response) => {
                     // This promise is resolved when user selects an account from the the One Tap prompt
                     exec(apiRoutes.auth.googelSignin(),{method:'POST',body:{

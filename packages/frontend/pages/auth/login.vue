@@ -119,7 +119,6 @@ const resenVerificationEmail = async () => {
 
                 <!-- auth providers -->
                 <VCol cols="12" class="text-center">
-                  <!-- <ViewsWebAuthenticationAuthProvider /> -->
                   <SocialAuth />
                 </VCol>
               </VRow>

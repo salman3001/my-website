@@ -44,15 +44,7 @@ onUnmounted(() => {
 
 <template>
   <v-container max-width="1100">
-    <Teleport :disabled="isCommentsDrawerDisabled" to="[main-layout]">
-      <v-navigation-drawer width="500" v-model="drawer" :location="$vuetify.display.smAndDown ? 'bottom' : 'right'"
-        temporary sticky floating :style="{ marginTop: $vuetify.display.smAndDown ? '5rem' : 'auto' }">
-        <div :class="$vuetify.display.smAndDown ? 'text-end px-1' : 'px-1'">
-          <VBtn icon="mdi-close" variant="text" rounded="sm" @click="drawer = false" />
-        </div>
-        <ViewsBlogsComments :blog-id="data?.data?.id || ''" :comment-count="data?.data?._count?.comment" />
-      </v-navigation-drawer>
-    </Teleport>
+    <ViewsBlogsTeleportedComments v-model="drawer" :blog="data?.data!"/>
     <br />
     <h1>{{ data?.data?.title }}</h1>
     <p class="text-h6 text-medium-emphasis">{{ data?.data?.shortDesc }}</p>

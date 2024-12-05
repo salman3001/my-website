@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 const modal = ref(false)
+const {mounted} = useAwaitTeleportTargetMount()
 
 const form = reactive({
     email: ''
@@ -26,7 +27,7 @@ const onClose = () => {
             </template>
         </v-text-field>
     </form>
-    <Teleport to="#dialog-teleports">
+    <Teleport to="#dialog-teleports" v-if="mounted">
         <v-dialog v-model="modal" :width="500">
             <v-card title="Subscribe">
                 <template #append>
